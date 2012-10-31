@@ -1,0 +1,33 @@
+{
+  "name": "ajadmin.dg",
+  "description": "Data Grid plugin to work with Ajadmin (based on Backbone.Marionette)",
+  "keywords": [
+    "table", "datagrid", "ajadmin", "backbone", "marionette"
+  ],
+  "version": "0.0.1",
+  "homepage": "https://github.com/prevole/ajadmin.dg",
+  "author": "Laurent Prévost (prevole) <prevole@prevole.ch>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prevole/ajadmin.dg"
+  },
+  "engines": {
+    "node": "0.8.x"
+  },
+  "scripts": {
+    "test": "grunt jasmine",
+    "start": "grunt jasmine-server"
+  },
+  "devDependencies": {
+    "grunt": "~0.3.16",
+    "grunt-rigger": "latest",
+		"grunt-contrib-coffee": "latest",
+		"grunt-contrib-clean": "latest"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.github.com/prevole/ajadmin.dg/master/LICENSE.txt"
+    }
+  ]
+}
