@@ -3,7 +3,7 @@
 # create button is also present. Buttons are deactivated when they
 # are clicked.
 Dg.ToolbarView = class extends Dg.DefaultItemView
-  template: "layouts/dg/toolbar"
+  template: templates["toolbar"]
 
   events:
     "click .refresh": "refresh"

@@ -1,6 +1,6 @@
   # The main view to manage the data table
   Dg.TableView = Marionette.CompositeView.extend
-    template: "layouts/dg/table"
+    template: templates["table"]
     itemViewContainer: "tbody"
     emptyView: DefaultTableEmptyView
 

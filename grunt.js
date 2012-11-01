@@ -3,7 +3,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-rigger');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-coffee');
-//    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 //    grunt.loadNpmTasks('grunt-jasmine-runner');
 
     // Project configuration.
@@ -55,7 +55,7 @@ module.exports = function(grunt) {
 //      files: ['src/tableling.*.js']
 //    },
 
-        clean: ["dist", "working"],
+        clean: ["dist", "working", "demo/js"],
 
         rig: {
             build: {
@@ -65,9 +65,13 @@ module.exports = function(grunt) {
         },
 
         coffee: {
+            options: {
+                bare: false
+            },
             build: {
                 files: {
-                    'dist/ajadmin/ajadmin.dg.js': ['working/ajadmin.dg.coffee']
+                    'dist/ajadmin/ajadmin.dg.js': ['working/ajadmin.dg.coffee'],
+                    'demo/js/demo.js': ['demo/coffee/demo.coffee']
                 }
             }
         },
@@ -124,6 +128,17 @@ module.exports = function(grunt) {
 //      }
 //    },
 
+        copy: {
+            demo: {
+                options: {
+                    flatten: true
+                },
+                files: {
+                    "demo/js/": ["dist/ajadmin/ajadmin.dg.js", "vendor/javascripts/*.js"]
+                }
+            }
+        },
+
 //    copy : {
 //      demo: {
 //        files: {
@@ -169,5 +184,5 @@ module.exports = function(grunt) {
   // Default task.
 //  grunt.registerTask('default', 'lint rig concat min copy');
 
-    grunt.registerTask('default', 'clean rig coffee min');
+    grunt.registerTask('default', 'clean rig coffee min copy');
 };

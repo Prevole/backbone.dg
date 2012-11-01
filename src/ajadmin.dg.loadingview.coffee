@@ -1,5 +1,5 @@
 LoadingView = class extends Backbone.Marionette.ItemView
-  template: "layouts/dg/gridempty"
+  template: templates["gridempty"]
 
 #    render: ->
 #      @beforeRender() if @beforeRender

@@ -10,7 +10,7 @@
 # the default message is used:
 #   - default message: "Showing ${from} to ${to} of ${total} entries
 Dg.InfoView = class extends Dg.DefaultItemView
-  template: "layouts/dg/info"
+  template: templates["info"]
 
   # Show the message to tell the number of entries shown regarding
   # the filtering and so on.

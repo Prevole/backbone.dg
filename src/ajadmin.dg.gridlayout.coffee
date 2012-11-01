@@ -1,5 +1,5 @@
 Dg.GridLayout = class extends Marionette.Layout
-  template: "layouts/dg/grid"
+  template: templates["grid"]
 
   # Constructor
   # @param [Hash] options Options to configure the layout

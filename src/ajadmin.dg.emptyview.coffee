@@ -1,5 +1,5 @@
 EmptyView = class extends Dg.DefaultItemView
-  template: "layouts/dg/empty"
+  template: templates["empty"]
 
   ui:
     empty: ".empty"

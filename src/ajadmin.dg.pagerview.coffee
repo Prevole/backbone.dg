@@ -11,7 +11,7 @@
 # initializer. Refer to initialize(options) function for more
 # details of different possibilities.
 Dg.PagerView = class extends Dg.DefaultItemView
-  template: "layouts/dg/pager"
+  template: templates["pager"]
 
   events:
     "click a": "pagging"

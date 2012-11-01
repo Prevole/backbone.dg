@@ -1,9 +1,10 @@
-Backbone.Ajadmin.Dg = window.Ajadmin.Dg = ( (Backbone, Marionette, _, $) ->
-  Dg = Ajadmin.Dg = { version: "0.0.1" }
+Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
+  Dg = { version: "0.0.1" }
 
 # ----------------------------------------------------------------------------------------------------------------------
 
   #= ajadmin.dg.utils.coffee
+  #= ajadmin.dg.templateregistry.coffee
   #= ajadmin.dg.itemview.coffee
   #= ajadmin.dg.defaultitemview.coffee
   #= ajadmin.dg.infoview.coffee

@@ -1,7 +1,7 @@
 # Default implementation for changing the number of entries displayed on a
 # single page. The selector is select box.
 Dg.PerPageView = class extends Dg.DefaultItemView
-  template: "layouts/dg/perpage"
+  template: templates["perpage"]
 
   events:
     "change .per-page": "perPage"
