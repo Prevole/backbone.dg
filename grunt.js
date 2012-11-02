@@ -65,10 +65,10 @@ module.exports = function(grunt) {
         },
 
         coffee: {
-            options: {
-                bare: false
-            },
             build: {
+                options: {
+                    bare: true
+                },
                 files: {
                     'dist/ajadmin/ajadmin.dg.js': ['working/ajadmin.dg.coffee'],
                     'demo/js/demo.js': ['demo/coffee/demo.coffee']
