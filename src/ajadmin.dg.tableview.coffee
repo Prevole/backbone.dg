@@ -2,7 +2,7 @@
   Dg.TableView = Marionette.CompositeView.extend
     template: templates["table"]
     itemViewContainer: "tbody"
-    emptyView: DefaultTableEmptyView
+    emptyView: Dg.EmptyView
 
     itemViewOptions: (model) ->
       return { vent: @vent, columns: @columns() }

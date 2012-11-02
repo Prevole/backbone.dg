@@ -9,7 +9,7 @@
 # This default implementation is based on HTML <table /> element and therefore the view
 # is expected to be a collection of <td /> wrapped into <tr /> that is part of the view
 # definition.
-Dg.RowView = class extends Dg.TableItemView
+Dg.RowView = class extends Dg.DefaultItemView
   tagName: "tr"
 
   events:
@@ -71,4 +71,4 @@ Dg.RowView = class extends Dg.TableItemView
   # @param [Event] event The event triggered
   delete: (event) ->
     event.preventDefault()
-  @vent.trigger "row:delete", @model
+    @vent.trigger "row:delete", @model

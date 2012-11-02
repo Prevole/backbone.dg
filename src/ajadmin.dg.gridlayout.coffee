@@ -18,7 +18,7 @@ Dg.GridLayout = class extends Marionette.Layout
     for regionName, regionDefinition of @regions
       @[regionName].show new regionDefinition.view(_.extend({vent: @vent}, regionDefinition.options || {})) unless regionName == "table"
 
-    @table.show(new DefaultGridEmptyView())
+    @table.show(new LoadingView())
 
     @collection.fetch()
 
@@ -28,7 +28,7 @@ Dg.GridLayout = class extends Marionette.Layout
 
   # TODO: Review this part of code
   handleUpdate: (options) =>
-    @table.show(new DefaultGridEmptyView())
+    @table.show(new LoadingView())
     @collection.updateInfo options
 
   handleRefresh: =>

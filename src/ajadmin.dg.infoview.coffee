@@ -16,7 +16,8 @@ Dg.InfoView = class extends Dg.DefaultItemView
   # the filtering and so on.
   refreshView: (info) ->
     # Check if the I18n library is used
-    if I18n
-      @$el.text I18n.t(i18nKeys.info, {from: info[infoKeys.from], to: info[infoKeys.to], total: info[infoKeys.items]})
-    else
-      @$el.text "Showing #{info[infoKeys.from]} to #{info[infoKeys.to]} of #{info[infoKeys.items]} entries"
+  # TODO: Check how to do that
+#    if I18n is undefined
+     @$el.text "Showing #{info[infoKeys.from]} to #{info[infoKeys.to]} of #{info[infoKeys.items]} entries"
+#    else
+#     @$el.text I18n.t(i18nKeys.info, {from: info[infoKeys.from], to: info[infoKeys.to], total: info[infoKeys.items]})

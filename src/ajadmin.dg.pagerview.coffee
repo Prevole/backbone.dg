@@ -57,22 +57,23 @@ Dg.PagerView = class extends Dg.DefaultItemView
     })
 
     # Define the texts if none are provided. Use I18n-js if defined
-    if I18n
-      @texts = _.defaults(options.texts || {}, {
-        first: I18n.t i18nKeys.pager.first
-        previous: I18n.t i18nKeys.pager.previous
-        next: I18n.t i18nKeys.pager.next
-        last: I18n.t i18nKeys.pager.last
-        filler: I18n.t i18nKeys.pager.filler
-      })
-    else
-      @texts = _.defaults(options.texts || {}, {
-        first: "<<"
-        previous: "<"
-        next: ">"
-        last: ">>"
-        filler: "..."
-      })
+    # TODO: Check how to do that
+#    if I18n is undefined
+    @texts = _.defaults(options.texts || {}, {
+      first: "<<"
+      previous: "<"
+      next: ">"
+      last: ">>"
+      filler: "..."
+    })
+#    else
+#    @texts = _.defaults(options.texts || {}, {
+#      first: I18n.t i18nKeys.pager.first
+#      previous: I18n.t i18nKeys.pager.previous
+#      next: I18n.t i18nKeys.pager.next
+#      last: I18n.t i18nKeys.pager.last
+#      filler: I18n.t i18nKeys.pager.filler
+#    })
 
     # Show the numbers by default
     @numbers = true

@@ -5,7 +5,6 @@
 # The refresh of the collection happens in a delayed function to allow writing
 # multiple caracters before triggering the refresh. This will avoid strange behavior
 # and brings a better user experience.
-alert "There"
 Dg.QuickSearchView = class extends Dg.DefaultItemView
   template: templates["quicksearch"]
 
