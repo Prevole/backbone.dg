@@ -23,7 +23,8 @@
     "grunt-rigger": "latest",
 		"grunt-contrib-coffee": "latest",
 		"grunt-contrib-clean": "latest",
-		"grunt-contrib-copy": "latest"
+		"grunt-contrib-copy": "latest",
+		"grunt-contrib-sass": "latest"
   },
   "licenses": [
     {

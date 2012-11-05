@@ -455,7 +455,7 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
 
     return _Class;
 
-  })(Dg.DefaultItemView);
+  })(Dg.ItemView);
   EmptyView = (function(_super) {
 
     __extends(_Class, _super);
@@ -504,6 +504,8 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     function _Class() {
       return _Class.__super__.constructor.apply(this, arguments);
     }
+
+    _Class.prototype.tagName = "thead";
 
     _Class.prototype.events = {
       "click .sorting": "sort"
@@ -614,7 +616,7 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
 
     return _Class;
 
-  })(Dg.DefaultItemView);
+  })(Dg.ItemView);
   Dg.TableRegion = (function(_super) {
 
     __extends(_Class, _super);

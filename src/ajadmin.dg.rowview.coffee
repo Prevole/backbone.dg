@@ -9,7 +9,7 @@
 # This default implementation is based on HTML <table /> element and therefore the view
 # is expected to be a collection of <td /> wrapped into <tr /> that is part of the view
 # definition.
-Dg.RowView = class extends Dg.DefaultItemView
+Dg.RowView = class extends Dg.ItemView
   tagName: "tr"
 
   events:

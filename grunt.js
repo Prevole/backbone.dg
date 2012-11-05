@@ -4,6 +4,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-coffee');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-sass');
 //    grunt.loadNpmTasks('grunt-jasmine-runner');
 
     // Project configuration.
@@ -72,6 +73,14 @@ module.exports = function(grunt) {
                 files: {
                     'dist/ajadmin/ajadmin.dg.js': ['working/ajadmin.dg.coffee'],
                     'demo/js/demo.js': ['demo/coffee/demo.coffee']
+                }
+            }
+        },
+
+        sass: {
+            demo: {
+                files: {
+                    'demo/css/demo.css': 'demo/scss/demo.scss'
                 }
             }
         },
@@ -184,5 +193,5 @@ module.exports = function(grunt) {
   // Default task.
 //  grunt.registerTask('default', 'lint rig concat min copy');
 
-    grunt.registerTask('default', 'clean rig coffee min copy');
+    grunt.registerTask('default', 'clean rig coffee sass min copy');
 };

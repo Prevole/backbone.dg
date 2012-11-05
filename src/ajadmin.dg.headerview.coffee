@@ -1,4 +1,6 @@
-Dg.HeaderView = class extends Dg.DefaultItemView
+Dg.HeaderView = class extends Dg.ItemView
+  tagName: "thead"
+
   events:
     "click .sorting": "sort"
 
