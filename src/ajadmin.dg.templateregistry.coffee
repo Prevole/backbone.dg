@@ -11,7 +11,8 @@ templates =
       "</div>" +
       "<div class='dgTable' />" +
       "<div class='clearfix'>" +
-        "<div class='dgPager' />" +
+        "<div class='dgInfo pull-left' />" +
+        "<div class='dgPager pull-right' />" +
       "</div>" +
     "</div>"
 

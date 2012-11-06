@@ -39,7 +39,7 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       return "<td class='empty'>No Data</td>";
     },
     grid: function(data) {
-      return "<div class='dgGrid'>" + "<div class='clearfix'>" + "<div class='dgPerPage' />" + "<div class='dgToolbar' />" + "<div class='dgQuickSearch' />" + "</div>" + "<div class='dgTable' />" + "<div class='clearfix'>" + "<div class='dgPager' />" + "</div>" + "</div>";
+      return "<div class='dgGrid'>" + "<div class='clearfix'>" + "<div class='dgPerPage' />" + "<div class='dgToolbar' />" + "<div class='dgQuickSearch' />" + "</div>" + "<div class='dgTable' />" + "<div class='clearfix'>" + "<div class='dgInfo pull-left' />" + "<div class='dgPager pull-right' />" + "</div>" + "</div>";
     },
     gridempty: function(data) {
       return "<div class='dgLoading'>" + "<div class='progress progress-striped active'>" + "<div class='bar' style='width:100%'>Loading data</div>" + "</div>" + "</div>";

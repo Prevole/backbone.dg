@@ -1,15 +1,20 @@
-data = [
-  {test: "test 1"}
-  {test: "test 2"}
-  {test: "test 3"}
-  {test: "test 4"}
-  {test: "test 5"}
-  {test: "test 6"}
-]
 
 dataModel = class extends Backbone.Model
   match: (quickSearch) ->
-    return @test.toLowerCase().indexOf(quickSearch) >= 0
+    return @attributes.test.toLowerCase().indexOf(quickSearch) >= 0
+
+  getFromIndex: (index) ->
+    switch parseInt(index)
+      when 0 then return @get("test")
+
+data = [
+  new dataModel(test: "test 1")
+  new dataModel(test: "test 2")
+  new dataModel(test: "test 3")
+  new dataModel(test: "test 4")
+  new dataModel(test: "test 5")
+  new dataModel(test: "test 6")
+]
 
 dataCollection = class extends Backbone.Collection
   model: dataModel
@@ -18,9 +23,9 @@ dataCollection = class extends Backbone.Collection
      @current =
        _.defaults {},
          page: 1
-         ipp: 2
+         perPage: 2
          quickSearch: ""
-         sorting: {}
+         sort: {}
 
   sync: (method, model, options, error) ->
     storedSuccess = options.success
@@ -28,44 +33,39 @@ dataCollection = class extends Backbone.Collection
       storedSuccess(collection, response)
       @trigger "fetched"
 
-    localData = data
+    localData = _.clone data
 
-    if @current.quickSearch != ""
+    if @current.term and @current.term != ""
       localData = _.filter localData, (model) =>
-        return model.match(@current.quickSearch.toLowerCase())
+        return model.match(@current.term.toLowerCase())
 
-#    if (req.sort) {
-#      data = data.sort(function(a, b) {
-#
-#        for (var i = 0; i < req.sort.length; i++) {
-#
-#          var parts = req.sort[i].split(' ');
-#          var attr = parts[0]
-#          var direction = parts[1];
-#
-#          a = a[attr].toString().toLowerCase();
-#          b = b[attr].toString().toLowerCase();
-#
-#          var comp = a.localeCompare(b);
-#          if (comp != 0) {
-#            return comp * (direction == 'asc' ? 1 : -1);
-#          }
-#        }
-#        return 0;
-#      });
-#    }
+    # Filtered items
+    @current.items = localData.length
 
-    json = localData
-#    json = {
-#      info: data.length
-#      data: data
-#    }
+    if @current.sort
+      localData = localData.sort (a, b) =>
+        for idx, direction of @current.sort
+          if direction
+            a = a.getFromIndex(idx).toString().toLowerCase()
+            b = b.getFromIndex(idx).toString().toLowerCase()
+
+            comp = a.localeCompare b
+
+            return comp * (if direction == 'A' then 1 else -1) if comp != 0
+
+        return 0
+
+    @current.pages = Math.ceil(localData.length / @current.perPage)
+    @current.totalItems = localData.length
+
+    @current.from = (@current.page - 1) * @current.perPage
+    @current.to = @current.from + @current.perPage
+    localData = localData.slice(@current.from, @current.to)
+    @current.from = @current.from + 1
 
     response = $.Deferred()
-    response.resolve(json)
-    options.success(json)
-
-    console.log localData
+    response.resolve(localData)
+    options.success(localData)
 
     response
 
