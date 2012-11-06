@@ -55,7 +55,7 @@ dataCollection = (function(_super) {
     return this.current = _.defaults({}, {
       page: 1,
       perPage: 2,
-      quickSearch: "",
+      term: "",
       sort: {}
     });
   };
@@ -69,30 +69,26 @@ dataCollection = (function(_super) {
       return _this.trigger("fetched");
     };
     localData = _.clone(data);
-    if (this.current.term && this.current.term !== "") {
-      localData = _.filter(localData, function(model) {
-        return model.match(_this.current.term.toLowerCase());
-      });
-    }
+    localData = _.filter(localData, function(model) {
+      return model.match(_this.current.term.toLowerCase());
+    });
     this.current.items = localData.length;
-    if (this.current.sort) {
-      localData = localData.sort(function(a, b) {
-        var comp, direction, idx, _ref;
-        _ref = _this.current.sort;
-        for (idx in _ref) {
-          direction = _ref[idx];
-          if (direction) {
-            a = a.getFromIndex(idx).toString().toLowerCase();
-            b = b.getFromIndex(idx).toString().toLowerCase();
-            comp = a.localeCompare(b);
-            if (comp !== 0) {
-              return comp * (direction === 'A' ? 1 : -1);
-            }
+    localData = localData.sort(function(a, b) {
+      var comp, direction, idx, _ref;
+      _ref = _this.current.sort;
+      for (idx in _ref) {
+        direction = _ref[idx];
+        if (direction) {
+          a = a.getFromIndex(idx).toString().toLowerCase();
+          b = b.getFromIndex(idx).toString().toLowerCase();
+          comp = a.localeCompare(b);
+          if (comp !== 0) {
+            return comp * (direction === 'A' ? 1 : -1);
           }
         }
-        return 0;
-      });
-    }
+      }
+      return 0;
+    });
     this.current.pages = Math.ceil(localData.length / this.current.perPage);
     this.current.totalItems = localData.length;
     this.current.from = (this.current.page - 1) * this.current.perPage;

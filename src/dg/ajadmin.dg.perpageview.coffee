@@ -17,4 +17,4 @@ Dg.PerPageView = class extends Dg.DefaultItemView
   # Handle the select box changes
   # @param [Event] event The event triggered
   perPage: (event) ->
-    @update _.object( [infoKeys.perPage], [@ui.perPage.val()] )
+    @update _.object( [infoKeys.perPage], [parseInt(@ui.perPage.val())] )

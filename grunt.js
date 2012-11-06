@@ -4,7 +4,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-coffee');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-sass');
+    grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-haml');
+
 //    grunt.loadNpmTasks('grunt-jasmine-runner');
 
     // Project configuration.
@@ -56,11 +58,14 @@ module.exports = function(grunt) {
 //      files: ['src/tableling.*.js']
 //    },
 
-        clean: ["dist", "working", "demo/js"],
+        clean: {
+          build: ["dist", "working"],
+          demo: ["demo"]
+        },
 
         rig: {
             build: {
-                src: ['src/ajadmin.dg.coffee'],
+                src: ['src/dg/ajadmin.dg.coffee'],
                 dest: 'working/ajadmin.dg.coffee'
             }
         },
@@ -71,8 +76,15 @@ module.exports = function(grunt) {
                     bare: true
                 },
                 files: {
-                    'dist/ajadmin/ajadmin.dg.js': ['working/ajadmin.dg.coffee'],
-                    'demo/js/demo.js': ['demo/coffee/demo.coffee']
+                    'dist/ajadmin/ajadmin.dg.js': ['working/ajadmin.dg.coffee']
+                }
+            },
+            demo: {
+                options: {
+                    bare: true
+                },
+                files: {
+                    'demo/demo.js': ['src/demo/demo.coffee']
                 }
             }
         },
@@ -80,39 +92,20 @@ module.exports = function(grunt) {
         sass: {
             demo: {
                 files: {
-                    'demo/css/demo.css': 'demo/scss/demo.scss'
+                    'demo/demo.css': 'src/demo/demo.scss'
                 }
             }
         },
 
-//    concat: {
-//      backbone : {
-//        src : [
-//          'vendor/backbone.js',
-//          'vendor/backbone.eventbinder.js',
-//          'vendor/backbone.wreqr.js',
-//          'vendor/backbone.marionette.js',
-//          'lib/ajadmin.dg.js'
-//        ],
-//        dest : 'lib/bundles/ajadmin.dg.js'
-//      },
-//      world : {
-//        src : [
-//          'vendor/json2.js',
-//          'vendor/jquery.js',
-//          'vendor/underscore.js',
-//          'vendor/backbone.js',
-//          'vendor/backbone.eventbinder.js',
-//          'vendor/backbone.wreqr.js',
-//          'vendor/backbone.marionette.js',
-//          'lib/tableling.js'
-//        ],
-//        dest : 'lib/bundles/tableling.world.js'
-//      }
-//    },
+        haml: {
+            demo: {
+                src: "src/demo/demo.haml",
+                dest: "demo/demo.html"
+            }
+        },
 
         min: {
-            standard: {
+            build: {
                 src: [
                     '<banner:meta.banner>',
                     'dist/ajadmin/ajadmin.dg.js'
@@ -121,64 +114,20 @@ module.exports = function(grunt) {
             }
         },
 
-//      world: {
-//        src: [
-//          '<banner:meta.banner_world>',
-//          '<config:concat.world.dest>'
-//        ],
-//        dest: 'lib/bundles/tableling.world.min.js'
-//      },
-//      backbone: {
-//        src: [
-//          '<banner:meta.banner_backbone>',
-//          '<config:concat.backbone.dest>'
-//        ],
-//        dest: 'lib/bundles/tableling.backbone.min.js'
-//      }
-//    },
-
         copy: {
             demo: {
                 options: {
-                    flatten: true
+                    flatten: false
                 },
                 files: {
-                    "demo/js/": ["dist/ajadmin/ajadmin.dg.js", "vendor/javascripts/*.js"]
+                    "demo/js/": ["vendor/javascripts/*.js"],
+                    "demo/js/ajadmin.dg.js": ["dist/ajadmin/ajadmin.dg.js"],
+                    "demo/images/": ["src/demo/images/*.png"],
+                    "demo/bootstrap/": ["src/demo/bootstrap/**"]
                 }
             }
         },
 
-//    copy : {
-//      demo: {
-//        files: {
-//          'docs/demo/': 'lib/bundles/tableling.world.min.js'
-//        }
-//      }
-//    },
-
-//    jasmine : {
-//      src : [
-//        'vendor/jquery.js',
-//        'vendor/json2.js',
-//        'vendor/underscore.js',
-//        'vendor/backbone.js',
-//        'vendor/backbone.eventbinder.js',
-//        'vendor/backbone.wreqr.js',
-//        'vendor/backbone.marionette.js',
-//        'src/tableling.js',
-//        'src/tableling.core.js',
-//        'src/tableling.modular.js',
-//        'src/tableling.plain.js',
-//        'src/tableling.bootstrap.js'
-//      ],
-//      helpers : 'spec/javascripts/helpers/*.js',
-//      specs : 'spec/javascripts/**/*.spec.js'
-//    },
-//
-//    'jasmine-server' : {
-//      browser : false
-//    },
-//
         jshint: {
             globals: {
                 Backbone: true,
@@ -190,8 +139,5 @@ module.exports = function(grunt) {
         uglify: {}
     });
 
-  // Default task.
-//  grunt.registerTask('default', 'lint rig concat min copy');
-
-    grunt.registerTask('default', 'clean rig coffee sass min copy');
+    grunt.registerTask('default', 'clean rig coffee sass haml min copy');
 };

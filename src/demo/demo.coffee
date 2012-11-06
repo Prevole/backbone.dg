@@ -24,7 +24,7 @@ dataCollection = class extends Backbone.Collection
        _.defaults {},
          page: 1
          perPage: 2
-         quickSearch: ""
+         term: ""
          sort: {}
 
   sync: (method, model, options, error) ->
@@ -35,25 +35,24 @@ dataCollection = class extends Backbone.Collection
 
     localData = _.clone data
 
-    if @current.term and @current.term != ""
-      localData = _.filter localData, (model) =>
-        return model.match(@current.term.toLowerCase())
+#    if @current.term != ""
+    localData = _.filter localData, (model) =>
+      return model.match(@current.term.toLowerCase())
 
     # Filtered items
     @current.items = localData.length
 
-    if @current.sort
-      localData = localData.sort (a, b) =>
-        for idx, direction of @current.sort
-          if direction
-            a = a.getFromIndex(idx).toString().toLowerCase()
-            b = b.getFromIndex(idx).toString().toLowerCase()
+    localData = localData.sort (a, b) =>
+      for idx, direction of @current.sort
+        if direction
+          a = a.getFromIndex(idx).toString().toLowerCase()
+          b = b.getFromIndex(idx).toString().toLowerCase()
 
-            comp = a.localeCompare b
+          comp = a.localeCompare b
 
-            return comp * (if direction == 'A' then 1 else -1) if comp != 0
+          return comp * (if direction == 'A' then 1 else -1) if comp != 0
 
-        return 0
+      return 0
 
     @current.pages = Math.ceil(localData.length / @current.perPage)
     @current.totalItems = localData.length

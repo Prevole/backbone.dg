@@ -209,7 +209,7 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     };
 
     _Class.prototype.perPage = function(event) {
-      return this.update(_.object([infoKeys.perPage], [this.ui.perPage.val()]));
+      return this.update(_.object([infoKeys.perPage], [parseInt(this.ui.perPage.val())]));
     };
 
     return _Class;

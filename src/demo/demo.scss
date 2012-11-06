@@ -16,12 +16,12 @@
   table {
     th {
       &.sorting {
-        background: url("../images/sort-inactive.png") no-repeat scroll right center transparent;
+        background: url("images/sort-inactive.png") no-repeat scroll right center transparent;
         cursor: pointer;
       }
 
-      &.sorting-asc { background: url("../images/sort-asc.png") no-repeat scroll right center transparent; }
-      &.sorting-desc { background: url("../images/sort-desc.png") no-repeat scroll right center transparent; }
+      &.sorting-asc { background: url("images/sort-asc.png") no-repeat scroll right center transparent; }
+      &.sorting-desc { background: url("images/sort-desc.png") no-repeat scroll right center transparent; }
     }
 
     tr {

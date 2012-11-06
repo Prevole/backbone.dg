@@ -24,7 +24,8 @@
 		"grunt-contrib-coffee": "latest",
 		"grunt-contrib-clean": "latest",
 		"grunt-contrib-copy": "latest",
-		"grunt-contrib-sass": "latest"
+        "grunt-sass": "latest",
+        "grunt-haml": "latest"
   },
   "licenses": [
     {
