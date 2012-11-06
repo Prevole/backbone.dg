@@ -1,19 +1,21 @@
 
 dataModel = class extends Backbone.Model
   match: (quickSearch) ->
-    return @attributes.test.toLowerCase().indexOf(quickSearch) >= 0
+    return @attributes.a.toLowerCase().indexOf(quickSearch) >= 0 or @attributes.b.toLowerCase().indexOf(quickSearch) >= 0 or @attributes.c.toLowerCase().indexOf(quickSearch) >= 0
 
   getFromIndex: (index) ->
     switch parseInt(index)
-      when 0 then return @get("test")
+      when 0 then return @get("a")
+      when 1 then return @get("b")
+      when 2 then return @get("c")
 
 data = [
-  new dataModel(test: "test 1")
-  new dataModel(test: "test 2")
-  new dataModel(test: "test 3")
-  new dataModel(test: "test 4")
-  new dataModel(test: "test 5")
-  new dataModel(test: "test 6")
+  new dataModel(a: "test 1", b: "test f", c: "aaa")
+  new dataModel(a: "test 2", b: "test e", c: "aaa")
+  new dataModel(a: "test 3", b: "test d", c: "aaa")
+  new dataModel(a: "test 4", b: "test c", c: "bbb")
+  new dataModel(a: "test 5", b: "test b", c: "bbb")
+  new dataModel(a: "test 6", b: "test a", c: "ccc")
 ]
 
 dataCollection = class extends Backbone.Collection
@@ -35,7 +37,6 @@ dataCollection = class extends Backbone.Collection
 
     localData = _.clone data
 
-#    if @current.term != ""
     localData = _.filter localData, (model) =>
       return model.match(@current.term.toLowerCase())
 
@@ -45,11 +46,7 @@ dataCollection = class extends Backbone.Collection
     localData = localData.sort (a, b) =>
       for idx, direction of @current.sort
         if direction
-          a = a.getFromIndex(idx).toString().toLowerCase()
-          b = b.getFromIndex(idx).toString().toLowerCase()
-
-          comp = a.localeCompare b
-
+          comp = a.getFromIndex(idx).toString().toLowerCase().localeCompare(b.getFromIndex(idx).toString().toLowerCase())
           return comp * (if direction == 'A' then 1 else -1) if comp != 0
 
       return 0
@@ -80,10 +77,10 @@ dataCollection = class extends Backbone.Collection
     @fetch()
 
 headerView = (data) ->
-  return "<th class='sorting'>TestHeader</th>"
+  return "<th class='sorting'>Head 1</th><th class='sorting'>Head 2</th><th class='sorting'>Head 3</th>"
 
 rowView = (data) ->
-  return "<td>#{data.test}</td>"
+  return "<td>#{data.a}</td><td>#{data.b}</td><td>#{data.c}</td>"
 
 #Dg.registerTemplate("rowView", rowView)
 #Dg.registerTemplate("headerView", headerView)

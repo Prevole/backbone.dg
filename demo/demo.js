@@ -11,13 +11,17 @@ dataModel = (function(_super) {
   }
 
   _Class.prototype.match = function(quickSearch) {
-    return this.attributes.test.toLowerCase().indexOf(quickSearch) >= 0;
+    return this.attributes.a.toLowerCase().indexOf(quickSearch) >= 0 || this.attributes.b.toLowerCase().indexOf(quickSearch) >= 0 || this.attributes.c.toLowerCase().indexOf(quickSearch) >= 0;
   };
 
   _Class.prototype.getFromIndex = function(index) {
     switch (parseInt(index)) {
       case 0:
-        return this.get("test");
+        return this.get("a");
+      case 1:
+        return this.get("b");
+      case 2:
+        return this.get("c");
     }
   };
 
@@ -27,17 +31,29 @@ dataModel = (function(_super) {
 
 data = [
   new dataModel({
-    test: "test 1"
+    a: "test 1",
+    b: "test f",
+    c: "aaa"
   }), new dataModel({
-    test: "test 2"
+    a: "test 2",
+    b: "test e",
+    c: "aaa"
   }), new dataModel({
-    test: "test 3"
+    a: "test 3",
+    b: "test d",
+    c: "aaa"
   }), new dataModel({
-    test: "test 4"
+    a: "test 4",
+    b: "test c",
+    c: "bbb"
   }), new dataModel({
-    test: "test 5"
+    a: "test 5",
+    b: "test b",
+    c: "bbb"
   }), new dataModel({
-    test: "test 6"
+    a: "test 6",
+    b: "test a",
+    c: "ccc"
   })
 ];
 
@@ -79,9 +95,7 @@ dataCollection = (function(_super) {
       for (idx in _ref) {
         direction = _ref[idx];
         if (direction) {
-          a = a.getFromIndex(idx).toString().toLowerCase();
-          b = b.getFromIndex(idx).toString().toLowerCase();
-          comp = a.localeCompare(b);
+          comp = a.getFromIndex(idx).toString().toLowerCase().localeCompare(b.getFromIndex(idx).toString().toLowerCase());
           if (comp !== 0) {
             return comp * (direction === 'A' ? 1 : -1);
           }
@@ -120,11 +134,11 @@ dataCollection = (function(_super) {
 })(Backbone.Collection);
 
 headerView = function(data) {
-  return "<th class='sorting'>TestHeader</th>";
+  return "<th class='sorting'>Head 1</th><th class='sorting'>Head 2</th><th class='sorting'>Head 3</th>";
 };
 
 rowView = function(data) {
-  return "<td>" + data.test + "</td>";
+  return "<td>" + data.a + "</td><td>" + data.b + "</td><td>" + data.c + "</td>";
 };
 
 HeaderView = (function(_super) {
