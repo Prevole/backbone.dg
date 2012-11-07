@@ -6,6 +6,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-haml');
+    grunt.loadNpmTasks('grunt-coffeelint');
+    grunt.loadNpmTasks('grunt-docco');
 
 //    grunt.loadNpmTasks('grunt-jasmine-runner');
 
@@ -70,6 +72,20 @@ module.exports = function(grunt) {
             }
         },
 
+        coffeelint: {
+            build: {
+                files: ["src/dg/*.coffee"],
+                options: {
+                    max_line_length: {
+                        value: 120
+                    }
+                }
+            },
+            demo: {
+                files: ["src/demo/demo.coffee"]
+            }
+        },
+
         coffee: {
             build: {
                 options: {
@@ -128,6 +144,12 @@ module.exports = function(grunt) {
             }
         },
 
+        docco: {
+            build: {
+                src: ["working/ajadmin.dg.coffee"]
+            }
+        },
+
         jshint: {
             globals: {
                 Backbone: true,
@@ -139,5 +161,5 @@ module.exports = function(grunt) {
         uglify: {}
     });
 
-    grunt.registerTask('default', 'clean rig coffee sass haml min copy');
+    grunt.registerTask('default', 'clean coffeelint rig coffee sass haml min copy docco');
 };
