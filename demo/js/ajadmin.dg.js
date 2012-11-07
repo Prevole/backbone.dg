@@ -306,7 +306,7 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     };
 
     _Class.prototype.refreshView = function(info) {
-      var i, maxPage, minPage, page, pages, state, ul, _i;
+      var css, i, maxPage, minPage, page, pages, state, ul, _i;
       this.info = info;
       this.$el.empty().hide();
       ul = $("<ul />");
@@ -332,8 +332,9 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
           if (minPage > 1) {
             ul.append(createLink.call(this, this.texts.filler, "", this.css.disabled));
           }
+          css = i === page ? this.css.active : "";
           for (i = _i = minPage; minPage <= maxPage ? _i <= maxPage : _i >= maxPage; i = minPage <= maxPage ? ++_i : --_i) {
-            ul.append(createLink.call(this, "" + i, "page", i === page ? this.css.active : ""));
+            ul.append(createLink.call(this, "" + i, "page", css));
           }
           if (maxPage < pages) {
             ul.append(createLink.call(this, this.texts.filler, "", this.css.disabled));
@@ -361,10 +362,18 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
             page = 1;
             break;
           case "p":
-            page = (this.info[infoKeys.page] - 1 > 0 ? this.info[infoKeys.page] - 1 : this.info[infoKeys.page]);
+            if (this.info[infoKeys.page] - 1 > 0) {
+              page = this.info[infoKeys.page] - 1;
+            } else {
+              page = this.info[infoKeys.page];
+            }
             break;
           case "n":
-            page = ((this.info[infoKeys.page] + 1) < this.info[infoKeys.pages] ? this.info[infoKeys.page] + 1 : this.info[infoKeys.pages]);
+            if ((this.info[infoKeys.page] + 1) < this.info[infoKeys.pages]) {
+              page = this.info[infoKeys.page] + 1;
+            } else {
+              page = this.info[infoKeys.pages];
+            }
             break;
           case "l":
             page = this.info[infoKeys.pages];
@@ -655,14 +664,15 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     };
 
     _Class.prototype.renderRegions = function() {
-      var regionDefinition, regionName, _ref;
+      var options, regionDefinition, regionName, _ref;
       _ref = this.regions;
       for (regionName in _ref) {
         regionDefinition = _ref[regionName];
         if (regionName !== "table") {
-          this[regionName].show(new regionDefinition.view(_.extend({
+          options = _.extend({
             vent: this.vent
-          }, regionDefinition.options || {})));
+          }, regionDefinition.options || {});
+          this[regionName].show(new regionDefinition.view(options));
         }
       }
       this.table.show(new LoadingView());

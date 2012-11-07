@@ -90,12 +90,14 @@ dataCollection = (function(_super) {
     });
     this.current.items = localData.length;
     localData = localData.sort(function(a, b) {
-      var comp, direction, idx, _ref;
+      var comp, direction, idx, left, right, _ref;
       _ref = _this.current.sort;
       for (idx in _ref) {
         direction = _ref[idx];
         if (direction) {
-          comp = a.getFromIndex(idx).toString().toLowerCase().localeCompare(b.getFromIndex(idx).toString().toLowerCase());
+          left = a.getFromIndex(idx).toString().toLowerCase();
+          right = b.getFromIndex(idx).toString().toLowerCase();
+          comp = left.localeCompare(right);
           if (comp !== 0) {
             return comp * (direction === 'A' ? 1 : -1);
           }
@@ -134,11 +136,11 @@ dataCollection = (function(_super) {
 })(Backbone.Collection);
 
 headerView = function(data) {
-  return "<th class='sorting'>Head 1</th><th class='sorting'>Head 2</th><th class='sorting'>Head 3</th>";
+  return "<th class='sorting'>Head 1</th>" + "<th class='sorting'>Head 2</th>" + "<th class='sorting'>Head 3</th>";
 };
 
 rowView = function(data) {
-  return "<td>" + data.a + "</td><td>" + data.b + "</td><td>" + data.c + "</td>";
+  return ("<td>" + data.a + "</td>") + ("<td>" + data.b + "</td>") + ("<td>" + data.c + "</td>");
 };
 
 HeaderView = (function(_super) {

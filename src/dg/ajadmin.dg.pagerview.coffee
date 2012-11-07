@@ -129,7 +129,8 @@ Dg.PagerView = class extends Dg.DefaultItemView
         ul.append(createLink.call @, @texts.filler, "", @css.disabled) if minPage > 1
 
         # Create page links
-        ul.append(createLink.call @, "#{i}", "page", if i == page then @css.active else "") for i in [minPage..maxPage]
+        css = if i == page then @css.active else ""
+        ul.append(createLink.call @, "#{i}", "page", css) for i in [minPage..maxPage]
 
         # Create filler
         ul.append(createLink.call @, @texts.filler, "", @css.disabled) if maxPage < pages
@@ -155,11 +156,26 @@ Dg.PagerView = class extends Dg.DefaultItemView
 
       # Calculate the correct page
       switch type
-        when "f" then page = 1
-        when "p" then page = (if @info[infoKeys.page] - 1 > 0 then @info[infoKeys.page] - 1 else @info[infoKeys.page])
-        when "n" then page = (if (@info[infoKeys.page] + 1) < @info[infoKeys.pages] then (@info[infoKeys.page] + 1) else @info[infoKeys.pages])
-        when "l" then page = @info[infoKeys.pages]
-        else page = parseInt($(event.target).text())
+        when "f"
+          page = 1
+
+        when "p"
+          if @info[infoKeys.page] - 1 > 0
+            page = @info[infoKeys.page] - 1
+          else
+            page = @info[infoKeys.page]
+
+        when "n"
+          if (@info[infoKeys.page] + 1) < @info[infoKeys.pages]
+            page = @info[infoKeys.page] + 1
+          else
+            page = @info[infoKeys.pages]
+
+        when "l"
+          page = @info[infoKeys.pages]
+
+        else
+          page = parseInt($(event.target).text())
 
       # Update the collection only if page is different from the current one
       @update _.object( [infoKeys.page], [page] ) if page != @info[infoKeys.page]

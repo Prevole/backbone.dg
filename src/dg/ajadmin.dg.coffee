@@ -1,8 +1,6 @@
 Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
   Dg = { version: "0.0.1" }
 
-# ----------------------------------------------------------------------------------------------------------------------
-
   #= ajadmin.dg.utils.coffee
   #= ajadmin.dg.templateregistry.coffee
   #= ajadmin.dg.itemview.coffee
@@ -20,20 +18,14 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
   #= ajadmin.dg.tableregion.coffee
   #= ajadmin.dg.gridlayout.coffee
 
-# ----------------------------------------------------------------------------------------------------------------------
-
   Dg.createRowView = (model, templatePath) ->
     return Dg.RowView.extend
       template: templatePath
       model: model
 
-# ----------------------------------------------------------------------------------------------------------------------
-
   Dg.createTableHeaderView = (templatePath) ->
     return Dg.HeaderView.extend
       template: templatePath
-
-# ----------------------------------------------------------------------------------------------------------------------
 
   Dg.createDefaultLayout = (options) ->
     regions = options.gridRegions || {}
@@ -53,8 +45,6 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
         regions: regions
 
     return gridLayout
-
-# ----------------------------------------------------------------------------------------------------------------------
 
   i18nKeys =
     info: "datagrid.info"
@@ -98,8 +88,6 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
     pager:
       selector: ".dgPager",
       view: Dg.PagerView
-
-# ----------------------------------------------------------------------------------------------------------------------
 
   Dg.setupDefaultI18nBindings = (options) ->
     i18nKeys = _.defaults(

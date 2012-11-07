@@ -19,7 +19,7 @@ Dg.DefaultItemView = class extends Dg.ItemView
 
     @setElement($(Marionette.Renderer.render(@getTemplate(), @serializeData())), true)
 
-    @bindUIElements();
+    @bindUIElements()
 
     @onRender() if @onRender
 

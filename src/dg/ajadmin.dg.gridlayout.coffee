@@ -16,7 +16,9 @@ Dg.GridLayout = class extends Marionette.Layout
 
   renderRegions: =>
     for regionName, regionDefinition of @regions
-      @[regionName].show new regionDefinition.view(_.extend({vent: @vent}, regionDefinition.options || {})) unless regionName == "table"
+      unless regionName == "table"
+        options = _.extend({vent: @vent}, regionDefinition.options || {})
+        @[regionName].show new regionDefinition.view(options)
 
     @table.show(new LoadingView())
 

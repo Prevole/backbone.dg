@@ -1,7 +1,9 @@
 
 dataModel = class extends Backbone.Model
   match: (quickSearch) ->
-    return @attributes.a.toLowerCase().indexOf(quickSearch) >= 0 or @attributes.b.toLowerCase().indexOf(quickSearch) >= 0 or @attributes.c.toLowerCase().indexOf(quickSearch) >= 0
+    return @attributes.a.toLowerCase().indexOf(quickSearch) >= 0 or
+    @attributes.b.toLowerCase().indexOf(quickSearch) >= 0 or
+    @attributes.c.toLowerCase().indexOf(quickSearch) >= 0
 
   getFromIndex: (index) ->
     switch parseInt(index)
@@ -22,12 +24,12 @@ dataCollection = class extends Backbone.Collection
   model: dataModel
 
   initialize: (options) ->
-     @current =
-       _.defaults {},
-         page: 1
-         perPage: 2
-         term: ""
-         sort: {}
+    @current =
+      _.defaults {},
+        page: 1
+        perPage: 2
+        term: ""
+        sort: {}
 
   sync: (method, model, options, error) ->
     storedSuccess = options.success
@@ -46,7 +48,9 @@ dataCollection = class extends Backbone.Collection
     localData = localData.sort (a, b) =>
       for idx, direction of @current.sort
         if direction
-          comp = a.getFromIndex(idx).toString().toLowerCase().localeCompare(b.getFromIndex(idx).toString().toLowerCase())
+          left = a.getFromIndex(idx).toString().toLowerCase()
+          right = b.getFromIndex(idx).toString().toLowerCase()
+          comp = left.localeCompare(right)
           return comp * (if direction == 'A' then 1 else -1) if comp != 0
 
       return 0
@@ -77,10 +81,14 @@ dataCollection = class extends Backbone.Collection
     @fetch()
 
 headerView = (data) ->
-  return "<th class='sorting'>Head 1</th><th class='sorting'>Head 2</th><th class='sorting'>Head 3</th>"
+  "<th class='sorting'>Head 1</th>" +
+  "<th class='sorting'>Head 2</th>" +
+  "<th class='sorting'>Head 3</th>"
 
 rowView = (data) ->
-  return "<td>#{data.a}</td><td>#{data.b}</td><td>#{data.c}</td>"
+  "<td>#{data.a}</td>" +
+  "<td>#{data.b}</td>" +
+  "<td>#{data.c}</td>"
 
 #Dg.registerTemplate("rowView", rowView)
 #Dg.registerTemplate("headerView", headerView)
