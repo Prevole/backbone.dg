@@ -1,3 +1,18 @@
+# Datagrid
+# ========
+#
+#  @version: *0.0.1*
+# @author: Prevole
+#
+# The Datagrid plugin for `Bacbkone` gives the possibility to implement
+# easily a data table into a `Bacbkone` application. It uses `Backbone.Marionette`
+# and its different views to reach the features of the data table.
+#
+# By default, a complete implementation based on `<table />` HTML tag is
+# provided but all the views can be overrided quickly and easily to create
+# an implementation based on other views and tags.
+#
+# A default collection is also provided to work with the `Dg` plugin.
 Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
   Dg = { version: "0.0.1" }
 

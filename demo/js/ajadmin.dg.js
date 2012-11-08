@@ -13,6 +13,9 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     if (object === void 0) {
       object = {};
     }
+    /* For each pair of key/value from the defaults
+    */
+
     for (key in defs) {
       value = defs[key];
       if (object[key] === void 0 || object[key] === null) {

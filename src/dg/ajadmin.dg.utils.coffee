@@ -1,9 +1,12 @@
-# In the same idea of _.defaults(object, *defaults), this function
+# ### defaults
+#
+# In the same idea of `_.defaults(object, *defaults)`, this function
 # will recurse the object structure to use defaults values at any
 # depth of the object.
-# @param [Object] object The objet to get the overriden values
-# @param [Object] defs Defaults to apply when no value is provided
-# @return [Object] Object enriched
+#
+# + @param [Object] object The objet to get the overriden values
+# + @param [Object] defs Defaults to apply when no value is provided
+# + @return [Object] Object enriched
 defaults = (object, defs) ->
   # Empty object if none provided
   object = {} if object is undefined

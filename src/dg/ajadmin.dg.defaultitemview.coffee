@@ -1,22 +1,33 @@
-# Use the DefaultTableItemView is a specialized view from TableItemView. It offers
-# a default behavior wanted for the general datagrid implementation.
+# DefaultItemView
+# ---------------
+#
+# Use the `Dg.DefaultItemView` is a specialized view from `Dg.ItemView`. It is designed
+# to be used to generate views that are not wrapped in a `<div />` tag.
+#
 # The specialization comes from the fact that all the view extending this one will not
 # create the el tag based on view configuration but create the el directly from
 # the template rendering. Therefore, setting the className, tagName or el directly
-# has no result on this kind of view.
+# has will not be used directly.
 Dg.DefaultItemView = class extends Dg.ItemView
-  # Override the default render method for TableItemView to
+  # ### render
+  #
+  # Override the default render method from `Dg.TableItemView` to
   # set the element to the result of template rendering. This will
-  # suppress the additional <div /> element.
-  # Take care that using this DefaultTableItemView will not allow to specify
+  # suppress the additional `<div />` element.
+  #
+  # Take care that using this `Dg.DefaultItemView` will not allow to specify
   # any selector or tag as el.
-  # In addition, "item:rendered" is triggered once the view is rendered
+  #
+  # The code is based on the `Backbone.Marionette.ItemView` render method with
+  # two main differences. The element is set from the template rendering and
+  # an additional `item:rendered` event is triggered.
   render: ->
     @beforeRender() if @beforeRender
 
     @trigger("before:render", @)
     @trigger("item:before:render", @)
 
+    # Override the `el` with the template rendered
     @setElement($(Marionette.Renderer.render(@getTemplate(), @serializeData())), true)
 
     @bindUIElements()
@@ -25,6 +36,9 @@ Dg.DefaultItemView = class extends Dg.ItemView
 
     @trigger("render", this)
     @trigger("item:rendered", this)
+
+    # Trigger the additional event through the `Backbone.Marionette.EventBinder`
+    # set for the `Dg` views.
     @vent.trigger("item:rendered", this)
 
     return @
