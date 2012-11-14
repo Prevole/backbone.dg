@@ -1,12 +1,16 @@
-# ### defaults
-#
-# In the same idea of `_.defaults(object, *defaults)`, this function
-# will recurse the object structure to use defaults values at any
-# depth of the object.
-#
-# + @param [Object] object The objet to get the overriden values
-# + @param [Object] defs Defaults to apply when no value is provided
-# + @return [Object] Object enriched
+# ## Utilities
+
+###
+defaults
+
+In the same idea of `_.defaults(object, *defaults)`, this function
+will recurse the object structure to use defaults values at any
+depth of the object.
+
+@param {Object} object The objet to get the overriden values
+@param {Object} defs Defaults to apply when no value is provided
+@return {Object} Object enriched
+###
 defaults = (object, defs) ->
   # Empty object if none provided
   object = {} if object is undefined
@@ -23,11 +27,16 @@ defaults = (object, defs) ->
 
   object
 
-# Like _.reject(list, iterator, [context]), this function reject entries
-# that satisfies the iterator function.
-# @param [Object] object The objet that contains entries to reject
-# @param [Function] filter The function that decides if an entry is rejected or not
-# @return [Object] Object filtered
+###
+reject
+
+Like `_.reject(list, iterator, [context])`, this function reject entries
+that satisfies the iterator function.
+
+@param {Object} object The objet that contains entries to reject
+@param {Function} filter The function to reject unwanted entries
+@return {Object} Object that contains only elements wanted
+###
 reject = (object, filter) ->
   newObject = {}
 
@@ -37,5 +46,4 @@ reject = (object, filter) ->
     unless filter(object, key, value)
       newObject[key] = value
 
-  # Object filtered
   newObject

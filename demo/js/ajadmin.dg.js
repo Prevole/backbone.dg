@@ -8,14 +8,23 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
   Dg = {
     version: "0.0.1"
   };
+  /*
+    defaults
+    
+    In the same idea of `_.defaults(object, *defaults)`, this function
+    will recurse the object structure to use defaults values at any
+    depth of the object.
+    
+    @param {Object} object The objet to get the overriden values
+    @param {Object} defs Defaults to apply when no value is provided
+    @return {Object} Object enriched
+  */
+
   defaults = function(object, defs) {
     var key, value;
     if (object === void 0) {
       object = {};
     }
-    /* For each pair of key/value from the defaults
-    */
-
     for (key in defs) {
       value = defs[key];
       if (object[key] === void 0 || object[key] === null) {
@@ -26,6 +35,17 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     }
     return object;
   };
+  /*
+    reject
+    
+    Like `_.reject(list, iterator, [context])`, this function reject entries
+    that satisfies the iterator function.
+    
+    @param {Object} object The objet that contains entries to reject
+    @param {Function} filter The function to reject unwanted entries
+    @return {Object} Object that contains only elements wanted
+  */
+
   reject = function(object, filter) {
     var key, newObject, value;
     newObject = {};
@@ -37,6 +57,15 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     }
     return newObject;
   };
+  /*
+    The templates provided are used to offer a simple and default
+    implementation that could be used out of the box to render
+    a DataGrid.
+    
+    The templates to render a `Row` or `Headers` are not offered as
+    they really depends on what you want to show your data
+  */
+
   templates = {
     empty: function(data) {
       return "<td class='empty'>No Data</td>";
@@ -481,6 +510,11 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     _Class.prototype.ui = {
       empty: ".empty"
     };
+
+    /*
+          @param: {Object} options There are options
+    */
+
 
     _Class.prototype.initialize = function(options) {
       this.columns = options.columns;

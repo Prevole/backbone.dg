@@ -7,7 +7,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-haml');
     grunt.loadNpmTasks('grunt-coffeelint');
-    grunt.loadNpmTasks('grunt-docco');
+    grunt.loadNpmTasks('grunt-docker');
 
 //    grunt.loadNpmTasks('grunt-jasmine-runner');
 
@@ -144,9 +144,14 @@ module.exports = function(grunt) {
             }
         },
 
-        docco: {
+        docker: {
             build: {
-                src: ["working/ajadmin.dg.coffee"]
+                src: ["working/ajadmin.dg.coffee"],
+                options: {
+                    extras: ["fileSearch", "goToLine"],
+                    colourScheme: "friendly",
+                    lineNums: true
+                }
             }
         },
 
@@ -161,5 +166,5 @@ module.exports = function(grunt) {
         uglify: {}
     });
 
-    grunt.registerTask('default', 'clean coffeelint rig coffee sass haml min copy docco');
+    grunt.registerTask('default', 'clean coffeelint rig coffee sass haml min copy docker');
 };

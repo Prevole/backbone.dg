@@ -1,3 +1,13 @@
+# ## TemplateRegistry
+
+###
+The templates provided are used to offer a simple and default
+implementation that could be used out of the box to render
+a DataGrid.
+
+The templates to render a `Row` or `Headers` are not offered as
+they really depends on what you want to show your data
+###
 templates =
   empty: (data) ->
     "<td class='empty'>No Data</td>"

@@ -3,6 +3,7 @@ node_modules
 npm-debug.log
 .DS_Store
 docs/annotated
+doc
 _SpecRunner.html
 wiki
 .idea/*
