@@ -9,9 +9,13 @@ The templates to render a `Row` or `Headers` are not offered as
 they really depends on what you want to show your data
 ###
 templates =
+  # ## empty
+  # View used when the collection is empty
   empty: (data) ->
     "<td class='empty'>No Data</td>"
 
+  # ## grid
+  # General layout to present all the data grid elements
   grid: (data) ->
     "<div class='dgGrid'>" +
       "<div class='clearfix'>" +
@@ -26,6 +30,8 @@ templates =
       "</div>" +
     "</div>"
 
+  # ## gridempty
+  # View used when the data are under loading
   gridempty: (data) ->
     "<div class='dgLoading'>" +
       "<div class='progress progress-striped active'>" +
@@ -33,12 +39,18 @@ templates =
       "</div>" +
     "</div>"
 
+  # ## info
+  # Info zone about the collection currently shown
   info: (data) ->
     "<span class='info' />"
 
+  # ## pager
+  # Pager container to present the paging elements
   pager: (data) ->
     "<div class='pagination pagination-right' />"
 
+  # ## perpage
+  # Zone for the number of items per page choice
   perpage: (data) ->
     "<div class='form-inline pull-left'>" +
       "<label class='checkbox'>Item per page: </label>" +
@@ -52,17 +64,23 @@ templates =
       "</select>" +
     "</div>"
 
+  # ## quicksearch
+  # Text search field to filter the collection
   quicksearch: (data) ->
     "<div class='form-inline pull-right qs'>" +
       "<label class='checkbox'>Quick search: </label>" +
       "<input type='text' />" +
     "</div>"
 
+  # ## table
+  # Container for the collection rendering
   table: (data) ->
     "<table class='table table-striped table-hover table-condensed'>" +
       "<tbody/>" +
     "</table>"
 
+  # ## toolbar
+  # Zone with action buttons to manage the collection (refresh, create)
   toolbar: (data) ->
     "<div class='form-inline pull-right buttons btn-group'>" +
       "<button class='btn refresh'>" +
@@ -73,5 +91,15 @@ templates =
       "</button>" +
     "</div>"
 
+###
+## registerTemplate
+
+Utility function to add a new template entry and/or replacing
+an existing one.
+
+@param {String} templateName The name of the template
+@param {Function,String} template The template to register
+###
+# TODO: Correct doc
 Dg.registerTemplate = (templateName, template) ->
   templates[templateName] = template
