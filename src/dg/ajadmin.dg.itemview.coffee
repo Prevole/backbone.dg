@@ -52,12 +52,29 @@ Dg.ItemView = class extends Marionette.ItemView
   refreshView: (info) ->
     throw new Error "The method refreshView(info) must be defined."
 
-  # TODO: Better comment
-  # Trigger an event to update the info
-  # @param [Object] info The metadata updated by the table view (could be part of the whole data)
+  # TODO: Add see the metadata format
+  ###
+  Every time the metadata of the datagrid is updated, an
+  event is triggered to request a refresh of the data contained
+  in the collection.
+
+  As the responsability of the metadata processing is given to
+  the collection itself, you can set anything you want as metadata.
+
+  There is a default metadata format expected that you can see. This
+  default format should be configured for the default implementation
+  of the different table views.
+
+  @param {Object} info The metadata updated by the table views
+  ###
   update: (info) ->
     @vent.trigger "update", info
 
+  ###
+  Overrides the `close` function from `Backbone.Marionette.ItemView` to
+  ensure that the event binding is correctly unbinded when the view
+  is closed.
+  ###
   close: ->
     @vent.off "view:refresh", @refreshView
     super

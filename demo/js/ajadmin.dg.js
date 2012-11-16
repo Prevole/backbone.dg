@@ -181,9 +181,32 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       throw new Error("The method refreshView(info) must be defined.");
     };
 
+    /*
+        Every time the metadata of the datagrid is updated, an
+        event is triggered to request a refresh of the data contained
+        in the collection.
+      
+        As the responsability of the metadata processing is given to
+        the collection itself, you can set anything you want as metadata.
+      
+        There is a default metadata format expected that you can see. This
+        default format should be configured for the default implementation
+        of the different table views.
+      
+        @param {Object} info The metadata updated by the table views
+    */
+
+
     _Class.prototype.update = function(info) {
       return this.vent.trigger("update", info);
     };
+
+    /*
+        Overrides the `close` function from `Backbone.Marionette.ItemView` to
+        ensure that the event binding is correctly unbinded when the view
+        is closed.
+    */
+
 
     _Class.prototype.close = function() {
       this.vent.off("view:refresh", this.refreshView);
@@ -193,6 +216,18 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     return _Class;
 
   })(Marionette.ItemView);
+  /*
+    ## DefaultItemView
+    
+    Use the `Dg.DefaultItemView` is a specialized view from `Dg.ItemView`. It is designed
+    to be used to generate views that are not wrapped in a `<div />` tag.
+    
+    The specialization comes from the fact that all the view extending this one will not
+    create the `el` tag based on view configuration but create the `el` directly from
+    the template rendering. Therefore, setting the `className`, `tagName` or `el` directly
+    must not be used directly.
+  */
+
   Dg.DefaultItemView = (function(_super) {
 
     __extends(_Class, _super);
@@ -200,6 +235,20 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     function _Class() {
       return _Class.__super__.constructor.apply(this, arguments);
     }
+
+    /*
+        Override the default render method from `Dg.TableItemView` to
+        set the element to the result of template rendering. This will
+        suppress the additional `<div />` element.
+      
+        Take care that using this `Dg.DefaultItemView` will not allow to specify
+        any selector or tag as el.
+      
+        The code is based on the `Backbone.Marionette.ItemView` render method with
+        two main differences. The element is set from the template rendering and
+        an additional `item:rendered` event is triggered.
+    */
+
 
     _Class.prototype.render = function() {
       if (this.beforeRender) {
@@ -221,6 +270,24 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     return _Class;
 
   })(Dg.ItemView);
+  /*
+    ## Dg.InfoView
+    
+    Default implementation to present general information about the collection
+    currently displayed.
+    
+    The following information are shown:
+    
+      - from: The number of the first entry shown
+      - to: The number of the last entry shown
+      - total: The total number of entries shown
+    
+    A translation is done for the message shown through `I18n-js` if present. Otherwise,
+    the default message is used:
+    
+      - default message: `Showing ${from} to ${to} of ${total} entries`
+  */
+
   Dg.InfoView = (function(_super) {
 
     __extends(_Class, _super);
@@ -231,6 +298,15 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
 
     _Class.prototype.template = templates["info"];
 
+    /*
+        Show the metadata that describes the collection currently shown
+        to the user such the number of entries, the first record, the last
+        record.
+      
+        @param {Object} info The metadata to collect the data to show
+    */
+
+
     _Class.prototype.refreshView = function(info) {
       return this.$el.text("Showing " + info[infoKeys.from] + " to " + info[infoKeys.to] + " of " + info[infoKeys.items] + " entries");
     };
@@ -238,6 +314,18 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     return _Class;
 
   })(Dg.DefaultItemView);
+  /*
+    ## Dg.QuickSearch
+    
+    Default implementation for the quick search accross the collection. A text field
+    is used to get the search term and the filtering happens on the `keyup` event
+    from the text field.
+    
+    The refresh of the collection happens in a delayed function to allow writing
+    more than one caracter before triggering the refresh. This will avoid strange behavior
+    and brings a better user experience.
+  */
+
   Dg.QuickSearchView = (function(_super) {
 
     __extends(_Class, _super);
@@ -256,6 +344,13 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       term: "input"
     };
 
+    /*
+        Intialize the view and prepare the delayed search function
+      
+        @param {Object} options The options to pass to the parent constructor
+    */
+
+
     _Class.prototype.initialize = function(options) {
       var _this = this;
       _Class.__super__.initialize.call(this, options);
@@ -264,9 +359,29 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       }, 300);
     };
 
+    /*
+        Refresh the view by setting the search term into the field.
+      
+        This could be quite strange but it is useful when you want the
+        `Dg.QuickSearchView` on top and on bottom of your datagrid. Therfore,
+        the quick search fields seems to be synced together as each field
+        will be updated when one of them changed.
+      
+        @param {Object} info The metadata to retrieve the search term
+    */
+
+
     _Class.prototype.refreshView = function(info) {
       return this.ui.term.val(info[infoKeys.term]);
     };
+
+    /*
+        Handle the quick search field changes to process
+        the search query
+      
+        @param {Event} event The event triggered on `keyup`
+    */
+
 
     _Class.prototype.search = function(event) {
       return this.searchInternal(event);
