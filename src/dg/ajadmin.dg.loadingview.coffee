@@ -1,3 +1,10 @@
+###
+## Dg.LoadingView
+
+This view is used when the collection is fetched from a source. The
+purpose is to show to the user that something is happening that is
+different than no data is available.
+###
 LoadingView = class extends Backbone.Marionette.ItemView
   template: templates["gridempty"]
 

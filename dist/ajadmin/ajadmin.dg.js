@@ -390,6 +390,13 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     return _Class;
 
   })(Dg.DefaultItemView);
+  /*
+    ## Dg.PerPageView
+    
+    Default implementation for the region which allow changing the number of lines
+    shown in the table. The implementation is based on a select box.
+  */
+
   Dg.PerPageView = (function(_super) {
 
     __extends(_Class, _super);
@@ -408,9 +415,27 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       perPage: ".per-page"
     };
 
+    /*
+        Refresh the view by setting the number of entries per page to the select box.
+      
+        As the `refresh` function from `Dg.QuickSearchView`, this function is used to
+        synchronize multiple views.
+      
+        @param {Object} info The metadata to get the number of lines per page
+    */
+
+
     _Class.prototype.refreshView = function(info) {
       return this.ui.perPage.val(info[infoKeys.perPage]);
     };
+
+    /*
+        Manage the changes occured to change the number of entries
+        shown on a page.
+      
+        @param {Event} event The event triggered on `change`
+    */
+
 
     _Class.prototype.perPage = function(event) {
       return this.update(_.object([infoKeys.perPage], [parseInt(this.ui.perPage.val())]));
@@ -419,6 +444,14 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     return _Class;
 
   })(Dg.DefaultItemView);
+  /*
+    ## Dg.ToolbarView
+    
+    In general, a table is quite often used to manipulate data. Therefore,
+    some buttons are required to manage the data such an add button or a
+    refresh button.
+  */
+
   Dg.ToolbarView = (function(_super) {
 
     __extends(_Class, _super);
@@ -439,10 +472,30 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       refresh: ".refresh"
     };
 
+    /*
+        When the refresh of the view occured, the buttons deactived are
+        restored to their initial status as active button.
+      
+        @param {Object} info The metadata to get information about the collection
+    */
+
+
     _Class.prototype.refreshView = function(info) {
       this.ui.refresh.removeClass("disabled");
       return this.ui.create.removeClass("disabled");
     };
+
+    /*
+        Manage the create button and the management of the button
+        state.
+      
+        When the button is cliked, an event is triggered to delegate
+        the creation operation to another component that listen for
+        the event.
+      
+        @param {Event} event Create button event triggered
+    */
+
 
     _Class.prototype.create = function(event) {
       event.preventDefault();
@@ -450,6 +503,17 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
         return this.ui.create.addClass("disabled");
       }
     };
+
+    /*
+        Manage the refresh button and the management of the
+        button state.
+      
+        Delegate the update request of the collection to
+        the `Dg.ItemView`.
+      
+        @param {Event} event Refresh button event triggered
+    */
+
 
     _Class.prototype.refresh = function(event) {
       event.preventDefault();
@@ -462,6 +526,26 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     return _Class;
 
   })(Dg.DefaultItemView);
+  /*
+    ## Dg.PagerView
+    
+    The `Dg.PagerView` is probably one of the most complicated view
+    as the numbering paging require calculation to render correctly.
+    
+    The pager includes numbers and page first/last, previous/next
+    controlls. A delta of number of pages shown is used to render
+    the number controls.
+    
+    Last and First keywords are converted to the real number of last
+    and first page corresponding to the collection.
+    
+    Previous and Next keywords are converted to +1 and -1 based on
+    the current page number.
+    
+    Checks are done to correct bad page numbers or out of bounds in
+    regards of the collection metadata.
+  */
+
   Dg.PagerView = (function(_super) {
     var createLink;
 
@@ -476,6 +560,40 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     _Class.prototype.events = {
       "click a": "pagging"
     };
+
+    /*
+        Create a default configuration to start calculation on
+        first rendering such number of pages and actual page.
+      
+        @param {Object} options The options to configure the view
+      
+        ```
+        # Default options
+        options:
+          deltaPage: 2
+          css:
+            active: "active"
+            disabled: "disabled"
+            page: "page"
+          texts:
+            first: "<<"
+            previous: "<"
+            next: ">"
+            last: ">>"
+            filler: "..."
+          numbers: true
+          firstAndLast: true
+          previousAndNext: true
+        ```
+      
+        - **delatePage**: Number of pages shown before and after the active one (if available)
+        - **css**: Different style added for link `disabled`, `active` or `page`
+        - **texts**: Texts used for each link excepted the page numbers
+        - **numbers**: Enable/Disable page number links
+        - **firstAndLast**: Enable/Disable first and last links
+        - **previousAndNext**: Enable/Disable previous and next links
+    */
+
 
     _Class.prototype.initialize = function(options) {
       _Class.__super__.initialize.call(this, options);
@@ -508,6 +626,23 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       this.info[infoKeys.page] = 0;
       return this.info[infoKeys.pages] = 0;
     };
+
+    /*
+        Render the pager component based on the metadata given. Calculation
+        is done to know how to render the actual page, first/last, next/previous
+        links.
+      
+        The pagger is done through a list of element:
+      
+        ```
+        <ul>
+          <li><a href="...">...</a></li>
+          ...
+        </ul>
+        ```
+        @param {Object} info The metadata to get the pagging data
+    */
+
 
     _Class.prototype.refreshView = function(info) {
       var css, i, maxPage, minPage, page, pages, state, ul, _i;
@@ -555,6 +690,13 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       }
     };
 
+    /*
+        Manage the clicks done on any button of the pager
+      
+        @param {Event} event Pager button click event
+    */
+
+
     _Class.prototype.pagging = function(event) {
       var page, target, type;
       event.preventDefault();
@@ -591,6 +733,16 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       }
     };
 
+    /*
+        Create a link for one element in the pager.
+      
+        @param {String} text The text shown to the user
+        @param {String} type The type of link
+        @param {String} state The state of the link
+        @return {jQueryObject} Link element is wrapped into a `li` tag
+    */
+
+
     createLink = function(text, type, state) {
       var a, li;
       a = $("<a/>").attr("href", "#").data("type", type).addClass(this.css.page).html("" + text);
@@ -604,6 +756,24 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     return _Class;
 
   })(Dg.DefaultItemView);
+  /*
+    ## Dg.RowView
+    
+    The implementation of the `Dg.RowView` needs to be extended for a proper use. The row view
+    have no idea of the data to render and therefore it is required to extend this view for the
+    specific data you have to render.
+    
+    This class take care about the `delete` and `edit` button events when provided. This
+    basic behavior is designed to go with the `Dg.ToolbarView` which provides the `create` and
+    `refresh` buttons.
+    
+    This row view is build around the `<tr />` and `<td />` tags that are the defaults for
+    the data grid rendering done by the `Dg` plugin.
+    
+    A default styling is done for the column ordering to show the `asc`, `desc` and `none`
+    order.
+  */
+
   Dg.RowView = (function(_super) {
 
     __extends(_Class, _super);
@@ -619,6 +789,28 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       "click .delete": "delete"
     };
 
+    /*
+        Configurable options (default values are shown):
+      
+        @param {Object} options The options to configure the view
+      
+        ```
+        # Default options
+        options:
+          css:
+            asc: "sorting-asc"
+            desc: "sorting-desc"
+            none: null
+          cellTagName: "td"
+        ```
+      
+        - **css**: Different styles applied when sorting is done. `asc` and
+                  `desc` styles are required. A `none` style should be defined
+                  to apply when ordering change from `desc` order to `none` order.
+        - **cellTagName**: HTML tag name that represent a cell into the data grid
+    */
+
+
     _Class.prototype.initialize = function(options) {
       _Class.__super__.initialize.call(this, options);
       this.css = _.defaults(options.css || {}, {
@@ -627,6 +819,14 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       });
       return this.cellTagName = options.cellTagName || "td";
     };
+
+    /*
+        Apply the different style to represent the ordering done
+        on the collection.
+      
+        @param {Object} info The metadata to get the ordering data
+    */
+
 
     _Class.prototype.refreshView = function(info) {
       var target, _i, _len, _ref, _results;
@@ -656,10 +856,24 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       }
     };
 
+    /*
+        Manage the `edit` action
+      
+        @param {Event} event The `edit` button click
+    */
+
+
     _Class.prototype.edit = function(event) {
       event.preventDefault();
       return this.vent.trigger("row:edit", this.model);
     };
+
+    /*
+        Manage the `delete` action
+      
+        @param {Event} event The `delete` button click
+    */
+
 
     _Class.prototype["delete"] = function(event) {
       event.preventDefault();
@@ -669,6 +883,17 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     return _Class;
 
   })(Dg.ItemView);
+  /*
+    ## Dg.EmptyView
+    
+    When there is no data available in the collection, this view
+    is used to show to the user this state of the collection.
+    
+    The empty view is based on the `<table />` tag and then
+    will use a `</td colspan="n">` tag where `n` is the number
+    of columns shown in the data table.
+  */
+
   EmptyView = (function(_super) {
 
     __extends(_Class, _super);
@@ -684,7 +909,9 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     };
 
     /*
-          @param: {Object} options There are options
+        Constructor
+      
+        @param {Object} options The options to get the number of columns
     */
 
 
@@ -693,15 +920,35 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       return _Class.__super__.initialize.call(this, options);
     };
 
+    /*
+        When the view is rendered, the number of columns is set
+    */
+
+
     _Class.prototype.onRender = function() {
       return this.$el.attr("colspan", this.columns);
     };
+
+    /*
+        Nothing fancy is done for this refresh function
+      
+        @param {Object} info The collection metadata
+    */
+
 
     _Class.prototype.refreshView = function(info) {};
 
     return _Class;
 
   })(Dg.DefaultItemView);
+  /*
+    ## Dg.LoadingView
+    
+    This view is used when the collection is fetched from a source. The
+    purpose is to show to the user that something is happening that is
+    different than no data is available.
+  */
+
   LoadingView = (function(_super) {
 
     __extends(_Class, _super);

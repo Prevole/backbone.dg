@@ -1,5 +1,9 @@
-# Default implementation for changing the number of entries displayed on a
-# single page. The selector is select box.
+###
+## Dg.PerPageView
+
+Default implementation for the region which allow changing the number of lines
+shown in the table. The implementation is based on a select box.
+###
 Dg.PerPageView = class extends Dg.DefaultItemView
   template: templates["perpage"]
 
@@ -9,12 +13,22 @@ Dg.PerPageView = class extends Dg.DefaultItemView
   ui:
     perPage: ".per-page"
 
-  # Refresh the view by setting the number of entries per page to the select box
-  # @param [Object] info The data to get the number of entries
+  ###
+  Refresh the view by setting the number of entries per page to the select box.
+
+  As the `refresh` function from `Dg.QuickSearchView`, this function is used to
+  synchronize multiple views.
+
+  @param {Object} info The metadata to get the number of lines per page
+  ###
   refreshView: (info) ->
     @ui.perPage.val(info[infoKeys.perPage])
 
-  # Handle the select box changes
-  # @param [Event] event The event triggered
+  ###
+  Manage the changes occured to change the number of entries
+  shown on a page.
+
+  @param {Event} event The event triggered on `change`
+  ###
   perPage: (event) ->
     @update _.object( [infoKeys.perPage], [parseInt(@ui.perPage.val())] )

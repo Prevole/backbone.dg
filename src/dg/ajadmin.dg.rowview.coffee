@@ -1,14 +1,20 @@
-# Default and incomplete implementation of a row view of the grid. The row
-# is the ItemView of the CompositeView that represents the data grid. This
-# class should be extended to define the layout to be rendered by the view.
-# This view offer the default "edit" and "delete" action for a row. The rendering
-# of the column sorting is also handled by applying styling on each cell of a row.
-# The styles should be overriden through the initializer (refer to initialize(options)
-# for more information).
-# TODO: Review this comment
-# This default implementation is based on HTML <table /> element and therefore the view
-# is expected to be a collection of <td /> wrapped into <tr /> that is part of the view
-# definition.
+###
+## Dg.RowView
+
+The implementation of the `Dg.RowView` needs to be extended for a proper use. The row view
+have no idea of the data to render and therefore it is required to extend this view for the
+specific data you have to render.
+
+This class take care about the `delete` and `edit` button events when provided. This
+basic behavior is designed to go with the `Dg.ToolbarView` which provides the `create` and
+`refresh` buttons.
+
+This row view is build around the `<tr />` and `<td />` tags that are the defaults for
+the data grid rendering done by the `Dg` plugin.
+
+A default styling is done for the column ordering to show the `asc`, `desc` and `none`
+order.
+###
 Dg.RowView = class extends Dg.ItemView
   tagName: "tr"
 
@@ -16,18 +22,26 @@ Dg.RowView = class extends Dg.ItemView
     "click .edit": "edit"
     "click .delete": "delete"
 
-  # The following options are configurable (default values are shown):
-  # options:
-  #   css:
-  #     asc: "sorting-asc"
-  #     desc: "sorting-desc"
-  #     none: null
-  #   cellTagName: "td"
-  #
-  # css: Define the different style applied when sorting is done. "asc" and
-  #      "desc" styles are required. Define a "none" style to apply when
-  #      ordering change from desc order to none order.
-  # cellTagName: Define the HTML tag name that represent a cell into the data grid
+  ###
+  Configurable options (default values are shown):
+
+  @param {Object} options The options to configure the view
+
+  ```
+  # Default options
+  options:
+    css:
+      asc: "sorting-asc"
+      desc: "sorting-desc"
+      none: null
+    cellTagName: "td"
+  ```
+
+  - **css**: Different styles applied when sorting is done. `asc` and
+            `desc` styles are required. A `none` style should be defined
+            to apply when ordering change from `desc` order to `none` order.
+  - **cellTagName**: HTML tag name that represent a cell into the data grid
+  ###
   initialize: (options) ->
     super options
 
@@ -39,8 +53,12 @@ Dg.RowView = class extends Dg.ItemView
 
     @cellTagName = options.cellTagName || "td"
 
-  # Apply the different style to represent the ordering done
-  # on the collection.
+  ###
+  Apply the different style to represent the ordering done
+  on the collection.
+
+  @param {Object} info The metadata to get the ordering data
+  ###
   refreshView: (info) ->
     if info[infoKeys.sort]
       # Update the view state for each column header
@@ -61,14 +79,20 @@ Dg.RowView = class extends Dg.ItemView
         else if @css.none
           target.addClass(@css.none)
 
-  # Handle the edit action
-  # @param [Event] event The event triggered
+  ###
+  Manage the `edit` action
+
+  @param {Event} event The `edit` button click
+  ###
   edit: (event) ->
     event.preventDefault()
     @vent.trigger "row:edit", @model
 
-  # Handle the delete action
-  # @param [Event] event The event triggered
+  ###
+  Manage the `delete` action
+
+  @param {Event} event The `delete` button click
+  ###
   delete: (event) ->
     event.preventDefault()
     @vent.trigger "row:delete", @model
