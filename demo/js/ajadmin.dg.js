@@ -962,6 +962,40 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     return _Class;
 
   })(Backbone.Marionette.ItemView);
+  /*!
+      render: ->
+        @beforeRender() if @beforeRender
+  
+        @trigger("before:render", @)
+        @trigger("item:before:render", @)
+  
+  
+        el = $(Marionette.Renderer.render(@getTemplate(), @serializeData()))
+        @setElement el
+  
+        @bindUIElements();
+  
+        @onRender() if @onRender
+  
+        @trigger("render", this)
+        @trigger("item:rendered", this)
+  !
+  */
+
+  /*
+    ## Dg.HeaderView
+    
+    As the `Dg.RowView`, the `HeaderView` is incomplete and expects to be
+    extended for your own data.
+    
+    This view offers the mechanism to sort the column of your data collection
+    when they are presented in `<table />` tag. Table headers HTML tags are used
+    to render the headers.
+    
+    The multi-sort is possible by pressing on shift key when clicks are done
+    on the different columns.
+  */
+
   Dg.HeaderView = (function(_super) {
 
     __extends(_Class, _super);
@@ -975,6 +1009,23 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     _Class.prototype.events = {
       "click .sorting": "sort"
     };
+
+    /*
+        ## TODO
+        - Introduced a configuration for the CSS
+        - Refactor to allow using specific tags for header container and columns
+        - Refactor the styles to allow the differenciation between each column sorting in multi mode
+    */
+
+
+    /*
+        Refresh the view accordingly to the metadata that should contain
+        the column sorting information. Which column are sorted in which
+        direction.
+      
+        @param {Object} info The metadata with the column sorting configuration
+    */
+
 
     _Class.prototype.refreshView = function(info) {
       var target, _i, _len, _ref, _results;
@@ -1006,6 +1057,14 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       return _results;
     };
 
+    /*
+        Manage the sort action to be done when an header element is
+        clicked.
+      
+        @param {Event} event The click event for sorting
+    */
+
+
     _Class.prototype.sort = function(event) {
       var idx;
       idx = $(event.target).index();
@@ -1029,59 +1088,125 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       return this.update(_.object([infoKeys.sort], [this.sortConfiguration]));
     };
 
+    /*
+        @return {int} The number of columns
+    */
+
+
     _Class.prototype.columns = function() {
       return this.$el.find("th").length;
     };
 
-    Dg.TableView = Marionette.CompositeView.extend({
-      template: templates["table"],
-      itemViewContainer: "tbody",
-      emptyView: Dg.EmptyView,
-      itemViewOptions: function(model) {
-        return {
-          vent: this.vent,
-          columns: this.columns()
-        };
-      },
-      initialize: function(options) {
-        this.vent = options.vent;
-        return this.collection = options.collection;
-      },
-      render: function() {
-        var tableHeader;
-        this.resetItemViewContainer();
-        this.setElement(this.renderModel());
-        if (this.headerView) {
-          this.header = new this.headerView({
-            vent: this.vent
-          });
-          tableHeader = this.header.render().el;
-          this.$el.prepend(tableHeader);
-        }
-        this.bindUIElements();
-        this.trigger("composite:model:rendered");
-        this.trigger("render");
-        this.renderCollection();
-        this.trigger("composite:rendered");
-        return this;
-      },
-      beforeClose: function() {
-        if (this.header) {
-          return this.header.close();
-        }
-      },
-      columns: function() {
-        if (this.header) {
-          return this.header.columns();
-        } else {
-          return 0;
-        }
-      }
-    });
-
     return _Class;
 
   })(Dg.ItemView);
+  /*
+    ## Dg.TableView
+    
+    The core view that present the data collection with
+    the headers and rows.
+    
+    The view is based on `<table />` tag element. The collection
+    content is wrapped into a `<tbody />` tag and the headers are
+    appended before this tag.
+  */
+
+  Dg.TableView = Marionette.CompositeView.extend({
+    template: templates["table"],
+    itemViewContainer: "tbody",
+    emptyView: Dg.EmptyView,
+    /*
+        This function allows the `ItemView` of a `Model` to
+        get some information to render itself correctly.
+      
+        The `EventAggregator` is provided to the `ItemView` throuhg
+        this function as the columns information.
+      
+        @param {Backbone.Model} model The model to render
+    */
+
+    itemViewOptions: function(model) {
+      return {
+        vent: this.vent,
+        columns: this.columns()
+      };
+    },
+    /*
+        Constructor
+      
+        @param {Object} options The options to configure the view
+      
+        ```
+        # Options expected
+        options:
+          vent:
+          collection:
+        ```
+    */
+
+    initialize: function(options) {
+      this.vent = options.vent;
+      return this.collection = options.collection;
+    },
+    /*
+        Override the `Backbone.Marionette.CompositeView` `render` function
+        to be able to render the `header` view before rendering the remaining
+        elements. In addition, this allows the element binding to work properly.
+      
+        @return {Dg.TableView} This
+    */
+
+    render: function() {
+      var tableHeader;
+      this.resetItemViewContainer();
+      this.setElement(this.renderModel());
+      if (this.headerView) {
+        this.header = new this.headerView({
+          vent: this.vent
+        });
+        tableHeader = this.header.render().el;
+        this.$el.prepend(tableHeader);
+      }
+      this.bindUIElements();
+      this.trigger("composite:model:rendered");
+      this.trigger("render");
+      this.renderCollection();
+      this.trigger("composite:rendered");
+      return this;
+    },
+    /*
+        As the render function do custom operations, we
+        need to close the custom additions in a proper way.
+      
+        In this callback function called before the remaining
+        close operations, we close the header view to manage
+        properly the event unbinding.
+    */
+
+    beforeClose: function() {
+      if (this.header) {
+        return this.header.close();
+      }
+    },
+    /*
+        @return {int} The number of columns, zero if no header view
+    */
+
+    columns: function() {
+      if (this.header) {
+        return this.header.columns();
+      } else {
+        return 0;
+      }
+    }
+  });
+  /*
+    ## Dg.TableRegion
+    
+    This class offers the possibility to add some transition effects
+    when the whole data grid is shown to the user.
+  */
+
   Dg.TableRegion = (function(_super) {
 
     __extends(_Class, _super);
@@ -1093,6 +1218,31 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     return _Class;
 
   })(Marionette.Region);
+  /*!
+      Open
+      @param [Backbone.View] view The view to open
+      open: (view) ->
+        @$el.html view.el
+        @$el.show "slide", { direction: "up" }, 1000
+  
+      Show
+      @param [Backbone.View] view The view to show
+      show: (view) ->
+        if @$el
+          $(@el).hide "slide", { direction: "up" }, 1000, =>
+            super view
+        else
+          super view
+  !
+  */
+
+  /*
+    ## Dg.GridLayout
+    
+    This class brings all the bricks together to render each part
+    of the datagrid (table, headers, toolbars, pagers...)
+  */
+
   Dg.GridLayout = (function(_super) {
 
     __extends(_Class, _super);
@@ -1110,14 +1260,32 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
 
     _Class.prototype.template = templates["grid"];
 
+    /*
+        Constructor
+        @param {Object} options Options to configure the grid
+    */
+
+
     _Class.prototype.initialize = function(options) {
       this.vent = new Marionette.EventAggregator();
       this.on("render", this.renderRegions);
+      /*
+            TODO: Refactor this part
+        
+            Listen to the different events
+      */
+
       this.vent.on("update", this.handleUpdate);
       this.vent.on("refresh", this.handleRefresh);
-      this.vent.on("row:edit", this.handleEditModel);
+      this.vent.on("row:edit", this.handleEdit);
       return this.collection.on("fetched", this.refreshGrid);
     };
+
+    /*
+        Proceed to the regions rendering. Each region is created,
+        configured and rendered when necessary.
+    */
+
 
     _Class.prototype.renderRegions = function() {
       var options, regionDefinition, regionName, _ref;
@@ -1134,6 +1302,11 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       this.table.show(new LoadingView());
       return this.collection.fetch();
     };
+
+    /*
+        Refresh the grid when new data are available through the collection
+    */
+
 
     _Class.prototype.refreshGrid = function() {
       this.table.show(new this.regions.table.view({
@@ -1152,9 +1325,15 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       return this.collection.refresh();
     };
 
-    _Class.prototype.handleEditModel = function(model) {
+    _Class.prototype.handleEdit = function(model) {
       return alert(model.get("name"));
     };
+
+    /*
+        Override the close function from `Backbone.Marionette.Layout` to
+        clean the collection bindings.
+    */
+
 
     _Class.prototype.close = function() {
       this.collection.off("fetched", this.refreshGrid);
@@ -1164,6 +1343,18 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     return _Class;
 
   })(Marionette.Layout);
+  /*!
+      @on "transition:open", =>
+        @showTable()
+  
+    showTable: ->
+      if @gridTable.currentView
+        @gridTable.currentView.renderCollection()
+      else
+        @gridTable.show(new @tableView(collection: @collection))
+  !
+  */
+
   Dg.createRowView = function(model, templatePath) {
     return Dg.RowView.extend({
       template: templatePath,
