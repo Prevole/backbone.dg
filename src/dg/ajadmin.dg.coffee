@@ -40,15 +40,36 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
   #= ajadmin.dg.tableregion.coffee
   #= ajadmin.dg.gridlayout.coffee
 
-  Dg.createRowView = (model, templatePath) ->
+  ###
+  Helper function to easily create a new `Dg.RowView` for a
+  template and model.
+
+  @param {Backbone.Model} model The model for which the view is done
+  @param {Function,String} template The template of the view
+  @return {Dg.RowView} Row view class created
+  ###
+  Dg.createRowView = (model, template) ->
     return Dg.RowView.extend
-      template: templatePath
+      template: template
       model: model
 
-  Dg.createTableHeaderView = (templatePath) ->
-    return Dg.HeaderView.extend
-      template: templatePath
+  ###
+  Helper function to easily create a `Dg.HeaderView` for
+  a table.
 
+  @param {Function,String} template The template of the view
+  @return {Dg.HeaderView} Header view class created
+  ###
+  Dg.createHeaderView = (template) ->
+    return Dg.HeaderView.extend
+      template: template
+
+  ###
+  Helper function to create a layout with customized options
+
+  @param {Object} options The options to configure the layout and views
+  @return {Dg.GridLayout} The layout class created
+  ###
   Dg.createDefaultLayout = (options) ->
     regions = options.gridRegions || {}
 
@@ -68,6 +89,9 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
 
     return gridLayout
 
+  ###
+  Defaults i18nKeys used in the translations if `i18n-js` is used
+  ###
   i18nKeys =
     info: "datagrid.info"
     pager:
@@ -77,6 +101,10 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
       previous: "datagrid.pager.previous"
       filler: "datagrid.pager.filler"
 
+  ###
+  Defaults keys for the metadata information used accross the
+  data grid plugin
+  ###
   infoKeys =
     from: "from"
     to: "to"

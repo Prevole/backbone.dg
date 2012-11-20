@@ -1355,7 +1355,15 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
   !
   */
 
-  Dg.createRowView = function(model, templatePath) {
+  /*
+    Helper function to easily create a new `Dg.RowView` for a
+    template and model.
+  
+    @param {Backbone.Model} model The model for which the view is done
+    @param {Function,String} template The template of the view
+  */
+
+  Dg.createRowView = function(model, template) {
     return Dg.RowView.extend({
       template: templatePath,
       model: model
