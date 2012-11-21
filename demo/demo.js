@@ -1,6 +1,114 @@
-var DataModel, HeaderView, RowView, data, dataCollection, gridLayout, headerView, rowView,
+var DataModel, HeaderView, RowView, data, dataCollection, gridLayout, headerView, models, rowView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+data = [
+  {
+    era: "Pre Republic",
+    title: "Into the Void",
+    author: "Tim Lebbon",
+    release: 2013,
+    serie: "Dawn of the Jedi",
+    timeline: -25793,
+    type: "Book"
+  }, {
+    era: "Old Republic",
+    title: "Precipice",
+    author: "John Jackson Miller",
+    release: 2009,
+    serie: "Lost Tribe of the Sith",
+    timeline: -5000,
+    type: "E-book"
+  }, {
+    era: "Old Republic",
+    title: "Skyborn",
+    author: "John Jackson Miller",
+    release: 2009,
+    serie: "Lost Tribe of the Sith",
+    timeline: -5000,
+    type: "E-book"
+  }, {
+    era: "Old Republic",
+    title: "Paragon",
+    author: "John Jackson Miller",
+    release: 2010,
+    serie: "Lost Tribe of the Sith",
+    timeline: -4985,
+    type: "E-book"
+  }, {
+    era: "Old Republic",
+    title: "Savior",
+    author: "John Jackson Miller",
+    release: 2010,
+    serie: "Lost Tribe of the Sith",
+    timeline: -4975,
+    type: "E-book"
+  }, {
+    era: "Old Republic",
+    title: "Purgatory",
+    author: "John Jackson Miller",
+    release: 2010,
+    serie: "Lost Tribe of the Sith",
+    timeline: -3960,
+    type: "E-book"
+  }, {
+    era: "Old Republic",
+    title: "Revan",
+    author: "Drew Karpyshyn",
+    release: 2011,
+    serie: "The Old Republic",
+    timeline: -3954,
+    type: "Book"
+  }, {
+    era: "Old Republic",
+    title: "Deceived",
+    author: "Paul S. Kemp",
+    release: 2011,
+    serie: "The Old Republic",
+    timeline: -3953,
+    type: "Book"
+  }, {
+    era: "Old Republic",
+    title: "Revan",
+    author: "Drew Karpyshyn",
+    release: 2011,
+    serie: "The Old Republic",
+    timeline: -3954,
+    type: "Book"
+  }, {
+    era: "Old Republic",
+    title: "Pantheon",
+    author: "John Jackson Miller",
+    release: 2011,
+    serie: "Lost Tribe of the Sith",
+    timeline: -3000,
+    type: "E-book"
+  }, {
+    era: "Old Republic",
+    title: "Secrets",
+    author: "John Jackson Miller",
+    release: 2012,
+    serie: "Lost Tribe of the Sith",
+    timeline: -3000,
+    type: "E-book"
+  }, {
+    era: "Old Republic",
+    title: "Pandemonium",
+    author: "John Jackson Miller",
+    release: 2012,
+    serie: "Lost Tribe of the Sith",
+    timeline: -2975,
+    type: "E-book"
+  }, {
+    era: "Old Republic",
+    title: "Red Harvest",
+    author: "Joe Schreiber",
+    release: 2010,
+    serie: "-",
+    timeline: -3645,
+    type: "Book"
+  }
+];
 
 DataModel = (function(_super) {
 
@@ -10,132 +118,26 @@ DataModel = (function(_super) {
     return _Class.__super__.constructor.apply(this, arguments);
   }
 
+  _Class.prototype.fields = ["era", "serie", "title", "timeline", "author", "release", "type"];
+
   _Class.prototype.match = function(quickSearch) {
-    return this.attributes.a.toLowerCase().indexOf(quickSearch) >= 0 || this.attributes.b.toLowerCase().indexOf(quickSearch) >= 0 || this.attributes.c.toLowerCase().indexOf(quickSearch) >= 0;
+    return _.reduce(this.fields, function(sum, attrName) {
+      return sum || this.attributes[attrName].toString().toLowerCase().indexOf(quickSearch) >= 0;
+    }, false, this);
   };
 
   _Class.prototype.getFromIndex = function(index) {
-    switch (parseInt(index)) {
-      case 0:
-        return this.get("a");
-      case 1:
-        return this.get("b");
-      case 2:
-        return this.get("c");
-    }
+    return this.get(this.fields[index]);
   };
 
   return _Class;
 
 })(Backbone.Model);
 
-data = [
-  new DataModel({
-    era: "Pre Republic",
-    title: "Into the Void",
-    author: "Tim Lebbon",
-    release: "2013",
-    series: "Dawn of the Jedi",
-    timeline: "-25793",
-    type: "Book"
-  }), new DataModel({
-    era: "Old Republic",
-    title: "Precipice",
-    author: "John Jackson Miller",
-    release: "2009",
-    series: "Lost Tribe of the Sith",
-    timeline: "-5000",
-    type: "E-book"
-  }), new DataModel({
-    era: "Old Republic",
-    title: "Skyborn",
-    author: "John Jackson Miller",
-    release: "2009",
-    series: "Lost Tribe of the Sith",
-    timeline: "-5000",
-    type: "E-book"
-  }), new DataModel({
-    era: "Old Republic",
-    title: "Paragon",
-    author: "John Jackson Miller",
-    release: "2010",
-    series: "Lost Tribe of the Sith",
-    timeline: "-4985",
-    type: "E-book"
-  }), new DataModel({
-    era: "Old Republic",
-    title: "Savior",
-    author: "John Jackson Miller",
-    release: "2010",
-    series: "Lost Tribe of the Sith",
-    timeline: "-4975",
-    type: "E-book"
-  }), new DataModel({
-    era: "Old Republic",
-    title: "Purgatory",
-    author: "John Jackson Miller",
-    release: "2010",
-    series: "Lost Tribe of the Sith",
-    timeline: "-3960",
-    type: "E-book"
-  }), new DataModel({
-    era: "Old Republic",
-    title: "Revan",
-    author: "Drew Karpyshyn",
-    release: "2011",
-    series: "The Old Republic",
-    timeline: "-3954",
-    type: "Book"
-  }), new DataModel({
-    era: "Old Republic",
-    title: "Deceived",
-    author: "Paul S. Kemp",
-    release: "2011",
-    series: "The Old Republic",
-    timeline: "-3953",
-    type: "Book"
-  }), new DataModel({
-    era: "Old Republic",
-    title: "Revan",
-    author: "Drew Karpyshyn",
-    release: "2011",
-    series: "The Old Republic",
-    timeline: "-3954",
-    type: "Book"
-  }), new DataModel({
-    era: "Old Republic",
-    title: "Pantheon",
-    author: "John Jackson Miller",
-    release: "2011",
-    series: "Lost Tribe of the Sith",
-    timeline: "-3000",
-    type: "E-book"
-  }), new DataModel({
-    era: "Old Republic",
-    title: "Secrets",
-    author: "John Jackson Miller",
-    release: "2012",
-    series: "Lost Tribe of the Sith",
-    timeline: "-3000",
-    type: "E-book"
-  }), new DataModel({
-    era: "Old Republic",
-    title: "Pandemonium",
-    author: "John Jackson Miller",
-    release: "2012",
-    series: "Lost Tribe of the Sith",
-    timeline: "-2975",
-    type: "E-book"
-  }), new DataModel({
-    era: "Old Republic",
-    title: "Red Harvest",
-    author: "Joe Schreiber",
-    release: "2010",
-    series: "-",
-    timeline: "-3645",
-    type: "Book"
-  })
-];
+models = _.reduce(data, function(models, modelData) {
+  models.push(new DataModel(modelData));
+  return models;
+}, []);
 
 dataCollection = (function(_super) {
 
@@ -148,7 +150,7 @@ dataCollection = (function(_super) {
   _Class.prototype.model = DataModel;
 
   _Class.prototype.initialize = function(options) {
-    return this.current = _.defaults({}, {
+    return this.meta = _.defaults({}, {
       page: 1,
       perPage: 5,
       term: "",
@@ -164,14 +166,14 @@ dataCollection = (function(_super) {
       storedSuccess(collection, response);
       return _this.trigger("fetched");
     };
-    localData = _.clone(data);
+    localData = _.clone(models);
     localData = _.filter(localData, function(model) {
-      return model.match(_this.current.term.toLowerCase());
+      return model.match(_this.meta.term.toLowerCase());
     });
-    this.current.items = localData.length;
+    this.meta.items = localData.length;
     localData = localData.sort(function(a, b) {
       var comp, direction, idx, left, right, _ref;
-      _ref = _this.current.sort;
+      _ref = _this.meta.sort;
       for (idx in _ref) {
         direction = _ref[idx];
         if (direction) {
@@ -185,12 +187,12 @@ dataCollection = (function(_super) {
       }
       return 0;
     });
-    this.current.pages = Math.ceil(localData.length / this.current.perPage);
-    this.current.totalItems = localData.length;
-    this.current.from = (this.current.page - 1) * this.current.perPage;
-    this.current.to = this.current.from + this.current.perPage;
-    localData = localData.slice(this.current.from, this.current.to);
-    this.current.from = this.current.from + 1;
+    this.meta.pages = Math.ceil(localData.length / this.meta.perPage);
+    this.meta.totalItems = localData.length;
+    this.meta.from = (this.meta.page - 1) * this.meta.perPage;
+    this.meta.to = this.meta.from + this.meta.perPage;
+    localData = localData.slice(this.meta.from, this.meta.to);
+    this.meta.from = this.meta.from + 1;
     response = $.Deferred();
     response.resolve(localData);
     options.success(localData);
@@ -203,11 +205,11 @@ dataCollection = (function(_super) {
   };
 
   _Class.prototype.getInfo = function() {
-    return this.current;
+    return this.meta;
   };
 
   _Class.prototype.updateInfo = function(options) {
-    this.current = _.defaults(options, this.current);
+    this.meta = _.defaults(options, this.meta);
     return this.fetch();
   };
 
@@ -252,7 +254,7 @@ RowView = (function(_super) {
 })(Dg.RowView);
 
 gridLayout = Dg.createDefaultLayout({
-  collection: new dataCollection(),
+  collection: new dataCollection(data),
   gridRegions: {
     table: {
       view: Dg.TableView.extend({

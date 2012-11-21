@@ -1,142 +1,26 @@
+#= demo-data.coffee
 
 DataModel = class extends Backbone.Model
+  fields: ["era", "serie", "title", "timeline", "author", "release", "type"]
+
   match: (quickSearch) ->
-    return @attributes.a.toLowerCase().indexOf(quickSearch) >= 0 or
-    @attributes.b.toLowerCase().indexOf(quickSearch) >= 0 or
-    @attributes.c.toLowerCase().indexOf(quickSearch) >= 0
+    _.reduce(@fields, (sum, attrName) ->
+      sum || @attributes[attrName].toString().toLowerCase().indexOf(quickSearch) >= 0
+    , false, @)
 
   getFromIndex: (index) ->
-    switch parseInt(index)
-      when 0 then return @get("a")
-      when 1 then return @get("b")
-      when 2 then return @get("c")
+    @get(@fields[index])
 
-data = [
-  #new DataModel({
-  {
-    era: "Pre Republic",
-    title: "Into the Void",
-    author: "Tim Lebbon",
-    release: "2013",
-    series: "Dawn of the Jedi",
-    timeline: "-25793",
-    type: "Book"
-  }#),
-#  new DataModel({
-#    era: "Old Republic",
-#    title: "Precipice",
-#    author: "John Jackson Miller",
-#    release: "2009",
-#    series: "Lost Tribe of the Sith",
-#    timeline: "-5000",
-#    type: "E-book"
-#  }),
-#  new DataModel({
-#    era: "Old Republic",
-#    title: "Skyborn",
-#    author: "John Jackson Miller",
-#    release: "2009",
-#    series: "Lost Tribe of the Sith",
-#    timeline: "-5000",
-#    type: "E-book"
-#  }),
-#  new DataModel({
-#    era: "Old Republic",
-#    title: "Paragon",
-#    author: "John Jackson Miller",
-#    release: "2010",
-#    series: "Lost Tribe of the Sith",
-#    timeline: "-4985",
-#    type: "E-book"
-#  }),
-#  new DataModel({
-#    era: "Old Republic",
-#    title: "Savior",
-#    author: "John Jackson Miller",
-#    release: "2010",
-#    series: "Lost Tribe of the Sith",
-#    timeline: "-4975",
-#    type: "E-book"
-#  }),
-#  new DataModel({
-#    era: "Old Republic",
-#    title: "Purgatory",
-#    author: "John Jackson Miller",
-#    release: "2010",
-#    series: "Lost Tribe of the Sith",
-#    timeline: "-3960",
-#    type: "E-book"
-#  }),
-#  new DataModel({
-#    era: "Old Republic",
-#    title: "Revan",
-#    author: "Drew Karpyshyn",
-#    release: "2011",
-#    series: "The Old Republic",
-#    timeline: "-3954",
-#    type: "Book"
-#  }),
-#  new DataModel({
-#    era: "Old Republic",
-#    title: "Deceived",
-#    author: "Paul S. Kemp",
-#    release: "2011",
-#    series: "The Old Republic",
-#    timeline: "-3953",
-#    type: "Book"
-#  }),
-#  new DataModel({
-#    era: "Old Republic",
-#    title: "Revan",
-#    author: "Drew Karpyshyn",
-#    release: "2011",
-#    series: "The Old Republic",
-#    timeline: "-3954",
-#    type: "Book"
-#  }),
-#  new DataModel({
-#    era: "Old Republic",
-#    title: "Pantheon",
-#    author: "John Jackson Miller",
-#    release: "2011",
-#    series: "Lost Tribe of the Sith",
-#    timeline: "-3000",
-#    type: "E-book"
-#  }),
-#  new DataModel({
-#    era: "Old Republic",
-#    title: "Secrets",
-#    author: "John Jackson Miller",
-#    release: "2012",
-#    series: "Lost Tribe of the Sith",
-#    timeline: "-3000",
-#    type: "E-book"
-#  }),
-#  new DataModel({
-#    era: "Old Republic",
-#    title: "Pandemonium",
-#    author: "John Jackson Miller",
-#    release: "2012",
-#    series: "Lost Tribe of the Sith",
-#    timeline: "-2975",
-#    type: "E-book"
-#  }),
-#  new DataModel({
-#    era: "Old Republic",
-#    title: "Red Harvest",
-#    author: "Joe Schreiber",
-#    release: "2010",
-#    series: "-",
-#    timeline: "-3645",
-#    type: "Book"
-#  })
-]
+models = _.reduce(data, (models, modelData) ->
+  models.push new DataModel(modelData)
+  models
+, [])
 
 dataCollection = class extends Backbone.Collection
   model: DataModel
 
   initialize: (options) ->
-    @current =
+    @meta =
       _.defaults {},
         page: 1
         perPage: 5
@@ -149,16 +33,16 @@ dataCollection = class extends Backbone.Collection
       storedSuccess(collection, response)
       @trigger "fetched"
 
-    localData = _.clone @models
+    localData = _.clone(models)
 
     localData = _.filter localData, (model) =>
-      return model.match(@current.term.toLowerCase())
+      return model.match(@meta.term.toLowerCase())
 
     # Filtered items
-    @current.items = localData.length
+    @meta.items = localData.length
 
     localData = localData.sort (a, b) =>
-      for idx, direction of @current.sort
+      for idx, direction of @meta.sort
         if direction
           left = a.getFromIndex(idx).toString().toLowerCase()
           right = b.getFromIndex(idx).toString().toLowerCase()
@@ -167,13 +51,13 @@ dataCollection = class extends Backbone.Collection
 
       return 0
 
-    @current.pages = Math.ceil(localData.length / @current.perPage)
-    @current.totalItems = localData.length
+    @meta.pages = Math.ceil(localData.length / @meta.perPage)
+    @meta.totalItems = localData.length
 
-    @current.from = (@current.page - 1) * @current.perPage
-    @current.to = @current.from + @current.perPage
-    localData = localData.slice(@current.from, @current.to)
-    @current.from = @current.from + 1
+    @meta.from = (@meta.page - 1) * @meta.perPage
+    @meta.to = @meta.from + @meta.perPage
+    localData = localData.slice(@meta.from, @meta.to)
+    @meta.from = @meta.from + 1
 
     response = $.Deferred()
     response.resolve(localData)
@@ -186,10 +70,10 @@ dataCollection = class extends Backbone.Collection
     @fetch()
 
   getInfo: ->
-    @current
+    @meta
 
   updateInfo: (options) ->
-    @current = _.defaults options, @current
+    @meta = _.defaults options, @meta
     @fetch()
 
 headerView = (data) ->
@@ -200,7 +84,6 @@ headerView = (data) ->
   "<th class='sorting'>Author</th>" +
   "<th class='sorting'>Release</th>" +
   "<th class='sorting'>Type</th>"
-
 
 rowView = (data) ->
   "<td>#{data.era}</td>" +

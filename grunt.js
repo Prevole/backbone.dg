@@ -69,6 +69,10 @@ module.exports = function(grunt) {
             build: {
                 src: ['src/dg/ajadmin.dg.coffee'],
                 dest: 'working/ajadmin.dg.coffee'
+            },
+            demo: {
+                src: ['src/demo/demo.coffee'],
+                dest: 'working/demo.coffee'
             }
         },
 
@@ -82,7 +86,12 @@ module.exports = function(grunt) {
                 }
             },
             demo: {
-                files: ["src/demo/demo.coffee"]
+                files: ["src/demo/*.coffee"],
+                options: {
+                    max_line_length: {
+                        value: 120
+                    }
+                }
             }
         },
 
@@ -100,7 +109,7 @@ module.exports = function(grunt) {
                     bare: true
                 },
                 files: {
-                    'demo/demo.js': ['src/demo/demo.coffee']
+                    'demo/demo.js': ['working/demo.coffee']
                 }
             }
         },
