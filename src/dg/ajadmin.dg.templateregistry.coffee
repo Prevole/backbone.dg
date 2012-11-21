@@ -53,7 +53,7 @@ templates =
   # Zone for the number of items per page choice
   perpage: (data) ->
     "<div class='form-inline pull-left'>" +
-      "<label class='checkbox'>Item per page: </label>" +
+      "<label class='checkbox'>Item per page:&nbsp;</label>" +
       "<select class='per-page input-mini'>" +
         "<option>2</option>" +
         "<option>5</option>" +
@@ -68,7 +68,7 @@ templates =
   # Text search field to filter the collection
   quicksearch: (data) ->
     "<div class='form-inline pull-right qs'>" +
-      "<label class='checkbox'>Quick search: </label>" +
+      "<label class='checkbox'>Quick search:&nbsp;</label>" +
       "<input type='text' />" +
     "</div>"
 

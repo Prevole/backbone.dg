@@ -1,3 +1,28 @@
+/*
+Datagrid
+========
+
+The Datagrid plugin for `Bacbkone` gives the possibility to implement
+easily a data table into a `Bacbkone` application. It uses `Backbone.Marionette`
+and its different views to reach the features of the data table.
+
+Dependencies:
+
+- [jQuery 1.8.2](http://jquery.com)
+- [JSON2 2011-10-19](http://www.JSON.org/json2.js)
+- [Underscore 1.4.2](http://underscorejs.org)
+- [Backbone 0.9.2](http://backbonejs.org)
+- [Backbone.Marionette 1.0.0-beta1](http://github.com/marionettejs/backbone.marionette)
+- [Backbone.EventBinder 0.0.0](http://github.com/marionettejs/backbone.eventbinder)
+- [Backbone.Wreqr 0.0.0](http://github.com/marionettejs/backbone.wreqr)
+
+By default, a complete implementation based on `<table />` HTML tag is
+provided but all the views can be overrided quickly and easily to create
+an implementation based on other views and tags.
+
+A default collection is also provided to work with the `Dg` plugin.
+*/
+
 var Dg,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -83,10 +108,10 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       return "<div class='pagination pagination-right' />";
     },
     perpage: function(data) {
-      return "<div class='form-inline pull-left'>" + "<label class='checkbox'>Item per page: </label>" + "<select class='per-page input-mini'>" + "<option>2</option>" + "<option>5</option>" + "<option>10</option>" + "<option>25</option>" + "<option>50</option>" + "<option>100</option>" + "</select>" + "</div>";
+      return "<div class='form-inline pull-left'>" + "<label class='checkbox'>Item per page:&nbsp;</label>" + "<select class='per-page input-mini'>" + "<option>2</option>" + "<option>5</option>" + "<option>10</option>" + "<option>25</option>" + "<option>50</option>" + "<option>100</option>" + "</select>" + "</div>";
     },
     quicksearch: function(data) {
-      return "<div class='form-inline pull-right qs'>" + "<label class='checkbox'>Quick search: </label>" + "<input type='text' />" + "</div>";
+      return "<div class='form-inline pull-right qs'>" + "<label class='checkbox'>Quick search:&nbsp;</label>" + "<input type='text' />" + "</div>";
     },
     table: function(data) {
       return "<table class='table table-striped table-hover table-condensed'>" + "<tbody/>" + "</table>";
@@ -1361,19 +1386,35 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
   
     @param {Backbone.Model} model The model for which the view is done
     @param {Function,String} template The template of the view
+    @return {Dg.RowView} Row view class created
   */
 
   Dg.createRowView = function(model, template) {
     return Dg.RowView.extend({
-      template: templatePath,
+      template: template,
       model: model
     });
   };
-  Dg.createTableHeaderView = function(templatePath) {
+  /*
+    Helper function to easily create a `Dg.HeaderView` for
+    a table.
+  
+    @param {Function,String} template The template of the view
+    @return {Dg.HeaderView} Header view class created
+  */
+
+  Dg.createHeaderView = function(template) {
     return Dg.HeaderView.extend({
-      template: templatePath
+      template: template
     });
   };
+  /*
+    Helper function to create a layout with customized options
+  
+    @param {Object} options The options to configure the layout and views
+    @return {Dg.GridLayout} The layout class created
+  */
+
   Dg.createDefaultLayout = function(options) {
     var gridLayout, regions;
     regions = options.gridRegions || {};
@@ -1392,6 +1433,12 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     }
     return gridLayout;
   };
+  /*
+    Defaults i18nKeys used in the translations if `i18n-js` is used.
+  
+    You can provide your own i18n keys to match your structure.
+  */
+
   i18nKeys = {
     info: "datagrid.info",
     pager: {
@@ -1402,6 +1449,14 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       filler: "datagrid.pager.filler"
     }
   };
+  /*
+    Defaults keys for the metadata used accross the data grid
+    plugin.
+  
+    For more flexibility, it is possible to change the key names
+    to match your collection metadata
+  */
+
   infoKeys = {
     from: "from",
     to: "to",
@@ -1415,6 +1470,14 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     asc: "A",
     desc: "D"
   };
+  /*
+    Default configuration to define the data grid regions
+    shown in the `Dg.GridLayout`
+  
+    This configuration could be overriden to match your
+    requirements.
+  */
+
   gridRegions = {
     table: {
       selector: ".dgTable",
@@ -1442,12 +1505,46 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       view: Dg.PagerView
     }
   };
+  /*
+    Helper function to define part or all the i18n keys
+    you want override for all your grids.
+  
+    The options are combined with the default ones defined
+    by the plugin. Your i18n keys will override the ones
+    from the plugins.
+  
+    @param {Object} options The i18n keys definition
+  */
+
   Dg.setupDefaultI18nBindings = function(options) {
     return i18nKeys = _.defaults(options.i18n || {}, i18nKeys);
   };
+  /*
+    Helper function to define the metadata keys to
+    match your collection metadata structure for all
+    your grids.
+  
+    The options are combined with the default ones defined
+    by the plugin. Your keys will override the ones
+    from the plugins.
+  
+    @param {Object} options The metadata keys definition
+  */
+
   Dg.setupDefaultInfoBindings = function(options) {
     return infoKeys = _.defaults(options.bindings || {}, infoKeys);
   };
+  /*
+    Helper function to define the grid layout regions
+    definition for all your grids.
+  
+    The options are combined with the default ones defined
+    by the plugin. Your definitions will override the ones
+    from the plugins.
+  
+    @param {Object} options The grid region definitions
+  */
+
   Dg.setupDefaultGridLayout = function(options) {
     return gridRegions = defaults(options.gridRegions || {}, gridRegions);
   };
