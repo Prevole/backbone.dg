@@ -112,7 +112,70 @@ gridLayout = Dg.createDefaultLayout(
         headerView: HeaderView
 )
 
+gridLayoutTemplate2 = (data) ->
+  "<div class='dgGrid'>" +
+    "<div class='clearfix'>" +
+      "<div class='dgPagerTop pull-right' />" +
+    "</div>" +
+    "<div class='clearfix'>" +
+      "<div class='dgPerPage' />" +
+      "<div class='dgToolbar' />" +
+      "<div class='dgQuickSearch' />" +
+    "</div>" +
+    "<div class='dgTable' />" +
+    "<div class='clearfix'>" +
+      "<div class='dgPerPageBottom' />" +
+      "<div class='dgToolbarBottom' />" +
+      "<div class='dgQuickSearchBottom' />" +
+    "</div>" +
+    "<div class='clearfix'>" +
+      "<div class='dgInfo pull-left' />" +
+      "<div class='dgPager pull-right' />" +
+    "</div>" +
+  "</div>"
+
+gridLayout2 = Dg.createDefaultLayout(
+  collection: new dataCollection(data)
+  template: gridLayoutTemplate2
+  gridRegions:
+    perPageBottom:
+      selector: ".dgPerPageBottom",
+      view: Dg.PerPageView
+    toolbarBottom:
+      selector: ".dgToolbarBottom",
+      view: Dg.ToolbarView
+    quickSearchBottom:
+      selector: ".dgQuickSearchBottom",
+      view: Dg.QuickSearchView
+    pagerTop:
+      selector: ".dgPagerTop",
+      view: Dg.PagerView
+    table:
+      view: Dg.TableView.extend
+        itemView: RowView
+        headerView: HeaderView
+)
+
+gridLayout3 = Dg.createDefaultLayout(
+  collection: new dataCollection(data)
+  gridRegions:
+    perPage: false
+    toolbar: false
+    table:
+      view: Dg.TableView.extend
+        itemView: RowView
+        headerView: HeaderView
+)
+
 $(document).ready ->
   new Marionette.Region(
-    el: "#dg"
+    el: "#dg1"
   ).show new gridLayout()
+
+  new Marionette.Region(
+    el: "#dg2"
+  ).show new gridLayout2()
+
+  new Marionette.Region(
+    el: "#dg3"
+  ).show new gridLayout3()

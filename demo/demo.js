@@ -1,4 +1,4 @@
-var DataModel, HeaderView, RowView, data, dataCollection, gridLayout, headerView, models, rowView,
+var DataModel, HeaderView, RowView, data, dataCollection, gridLayout, gridLayout2, gridLayout3, gridLayoutTemplate2, headerView, models, rowView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -127,6 +127,7 @@ DataModel = (function(_super) {
   };
 
   _Class.prototype.getFromIndex = function(index) {
+    console.log(this.attributes);
     return this.get(this.fields[index]);
   };
 
@@ -265,8 +266,61 @@ gridLayout = Dg.createDefaultLayout({
   }
 });
 
+gridLayoutTemplate2 = function(data) {
+  return "<div class='dgGrid'>" + "<div class='clearfix'>" + "<div class='dgPagerTop pull-right' />" + "</div>" + "<div class='clearfix'>" + "<div class='dgPerPage' />" + "<div class='dgToolbar' />" + "<div class='dgQuickSearch' />" + "</div>" + "<div class='dgTable' />" + "<div class='clearfix'>" + "<div class='dgPerPageBottom' />" + "<div class='dgToolbarBottom' />" + "<div class='dgQuickSearchBottom' />" + "</div>" + "<div class='clearfix'>" + "<div class='dgInfo pull-left' />" + "<div class='dgPager pull-right' />" + "</div>" + "</div>";
+};
+
+gridLayout2 = Dg.createDefaultLayout({
+  collection: new dataCollection(data),
+  template: gridLayoutTemplate2,
+  gridRegions: {
+    perPageBottom: {
+      selector: ".dgPerPageBottom",
+      view: Dg.PerPageView
+    },
+    toolbarBottom: {
+      selector: ".dgToolbarBottom",
+      view: Dg.ToolbarView
+    },
+    quickSearchBottom: {
+      selector: ".dgQuickSearchBottom",
+      view: Dg.QuickSearchView
+    },
+    pagerTop: {
+      selector: ".dgPagerTop",
+      view: Dg.PagerView
+    },
+    table: {
+      view: Dg.TableView.extend({
+        itemView: RowView,
+        headerView: HeaderView
+      })
+    }
+  }
+});
+
+gridLayout3 = Dg.createDefaultLayout({
+  collection: new dataCollection(data),
+  gridRegions: {
+    perPage: false,
+    toolbar: false,
+    table: {
+      view: Dg.TableView.extend({
+        itemView: RowView,
+        headerView: HeaderView
+      })
+    }
+  }
+});
+
 $(document).ready(function() {
-  return new Marionette.Region({
-    el: "#dg"
+  new Marionette.Region({
+    el: "#dg1"
   }).show(new gridLayout());
+  new Marionette.Region({
+    el: "#dg2"
+  }).show(new gridLayout2());
+  return new Marionette.Region({
+    el: "#dg3"
+  }).show(new gridLayout3());
 });

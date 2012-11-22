@@ -1431,6 +1431,9 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
         regions: regions
       });
     }
+    if (!(options.template === void 0)) {
+      gridLayout.prototype.template = options.template;
+    }
     return gridLayout;
   };
   /*

@@ -155,7 +155,7 @@ module.exports = function(grunt) {
 
         docker: {
             build: {
-                src: ["working/ajadmin.dg.coffee"],
+                src: ["working/*.coffee"],
                 options: {
                     extras: ["fileSearch", "goToLine"],
                     colourScheme: "friendly",

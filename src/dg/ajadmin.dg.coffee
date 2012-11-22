@@ -72,6 +72,7 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
   @param {Object} options The options to configure the layout and views
   @return {Dg.GridLayout} The layout class created
   ###
+  # TODO: Improve documentation
   Dg.createDefaultLayout = (options) ->
     regions = options.gridRegions || {}
 
@@ -88,6 +89,9 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
       gridLayout = Dg.GridLayout.extend
         collection: options.collection
         regions: regions
+
+    if not (options.template is undefined)
+      gridLayout.prototype.template = options.template
 
     return gridLayout
 
