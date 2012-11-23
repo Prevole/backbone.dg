@@ -48,12 +48,26 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
 
   @param {Backbone.Model} model The model for which the view is done
   @param {Function,String} template The template of the view
+  @param {Object} options The options to configure the view
+
+  ```
+  Options allowed:
+  options:
+    tagName: "tr"
+  ```
+
   @return {Dg.RowView} Row view class created
   ###
-  Dg.createRowView = (model, template) ->
-    return Dg.RowView.extend
-      template: template
-      model: model
+  Dg.createRowView = (model, template, options) ->
+    if (options && options.tagName)
+      return Dg.RowView.extend
+        template: template
+        tagName: options.tagName
+        model: model
+    else
+      return Dg.RowView.extend
+        template: template
+        model: model
 
   ###
   Helper function to easily create a `Dg.HeaderView` for
@@ -65,6 +79,12 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
   Dg.createHeaderView = (template) ->
     return Dg.HeaderView.extend
       template: template
+
+  Dg.createTableView = (template, viewContainer, itemView) ->
+    return Dg.TableView.extend
+      template: template
+      itemView: itemView
+      itemViewContainer: viewContainer
 
   ###
   Helper function to create a layout with customized options
@@ -91,7 +111,7 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
         regions: regions
 
     if not (options.template is undefined)
-      gridLayout.prototype.template = options.template
+      gridLayout.prototype.template = templates[options.template]
 
     return gridLayout
 

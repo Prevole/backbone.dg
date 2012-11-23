@@ -112,7 +112,7 @@ gridLayout = Dg.createDefaultLayout(
         headerView: HeaderView
 )
 
-gridLayoutTemplate2 = (data) ->
+Dg.registerTemplate "grid2", (data) ->
   "<div class='dgGrid'>" +
     "<div class='clearfix'>" +
       "<div class='dgPagerTop pull-right' />" +
@@ -136,7 +136,7 @@ gridLayoutTemplate2 = (data) ->
 
 gridLayout2 = Dg.createDefaultLayout(
   collection: new dataCollection(data)
-  template: gridLayoutTemplate2
+  template: "grid2"
   gridRegions:
     perPageBottom:
       selector: ".dgPerPageBottom",
@@ -167,6 +167,26 @@ gridLayout3 = Dg.createDefaultLayout(
         headerView: HeaderView
 )
 
+table = (data) ->
+  "<div>" +
+    "<div/>" +
+  "</div>"
+
+tableRow = (data) ->
+  "<span>#{data.era} (#{data.serie}) - #{data.title} - [#{data.timeline}]</span><br/>" +
+  "<span>#{data.author}:#{data.release}:#{data.type}</span>"
+
+gridLayout4 = Dg.createDefaultLayout(
+  collection: new dataCollection(data)
+  gridRegions:
+    perPage: false
+    toolbar: false
+    pager: false
+    quickSearch: false
+    table:
+      view: Dg.createTableView(table, "div", Dg.createRowView(DataModel, tableRow, "div"))
+)
+
 $(document).ready ->
   new Marionette.Region(
     el: "#dg1"
@@ -179,3 +199,7 @@ $(document).ready ->
   new Marionette.Region(
     el: "#dg3"
   ).show new gridLayout3()
+
+  new Marionette.Region(
+    el: "#dg4"
+  ).show new gridLayout4()

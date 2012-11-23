@@ -1,4 +1,4 @@
-var DataModel, HeaderView, RowView, data, dataCollection, gridLayout, gridLayout2, gridLayout3, gridLayoutTemplate2, headerView, models, rowView,
+var DataModel, HeaderView, RowView, data, dataCollection, gridLayout, gridLayout2, gridLayout3, gridLayout4, headerView, models, rowView, table, tableRow,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -127,7 +127,6 @@ DataModel = (function(_super) {
   };
 
   _Class.prototype.getFromIndex = function(index) {
-    console.log(this.attributes);
     return this.get(this.fields[index]);
   };
 
@@ -266,13 +265,13 @@ gridLayout = Dg.createDefaultLayout({
   }
 });
 
-gridLayoutTemplate2 = function(data) {
+Dg.registerTemplate("grid2", function(data) {
   return "<div class='dgGrid'>" + "<div class='clearfix'>" + "<div class='dgPagerTop pull-right' />" + "</div>" + "<div class='clearfix'>" + "<div class='dgPerPage' />" + "<div class='dgToolbar' />" + "<div class='dgQuickSearch' />" + "</div>" + "<div class='dgTable' />" + "<div class='clearfix'>" + "<div class='dgPerPageBottom' />" + "<div class='dgToolbarBottom' />" + "<div class='dgQuickSearchBottom' />" + "</div>" + "<div class='clearfix'>" + "<div class='dgInfo pull-left' />" + "<div class='dgPager pull-right' />" + "</div>" + "</div>";
-};
+});
 
 gridLayout2 = Dg.createDefaultLayout({
   collection: new dataCollection(data),
-  template: gridLayoutTemplate2,
+  template: "grid2",
   gridRegions: {
     perPageBottom: {
       selector: ".dgPerPageBottom",
@@ -313,6 +312,27 @@ gridLayout3 = Dg.createDefaultLayout({
   }
 });
 
+table = function(data) {
+  return "<div>" + "<div/>" + "</div>";
+};
+
+tableRow = function(data) {
+  return ("<span>" + data.era + " (" + data.serie + ") - " + data.title + " - [" + data.timeline + "]</span><br/>") + ("<span>" + data.author + ":" + data.release + ":" + data.type + "</span>");
+};
+
+gridLayout4 = Dg.createDefaultLayout({
+  collection: new dataCollection(data),
+  gridRegions: {
+    perPage: false,
+    toolbar: false,
+    pager: false,
+    quickSearch: false,
+    table: {
+      view: Dg.createTableView(table, "div", Dg.createRowView(DataModel, tableRow, "div"))
+    }
+  }
+});
+
 $(document).ready(function() {
   new Marionette.Region({
     el: "#dg1"
@@ -320,7 +340,10 @@ $(document).ready(function() {
   new Marionette.Region({
     el: "#dg2"
   }).show(new gridLayout2());
-  return new Marionette.Region({
+  new Marionette.Region({
     el: "#dg3"
   }).show(new gridLayout3());
+  return new Marionette.Region({
+    el: "#dg4"
+  }).show(new gridLayout4());
 });
