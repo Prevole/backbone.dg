@@ -58,16 +58,11 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
 
   @return {Dg.RowView} Row view class created
   ###
-  Dg.createRowView = (model, template, options) ->
-    if (options && options.tagName)
-      return Dg.RowView.extend
-        template: template
-        tagName: options.tagName
-        model: model
-    else
-      return Dg.RowView.extend
-        template: template
-        model: model
+  Dg.createRowView = (options) ->
+    unless mandatoryOptions(options, ["template", "model"])
+      throw new Exception("template or model is missing in the options")
+
+    return Dg.RowView.extend options
 
   ###
   Helper function to easily create a `Dg.HeaderView` for
@@ -76,15 +71,17 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
   @param {Function,String} template The template of the view
   @return {Dg.HeaderView} Header view class created
   ###
-  Dg.createHeaderView = (template) ->
-    return Dg.HeaderView.extend
-      template: template
+  Dg.createHeaderView = (options) ->
+    unless mandatoryOptions(options, ["template"])
+      throw new Exception("template is missing in the options")
 
-  Dg.createTableView = (template, viewContainer, itemView) ->
-    return Dg.TableView.extend
-      template: template
-      itemView: itemView
-      itemViewContainer: viewContainer
+    return Dg.HeaderView.extend options
+
+  Dg.createTableView = (options) ->
+    unless mandatoryOptions(options, ["template", "itemViewContainer", "itemView"])
+      throw new Exception("template, itemViewContainer or itemView is missing in the options")
+
+    return Dg.TableView.extend options
 
   ###
   Helper function to create a layout with customized options
@@ -96,6 +93,7 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
   Dg.createDefaultLayout = (options) ->
     regions = options.gridRegions || {}
 
+    # Remove the region flagged to false or are not a region definition
     regions = reject(
       defaults(regions, gridRegions),
       (object, key, value) ->

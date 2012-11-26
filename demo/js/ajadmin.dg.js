@@ -29,7 +29,7 @@ var Dg,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
-  var EmptyView, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, reject, templates;
+  var EmptyView, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, mandatoryOptions, reject, templates;
   Dg = {
     version: "0.0.1"
   };
@@ -81,6 +81,27 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       }
     }
     return newObject;
+  };
+  /*
+    Check if the options given contains the options wanted
+    
+    @param {Object} options The options to check
+    @param {Array(String)} optionNames The array of option names expected to be there
+    @return {Boolean} True if the options are correct, false otherwise
+  */
+
+  mandatoryOptions = function(options, optionNames) {
+    var optionName, _i, _len;
+    if (options === void 0 || !_.isObject(options)) {
+      return false;
+    }
+    for (_i = 0, _len = optionNames.length; _i < _len; _i++) {
+      optionName = optionNames[_i];
+      if (options[optionName] === void 0) {
+        return false;
+      }
+    }
+    return true;
   };
   /*
     The templates provided are used to offer a simple and default
@@ -1397,19 +1418,11 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     @return {Dg.RowView} Row view class created
   */
 
-  Dg.createRowView = function(model, template, options) {
-    if (options && options.tagName) {
-      return Dg.RowView.extend({
-        template: template,
-        tagName: options.tagName,
-        model: model
-      });
-    } else {
-      return Dg.RowView.extend({
-        template: template,
-        model: model
-      });
+  Dg.createRowView = function(options) {
+    if (!mandatoryOptions(options, ["template", "model"])) {
+      throw new Exception("template or model is missing in the options");
     }
+    return Dg.RowView.extend(options);
   };
   /*
     Helper function to easily create a `Dg.HeaderView` for
@@ -1424,12 +1437,13 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       template: template
     });
   };
-  Dg.createTableView = function(template, viewContainer, itemView) {
-    return Dg.TableView.extend({
-      template: template,
-      itemView: itemView,
-      itemViewContainer: viewContainer
-    });
+  Dg.createTableView = function(options) {
+    var tableView;
+    tableView = Dg.TableView.extend;
+    if (!mandatoryOptions(options, ["template", "itemViewContainer", "itemView"])) {
+      throw new Exception("template, itemViewContainer or itemView is missing in the options");
+    }
+    return Dg.TableView.extend(options);
   };
   /*
     Helper function to create a layout with customized options

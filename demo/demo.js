@@ -328,7 +328,16 @@ gridLayout4 = Dg.createDefaultLayout({
     pager: false,
     quickSearch: false,
     table: {
-      view: Dg.createTableView(table, "div", Dg.createRowView(DataModel, tableRow, "div"))
+      view: Dg.createTableView({
+        template: table,
+        itemViewContainer: "div",
+        itemView: Dg.createRowView({
+          model: DataModel,
+          template: tableRow,
+          tagName: "div",
+          className: "pull-left"
+        })
+      })
     }
   }
 });

@@ -47,3 +47,20 @@ reject = (object, filter) ->
       newObject[key] = value
 
   newObject
+
+###
+Check if the options given contains the options wanted
+
+@param {Object} options The options to check
+@param {Array(String)} optionNames The array of option names expected to be there
+@return {Boolean} True if the options are correct, false otherwise
+###
+mandatoryOptions = (options, optionNames) ->
+  # Check if the options exists and is an options hash
+  return false if options is undefined or not _.isObject(options)
+
+  for optionName in optionNames
+    if options[optionName] is undefined
+      return false
+
+  return true
