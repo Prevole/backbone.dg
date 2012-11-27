@@ -154,8 +154,9 @@ Dg.PagerView = class extends Dg.DefaultItemView
         ul.append(createLink.call @, @texts.filler, "", @css.disabled) if minPage > 1
 
         # Create page links
-        css = if i == page then @css.active else ""
-        ul.append(createLink.call @, "#{i}", "page", css) for i in [minPage..maxPage]
+        for i in [minPage..maxPage]
+          css = if i == page then @css.active else ""
+          ul.append(createLink.call @, "#{i}", "page", css)
 
         # Create filler
         ul.append(createLink.call @, @texts.filler, "", @css.disabled) if maxPage < pages

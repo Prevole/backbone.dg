@@ -717,8 +717,8 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
           if (minPage > 1) {
             ul.append(createLink.call(this, this.texts.filler, "", this.css.disabled));
           }
-          css = i === page ? this.css.active : "";
           for (i = _i = minPage; minPage <= maxPage ? _i <= maxPage : _i >= maxPage; i = minPage <= maxPage ? ++_i : --_i) {
+            css = i === page ? this.css.active : "";
             ul.append(createLink.call(this, "" + i, "page", css));
           }
           if (maxPage < pages) {
@@ -1432,14 +1432,13 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     @return {Dg.HeaderView} Header view class created
   */
 
-  Dg.createHeaderView = function(template) {
-    return Dg.HeaderView.extend({
-      template: template
-    });
+  Dg.createHeaderView = function(options) {
+    if (!mandatoryOptions(options, ["template"])) {
+      throw new Exception("template is missing in the options");
+    }
+    return Dg.HeaderView.extend(options);
   };
   Dg.createTableView = function(options) {
-    var tableView;
-    tableView = Dg.TableView.extend;
     if (!mandatoryOptions(options, ["template", "itemViewContainer", "itemView"])) {
       throw new Exception("template, itemViewContainer or itemView is missing in the options");
     }

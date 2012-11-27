@@ -179,10 +179,7 @@ tableRow = (data) ->
 gridLayout4 = Dg.createDefaultLayout(
   collection: new dataCollection(data)
   gridRegions:
-    perPage: false
     toolbar: false
-    pager: false
-    quickSearch: false
     table:
       view: Dg.createTableView
         template: table
