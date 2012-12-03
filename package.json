@@ -1,15 +1,15 @@
 {
-  "name": "ajadmin.dg",
-  "description": "Data Grid plugin to work with Ajadmin (based on Backbone.Marionette)",
+  "name": "backbone.dg",
+  "description": "Data Grid plugin for Backbone (heavy use of Backbone.Marionette)",
   "keywords": [
-    "table", "datagrid", "ajadmin", "backbone", "marionette"
+    "table", "datagrid", "backbone", "marionette"
   ],
   "version": "0.0.1",
-  "homepage": "https://github.com/prevole/ajadmin.dg",
+  "homepage": "https://github.com/prevole/backbone.dg",
   "author": "Laurent Prévost (prevole) <prevole@prevole.ch>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/prevole/ajadmin.dg"
+    "url": "https://github.com/prevole/backbone.dg"
   },
   "engines": {
     "node": "0.8.x"
@@ -32,7 +32,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://raw.github.com/prevole/ajadmin.dg/master/LICENSE.txt"
+      "url": "https://raw.github.com/prevole/backbone.dg/master/LICENSE.txt"
     }
   ]
 }

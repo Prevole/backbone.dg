@@ -25,22 +25,22 @@ A default collection is also provided to work with the `Dg` plugin.
 Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
   Dg = { version: "0.0.1" }
 
-  #= ajadmin.dg.utils.coffee
-  #= ajadmin.dg.templateregistry.coffee
-  #= ajadmin.dg.itemview.coffee
-  #= ajadmin.dg.defaultitemview.coffee
-  #= ajadmin.dg.infoview.coffee
-  #= ajadmin.dg.quicksearchview.coffee
-  #= ajadmin.dg.perpageview.coffee
-  #= ajadmin.dg.toolbarview.coffee
-  #= ajadmin.dg.pagerview.coffee
-  #= ajadmin.dg.rowview.coffee
-  #= ajadmin.dg.emptyview.coffee
-  #= ajadmin.dg.loadingview.coffee
-  #= ajadmin.dg.headerview.coffee
-  #= ajadmin.dg.tableview.coffee
-  #= ajadmin.dg.tableregion.coffee
-  #= ajadmin.dg.gridlayout.coffee
+  #= backbone.dg.utils.coffee
+  #= backbone.dg.templateregistry.coffee
+  #= backbone.dg.itemview.coffee
+  #= backbone.dg.defaultitemview.coffee
+  #= backbone.dg.infoview.coffee
+  #= backbone.dg.quicksearchview.coffee
+  #= backbone.dg.perpageview.coffee
+  #= backbone.dg.toolbarview.coffee
+  #= backbone.dg.pagerview.coffee
+  #= backbone.dg.rowview.coffee
+  #= backbone.dg.emptyview.coffee
+  #= backbone.dg.loadingview.coffee
+  #= backbone.dg.headerview.coffee
+  #= backbone.dg.tableview.coffee
+  #= backbone.dg.tableregion.coffee
+  #= backbone.dg.gridlayout.coffee
 
   ###
   Helper function to easily create a new `Dg.RowView` for a

@@ -17,7 +17,7 @@ module.exports = function(grunt) {
         meta: {
             version: '<%= pkg.version %>',
             banner_main:
-                ' * Ajadmin.Dg v<%= meta.version %>\n' +
+                ' * Backbone.Dg v<%= meta.version %>\n' +
                 ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
                 ' * Distributed under MIT license\n' +
                 ' * <%= pkg.homepage %>\n',
@@ -67,8 +67,8 @@ module.exports = function(grunt) {
 
         rig: {
             build: {
-                src: ['src/dg/ajadmin.dg.coffee'],
-                dest: 'working/ajadmin.dg.coffee'
+                src: ['src/dg/backbone.dg.coffee'],
+                dest: 'working/backbone.dg.coffee'
             },
             demo: {
                 src: ['src/demo/demo.coffee'],
@@ -101,7 +101,7 @@ module.exports = function(grunt) {
                     bare: true
                 },
                 files: {
-                    'dist/ajadmin/ajadmin.dg.js': ['working/ajadmin.dg.coffee']
+                    'dist/std/backbone.dg.js': ['working/backbone.dg.coffee']
                 }
             },
             demo: {
@@ -133,9 +133,9 @@ module.exports = function(grunt) {
             build: {
                 src: [
                     '<banner:meta.banner>',
-                    'dist/ajadmin/ajadmin.dg.js'
+                    'dist/std/backbone.dg.js'
                 ],
-                dest: 'dist/ajadmin/ajadmin.dg.min.js'
+                dest: 'dist/std/backbone.dg.min.js'
             }
         },
 
@@ -146,7 +146,7 @@ module.exports = function(grunt) {
                 },
                 files: {
                     "demo/js/": ["vendor/javascripts/*.js"],
-                    "demo/js/ajadmin.dg.js": ["dist/ajadmin/ajadmin.dg.js"],
+                    "demo/js/backbone.dg.js": ["dist/std/backbone.dg.js"],
                     "demo/images/": ["src/demo/images/*.png"],
                     "demo/bootstrap/": ["src/demo/bootstrap/**"]
                 }
