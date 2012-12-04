@@ -19,9 +19,14 @@ models = _.reduce(data, (models, modelData) ->
 dataCollection = class extends Backbone.Collection
   model: DataModel
 
-  initialize: (options) ->
+  initialize: (models, options) ->
+    if options is undefined or options.meta is undefined
+      customs = {}
+    else
+      customs = options.meta
+
     @meta =
-      _.defaults {},
+      _.defaults customs,
         page: 1
         perPage: 5
         term: ""
@@ -169,17 +174,38 @@ gridLayout3 = Dg.createDefaultLayout(
 
 table = (data) ->
   "<div>" +
-    "<div/>" +
+    "<div class=\"clearfix\" />" +
   "</div>"
 
 tableRow = (data) ->
-  "<span>#{data.era} (#{data.serie}) - #{data.title} - [#{data.timeline}]</span><br/>" +
-  "<span>#{data.author}:#{data.release}:#{data.type}</span>"
+  "<span><strong>Era:&nbsp;</strong>#{data.era} (#{data.serie})</span><br/>" +
+  "<span><strong>Title:&nbsp;</strong>#{data.title}</span><br/>" +
+  "<span><strong>Timeline:&nbsp;</strong>#{data.timeline}</span><br/>" +
+  "<span><strong>Author:&nbsp;</strong>#{data.author}</span></br>" +
+  "<span><strong>Release:&nbsp;</strong>#{data.release}</span><br/>" +
+  "<span><strong>Type:&nbsp;</strong>#{data.type}</span>"
+
+perpage = (data) ->
+  "<div class='form-inline pull-left'>" +
+    "<label class='checkbox'>Item per page:&nbsp;</label>" +
+    "<select class='per-page input-mini'>" +
+      "<option>3</option>" +
+      "<option>6</option>" +
+      "<option>9</option>" +
+      "<option>30</option>" +
+      "<option>60</option>" +
+      "<option>90</option>" +
+    "</select>" +
+  "</div>"
 
 gridLayout4 = Dg.createDefaultLayout(
-  collection: new dataCollection(data)
+  collection: new dataCollection(data, meta: { perPage: 6 })
   gridRegions:
     toolbar: false
+    perPage:
+      selector: ".dgPerPage",
+      view: Dg.PerPageView.extend
+        template: perpage
     table:
       view: Dg.createTableView
         template: table
@@ -188,7 +214,7 @@ gridLayout4 = Dg.createDefaultLayout(
           model: DataModel
           template: tableRow
           tagName: "div"
-          className: "pull-left"
+          className: "pull-left card"
 )
 
 $(document).ready ->

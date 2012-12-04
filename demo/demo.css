@@ -29,3 +29,10 @@
   background: #9cc7d5 !important; }
 .dgGrid table tr:nth-child(even):hover td.sorting-desc {
   background: #10a199 !important; }
+
+.card {
+  background-color: #d3d3d3;
+  border: solid black 1px;
+  width: 350px;
+  margin: 5px;
+  padding: 10px; }

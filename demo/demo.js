@@ -1,4 +1,4 @@
-var DataModel, HeaderView, RowView, data, dataCollection, gridLayout, gridLayout2, gridLayout3, gridLayout4, headerView, models, rowView, table, tableRow,
+var DataModel, HeaderView, RowView, data, dataCollection, gridLayout, gridLayout2, gridLayout3, gridLayout4, headerView, models, perpage, rowView, table, tableRow,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -149,8 +149,14 @@ dataCollection = (function(_super) {
 
   _Class.prototype.model = DataModel;
 
-  _Class.prototype.initialize = function(options) {
-    return this.meta = _.defaults({}, {
+  _Class.prototype.initialize = function(models, options) {
+    var customs;
+    if (options === void 0 || options.meta === void 0) {
+      customs = {};
+    } else {
+      customs = options.meta;
+    }
+    return this.meta = _.defaults(customs, {
       page: 1,
       perPage: 5,
       term: "",
@@ -313,17 +319,31 @@ gridLayout3 = Dg.createDefaultLayout({
 });
 
 table = function(data) {
-  return "<div>" + "<div/>" + "</div>";
+  return "<div>" + "<div class=\"clearfix\" />" + "</div>";
 };
 
 tableRow = function(data) {
-  return ("<span>" + data.era + " (" + data.serie + ") - " + data.title + " - [" + data.timeline + "]</span><br/>") + ("<span>" + data.author + ":" + data.release + ":" + data.type + "</span>");
+  return ("<span><strong>Era:&nbsp;</strong>" + data.era + " (" + data.serie + ")</span><br/>") + ("<span><strong>Title:&nbsp;</strong>" + data.title + "</span><br/>") + ("<span><strong>Timeline:&nbsp;</strong>" + data.timeline + "</span><br/>") + ("<span><strong>Author:&nbsp;</strong>" + data.author + "</span></br>") + ("<span><strong>Release:&nbsp;</strong>" + data.release + "</span><br/>") + ("<span><strong>Type:&nbsp;</strong>" + data.type + "</span>");
+};
+
+perpage = function(data) {
+  return "<div class='form-inline pull-left'>" + "<label class='checkbox'>Item per page:&nbsp;</label>" + "<select class='per-page input-mini'>" + "<option>3</option>" + "<option>6</option>" + "<option>9</option>" + "<option>30</option>" + "<option>60</option>" + "<option>90</option>" + "</select>" + "</div>";
 };
 
 gridLayout4 = Dg.createDefaultLayout({
-  collection: new dataCollection(data),
+  collection: new dataCollection(data, {
+    meta: {
+      perPage: 6
+    }
+  }),
   gridRegions: {
     toolbar: false,
+    perPage: {
+      selector: ".dgPerPage",
+      view: Dg.PerPageView.extend({
+        template: perpage
+      })
+    },
     table: {
       view: Dg.createTableView({
         template: table,
@@ -332,7 +352,7 @@ gridLayout4 = Dg.createDefaultLayout({
           model: DataModel,
           template: tableRow,
           tagName: "div",
-          className: "pull-left"
+          className: "pull-left card"
         })
       })
     }
