@@ -20,14 +20,14 @@
   },
   "devDependencies": {
     "grunt": "~0.3.16",
-    "grunt-rigger": "latest",
-		"grunt-contrib-coffee": "latest",
-		"grunt-contrib-clean": "latest",
-		"grunt-contrib-copy": "latest",
-		"grunt-sass": "latest",
-		"grunt-haml": "latest",
-		"grunt-coffeelint": "latest",
-		"grunt-docco": "latest"
+    "grunt-rigger": "0.3.0",
+		"grunt-contrib-coffee": "0.0.6",
+		"grunt-contrib-clean": "0.3.0",
+		"grunt-contrib-copy": "0.3.2",
+		"grunt-sass": "0.2.4",
+		"grunt-haml": "0.2.0",
+		"grunt-coffeelint": "0.0.3",
+		"grunt-docker": "0.0.3"
   },
   "licenses": [
     {
