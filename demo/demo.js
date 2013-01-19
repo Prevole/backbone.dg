@@ -164,12 +164,12 @@ dataCollection = (function(_super) {
     });
   };
 
-  _Class.prototype.sync = function(method, model, options, error) {
-    var localData, response, storedSuccess,
+  _Class.prototype.sync = function(method, model, options) {
+    var localData, storedSuccess,
       _this = this;
     storedSuccess = options.success;
-    options.success = function(collection, response) {
-      storedSuccess(collection, response);
+    options.success = function(collection, response, options) {
+      storedSuccess(collection, response, options);
       return _this.trigger("fetched");
     };
     localData = _.clone(models);
@@ -199,10 +199,9 @@ dataCollection = (function(_super) {
     this.meta.to = this.meta.from + this.meta.perPage;
     localData = localData.slice(this.meta.from, this.meta.to);
     this.meta.from = this.meta.from + 1;
-    response = $.Deferred();
-    response.resolve(localData);
-    options.success(localData);
-    return response;
+    return options.success(this, localData, {
+      update: false
+    });
   };
 
   _Class.prototype.refresh = function() {

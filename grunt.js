@@ -8,8 +8,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-haml');
     grunt.loadNpmTasks('grunt-coffeelint');
     grunt.loadNpmTasks('grunt-docker');
-
-//    grunt.loadNpmTasks('grunt-jasmine-runner');
+    grunt.loadNpmTasks('grunt-jasmine-runner');
 
     // Project configuration.
     grunt.initConfig({
@@ -111,7 +110,35 @@ module.exports = function(grunt) {
                 files: {
                     'demo/demo.js': ['working/demo.coffee']
                 }
+            },
+            specs: {
+                options: {
+                    bare: true
+                },
+                files: {
+                    'spec/javascripts/**.js': ['spec/coffeescripts/**.coffee']
+                }
             }
+        },
+
+        jasmine : {
+            src : [
+                'vendor/javascripts/json2.js',
+                'vendor/javascripts/jquery.js',
+                'vendor/javascripts/underscore.js',
+                'vendor/javascripts/backbone.js',
+                'vendor/javascripts/backbone.babysitter.js',
+                'vendor/javascripts/backbone.eventbinder.js',
+                'vendor/javascripts/backbone.wreqr.js',
+                'vendor/javascripts/backbone.marionette.js',
+                'dist/std/backbone.dg.js'
+            ],
+            helpers : 'spec/javascripts/helpers/*.js',
+            specs : 'spec/javascripts/**/*.spec.js'
+        },
+
+        'jasmine-server' : {
+            browser : false
         },
 
         sass: {
@@ -172,8 +199,17 @@ module.exports = function(grunt) {
             }
         },
 
-        uglify: {}
+        uglify: {},
+
+        globals: {
+            jasmine : false,
+            describe : false,
+            beforeEach : false,
+            expect : false,
+            it : false,
+            spyOn : false
+        }
     });
 
-    grunt.registerTask('default', 'clean coffeelint rig coffee sass haml min copy docker');
+    grunt.registerTask('default', 'clean coffeelint rig coffee jasmine sass haml min copy docker');
 };

@@ -32,10 +32,10 @@ dataCollection = class extends Backbone.Collection
         term: ""
         sort: {}
 
-  sync: (method, model, options, error) ->
+  sync: (method, model, options) ->
     storedSuccess = options.success
-    options.success = (collection, response) =>
-      storedSuccess(collection, response)
+    options.success = (collection, response, options) =>
+      storedSuccess(collection, response, options)
       @trigger "fetched"
 
     localData = _.clone(models)
@@ -64,11 +64,7 @@ dataCollection = class extends Backbone.Collection
     localData = localData.slice(@meta.from, @meta.to)
     @meta.from = @meta.from + 1
 
-    response = $.Deferred()
-    response.resolve(localData)
-    options.success(localData)
-
-    response
+    options.success(@, localData, update: false)
 
   refresh: ->
     @reset()

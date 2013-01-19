@@ -8,3 +8,4 @@ _SpecRunner.html
 wiki
 .idea/*
 working
+spec/javascripts
