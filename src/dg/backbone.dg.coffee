@@ -91,6 +91,8 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
   ###
   # TODO: Improve documentation
   Dg.createDefaultLayout = (options) ->
+    options = options || {}
+
     regions = options.gridRegions || {}
 
     # Remove the region flagged to false or are not a region definition

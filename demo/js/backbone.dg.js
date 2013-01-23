@@ -1453,6 +1453,7 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
 
   Dg.createDefaultLayout = function(options) {
     var gridLayout, regions;
+    options = options || {};
     regions = options.gridRegions || {};
     regions = reject(defaults(regions, gridRegions), function(object, key, value) {
       return !_.isObject(value);
