@@ -77,6 +77,7 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
 
     return Dg.HeaderView.extend options
 
+  # TODO: Comments
   Dg.createTableView = (options) ->
     unless mandatoryOptions(options, ["template", "itemViewContainer", "itemView"])
       throw new Exception("template, itemViewContainer or itemView is missing in the options")
