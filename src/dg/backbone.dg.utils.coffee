@@ -57,7 +57,10 @@ Check if the options given contains the options wanted
 ###
 mandatoryOptions = (options, optionNames) ->
   # Check if the options exists and is an options hash
-  return false if options is undefined or not _.isObject(options)
+  unless options and _.isObject(options)
+    return false
+
+#  return false if (options is undefined or not _.isObject(options))
 
   for optionName in optionNames
     if options[optionName] is undefined

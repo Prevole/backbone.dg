@@ -92,7 +92,7 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
 
   mandatoryOptions = function(options, optionNames) {
     var optionName, _i, _len;
-    if (options === void 0 || !_.isObject(options)) {
+    if (!(options && _.isObject(options))) {
       return false;
     }
     for (_i = 0, _len = optionNames.length; _i < _len; _i++) {
@@ -1420,7 +1420,7 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
 
   Dg.createRowView = function(options) {
     if (!mandatoryOptions(options, ["template", "model"])) {
-      throw new Exception("template or model is missing in the options");
+      throw new Error("template or model is missing in the options");
     }
     return Dg.RowView.extend(options);
   };
@@ -1434,13 +1434,13 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
 
   Dg.createHeaderView = function(options) {
     if (!mandatoryOptions(options, ["template"])) {
-      throw new Exception("template is missing in the options");
+      throw new Error("template is missing in the options");
     }
     return Dg.HeaderView.extend(options);
   };
   Dg.createTableView = function(options) {
     if (!mandatoryOptions(options, ["template", "itemViewContainer", "itemView"])) {
-      throw new Exception("template, itemViewContainer or itemView is missing in the options");
+      throw new Error("template, itemViewContainer or itemView is missing in the options");
     }
     return Dg.TableView.extend(options);
   };

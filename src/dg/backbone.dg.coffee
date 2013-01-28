@@ -60,7 +60,7 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
   ###
   Dg.createRowView = (options) ->
     unless mandatoryOptions(options, ["template", "model"])
-      throw new Exception("template or model is missing in the options")
+      throw new Error("template or model is missing in the options")
 
     return Dg.RowView.extend options
 
@@ -73,14 +73,14 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
   ###
   Dg.createHeaderView = (options) ->
     unless mandatoryOptions(options, ["template"])
-      throw new Exception("template is missing in the options")
+      throw new Error("template is missing in the options")
 
     return Dg.HeaderView.extend options
 
   # TODO: Comments
   Dg.createTableView = (options) ->
     unless mandatoryOptions(options, ["template", "itemViewContainer", "itemView"])
-      throw new Exception("template, itemViewContainer or itemView is missing in the options")
+      throw new Error("template, itemViewContainer or itemView is missing in the options")
 
     return Dg.TableView.extend options
 
