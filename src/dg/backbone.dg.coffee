@@ -91,7 +91,7 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
   @return {Dg.GridLayout} The layout class created
   ###
   # TODO: Improve documentation
-  Dg.createDefaultLayout = (options) ->
+  Dg.createGridLayout = (options) ->
     options = options || {}
 
     regions = options.gridRegions || {}

@@ -1,5 +1,8 @@
 describe "datagrid helpers functions", ->
+  ########################################################
   # Row View creation
+  ########################################################
+
   describe "when creating a row view without options", ->
     it "should throw an exeption", ->
       expect(-> Dg.createRowView()).toThrow()
@@ -24,7 +27,9 @@ describe "datagrid helpers functions", ->
         model: new Backbone.Model()
       )).toBeDefined()
 
+  ########################################################
   # Header view creation
+  ########################################################
 
   describe "when creating a header view without options", ->
     it "should throw an exeption", ->
@@ -35,7 +40,9 @@ describe "datagrid helpers functions", ->
       expect(-> Dg.createHeaderView(template: (data) -> )).not.toThrow()
       expect(Dg.createHeaderView(template: (data) -> )).toBeDefined()
 
+  ########################################################
   # Table view creation
+  ########################################################
 
   describe "when creating a table view without options", ->
     it "should throw an exception", ->
@@ -76,3 +83,78 @@ describe "datagrid helpers functions", ->
         itemViewContainer: "div"
         itemView: rowView
       )).toBeDefined()
+
+  ########################################################
+  # Grid layout creation
+  ########################################################
+
+  describe "when a grid layout is created with default options", ->
+    grid =  Dg.createGridLayout()
+
+    it "should have default table region", ->
+      expect(grid.prototype.regions.table).toBeDefined()
+
+    it "should have default toolbar region", ->
+      expect(grid.prototype.regions.toolbar).toBeDefined()
+
+    it "should have default quickSearch region", ->
+      expect(grid.prototype.regions.quickSearch).toBeDefined()
+
+    it "should have default perPage region", ->
+      expect(grid.prototype.regions.perPage).toBeDefined()
+
+    it "should have default info region", ->
+      expect(grid.prototype.regions.info).toBeDefined()
+
+    it "should have default pager region", ->
+      expect(grid.prototype.regions.pager).toBeDefined()
+
+    it "should not have any collection", ->
+      expect(grid.prototype.collection).toBeUndefined()
+
+    it "should have a default template", ->
+      expect(grid.prototype.template).toBeDefined()
+
+  describe "when a grid is created without default options", ->
+    template = (data) ->
+      "something"
+
+    Dg.registerTemplate "template", template
+
+    collection = new Backbone.Collection()
+
+    grid =  Dg.createGridLayout(
+      collection: collection
+      template: "template"
+      gridRegions:
+        perPage: false
+        toolbar: false
+        quickSearch: false
+        pager: false
+        info: false
+        table: false
+    )
+
+    it "should not have table region", ->
+      expect(grid.prototype.regions.table).toBeUndefined()
+
+    it "should not have toolbar region", ->
+      expect(grid.prototype.regions.toolbar).toBeUndefined()
+
+    it "should not have quickSearch region", ->
+      expect(grid.prototype.regions.quickSearch).toBeUndefined()
+
+    it "should not have perPage region", ->
+      expect(grid.prototype.regions.perPage).toBeUndefined()
+
+    it "should not have info region", ->
+      expect(grid.prototype.regions.info).toBeUndefined()
+
+    it "should not have pager region", ->
+      expect(grid.prototype.regions.pager).toBeUndefined()
+
+    it "should have the collection given", ->
+      expect(grid.prototype.collection).toBe(collection)
+
+    it "should have the template give", ->
+      expect(grid.prototype.template).toBe(template)

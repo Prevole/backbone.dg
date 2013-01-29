@@ -1451,7 +1451,7 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     @return {Dg.GridLayout} The layout class created
   */
 
-  Dg.createDefaultLayout = function(options) {
+  Dg.createGridLayout = function(options) {
     var gridLayout, regions;
     options = options || {};
     regions = options.gridRegions || {};

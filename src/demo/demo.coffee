@@ -104,7 +104,7 @@ HeaderView = class extends Dg.HeaderView
 RowView = class extends Dg.RowView
   template: rowView
 
-gridLayout = Dg.createDefaultLayout(
+gridLayout = Dg.createGridLayout(
   collection: new dataCollection(data)
   gridRegions:
     table:
@@ -135,7 +135,7 @@ Dg.registerTemplate "grid2", (data) ->
     "</div>" +
   "</div>"
 
-gridLayout2 = Dg.createDefaultLayout(
+gridLayout2 = Dg.createGridLayout(
   collection: new dataCollection(data)
   template: "grid2"
   gridRegions:
@@ -157,7 +157,7 @@ gridLayout2 = Dg.createDefaultLayout(
         headerView: HeaderView
 )
 
-gridLayout3 = Dg.createDefaultLayout(
+gridLayout3 = Dg.createGridLayout(
   collection: new dataCollection(data)
   gridRegions:
     perPage: false
@@ -194,7 +194,7 @@ perpage = (data) ->
     "</select>" +
   "</div>"
 
-gridLayout4 = Dg.createDefaultLayout(
+gridLayout4 = Dg.createGridLayout(
   collection: new dataCollection(data, meta: { perPage: 6 })
   gridRegions:
     toolbar: false

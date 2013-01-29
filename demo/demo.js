@@ -258,7 +258,7 @@ RowView = (function(_super) {
 
 })(Dg.RowView);
 
-gridLayout = Dg.createDefaultLayout({
+gridLayout = Dg.createGridLayout({
   collection: new dataCollection(data),
   gridRegions: {
     table: {
@@ -274,7 +274,7 @@ Dg.registerTemplate("grid2", function(data) {
   return "<div class='dgGrid'>" + "<div class='clearfix'>" + "<div class='dgPagerTop pull-right' />" + "</div>" + "<div class='clearfix'>" + "<div class='dgPerPage' />" + "<div class='dgToolbar' />" + "<div class='dgQuickSearch' />" + "</div>" + "<div class='dgTable' />" + "<div class='clearfix'>" + "<div class='dgPerPageBottom' />" + "<div class='dgToolbarBottom' />" + "<div class='dgQuickSearchBottom' />" + "</div>" + "<div class='clearfix'>" + "<div class='dgInfo pull-left' />" + "<div class='dgPager pull-right' />" + "</div>" + "</div>";
 });
 
-gridLayout2 = Dg.createDefaultLayout({
+gridLayout2 = Dg.createGridLayout({
   collection: new dataCollection(data),
   template: "grid2",
   gridRegions: {
@@ -303,7 +303,7 @@ gridLayout2 = Dg.createDefaultLayout({
   }
 });
 
-gridLayout3 = Dg.createDefaultLayout({
+gridLayout3 = Dg.createGridLayout({
   collection: new dataCollection(data),
   gridRegions: {
     perPage: false,
@@ -329,7 +329,7 @@ perpage = function(data) {
   return "<div class='form-inline pull-left'>" + "<label class='checkbox'>Item per page:&nbsp;</label>" + "<select class='per-page input-mini'>" + "<option>3</option>" + "<option>6</option>" + "<option>9</option>" + "<option>30</option>" + "<option>60</option>" + "<option>90</option>" + "</select>" + "</div>";
 };
 
-gridLayout4 = Dg.createDefaultLayout({
+gridLayout4 = Dg.createGridLayout({
   collection: new dataCollection(data, {
     meta: {
       perPage: 6
