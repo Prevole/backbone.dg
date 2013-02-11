@@ -60,8 +60,6 @@ mandatoryOptions = (options, optionNames) ->
   unless options and _.isObject(options)
     return false
 
-#  return false if (options is undefined or not _.isObject(options))
-
   for optionName in optionNames
     if options[optionName] is undefined
       return false
