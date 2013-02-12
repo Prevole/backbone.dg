@@ -26,9 +26,8 @@ Dg.InfoView = class extends Dg.DefaultItemView
   @param {Object} info The metadata to collect the data to show
   ###
   refreshView: (info) ->
-    #! Check if the I18n library is used
-#! TODO: Check how to do that
-#!    if I18n is undefined
-    @$el.text "Showing #{info[infoKeys.from]} to #{info[infoKeys.to]} of #{info[infoKeys.items]} entries"
-#!    else
-#!     @$el.text I18n.t(i18nKeys.info, {from: info[infoKeys.from], to: info[infoKeys.to], total: info[infoKeys.items]})
+    # Check if the I18n library is used
+    if isI18n()
+      @$el.text I18n.t(i18nKeys.info, {from: info[infoKeys.from], to: info[infoKeys.to], total: info[infoKeys.items]})
+    else
+      @$el.text "Showing #{info[infoKeys.from]} to #{info[infoKeys.to]} of #{info[infoKeys.items]} entries"

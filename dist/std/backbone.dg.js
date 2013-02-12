@@ -29,7 +29,7 @@ var Dg,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
-  var EmptyView, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, mandatoryOptions, reject, templates;
+  var EmptyView, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, isI18n, mandatoryOptions, reject, templates;
   Dg = {
     version: "0.0.1"
   };
@@ -102,6 +102,15 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
       }
     }
     return true;
+  };
+  /*
+    Check if the I18n library is available or not
+    
+    @return {Boolean} True if the lib is available
+  */
+
+  isI18n = function() {
+    return !(window.I18n === void 0);
   };
   /*
     The templates provided are used to offer a simple and default
@@ -354,7 +363,15 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
 
 
     _Class.prototype.refreshView = function(info) {
-      return this.$el.text("Showing " + info[infoKeys.from] + " to " + info[infoKeys.to] + " of " + info[infoKeys.items] + " entries");
+      if (isI18n()) {
+        return this.$el.text(I18n.t(i18nKeys.info, {
+          from: info[infoKeys.from],
+          to: info[infoKeys.to],
+          total: info[infoKeys.items]
+        }));
+      } else {
+        return this.$el.text("Showing " + info[infoKeys.from] + " to " + info[infoKeys.to] + " of " + info[infoKeys.items] + " entries");
+      }
     };
 
     return _Class;
@@ -649,13 +666,23 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
         disabled: "disabled",
         page: "page"
       });
-      this.texts = _.defaults(options.texts || {}, {
-        first: "<<",
-        previous: "<",
-        next: ">",
-        last: ">>",
-        filler: "..."
-      });
+      if (isI18n()) {
+        this.texts = _.defaults(options.texts || {}, {
+          first: I18n.t(i18nKeys.pager.first),
+          previous: I18n.t(i18nKeys.pager.previous),
+          next: I18n.t(i18nKeys.pager.next),
+          last: I18n.t(i18nKeys.pager.last),
+          filler: I18n.t(i18nKeys.pager.filler)
+        });
+      } else {
+        this.texts = _.defaults(options.texts || {}, {
+          first: "<<",
+          previous: "<",
+          next: ">",
+          last: ">>",
+          filler: "..."
+        });
+      }
       this.numbers = true;
       if (options.numbers !== void 0) {
         this.numbers = options.numbers;
@@ -1445,7 +1472,16 @@ Backbone.Dg = Dg = (function(Backbone, Marionette, _, $) {
     return Dg.TableView.extend(options);
   };
   /*
-    Helper function to create a layout with customized options
+    Helper function to create a layout with options that overrides the
+    default options.
+  
+    ```
+    # Usable options
+    options:
+      gridRegions: {...}
+      collection: ...
+      template: ...
+    ```
   
     @param {Object} options The options to configure the layout and views
     @return {Dg.GridLayout} The layout class created

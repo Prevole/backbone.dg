@@ -85,12 +85,20 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
     return Dg.TableView.extend options
 
   ###
-  Helper function to create a layout with customized options
+  Helper function to create a layout with options that overrides the
+  default options.
+
+  ```
+  # Usable options
+  options:
+    gridRegions: {...}
+    collection: ...
+    template: ...
+  ```
 
   @param {Object} options The options to configure the layout and views
   @return {Dg.GridLayout} The layout class created
   ###
-  # TODO: Improve documentation
   Dg.createGridLayout = (options) ->
     options = options || {}
 
@@ -103,6 +111,7 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
         not _.isObject(value)
     )
 
+    # Check if the collection is given
     if options.collection is undefined
       gridLayout = Dg.GridLayout.extend
         regions: regions
@@ -111,6 +120,7 @@ Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
         collection: options.collection
         regions: regions
 
+    # Check if the template is given or use the default one
     if not (options.template is undefined)
       gridLayout.prototype.template = templates[options.template]
 

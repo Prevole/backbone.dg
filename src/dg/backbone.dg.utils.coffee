@@ -65,3 +65,11 @@ mandatoryOptions = (options, optionNames) ->
       return false
 
   return true
+
+###
+Check if the I18n library is available or not
+
+@return {Boolean} True if the lib is available
+###
+isI18n = ->
+  return not (window.I18n is undefined)
