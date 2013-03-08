@@ -214,18 +214,10 @@ gridLayout4 = Dg.createGridLayout(
 )
 
 $(document).ready ->
-  new Marionette.Region(
-    el: "#dg1"
-  ).show new gridLayout()
+  new Marionette.Region(el: "#dg1").show new gridLayout()
 
-  new Marionette.Region(
-    el: "#dg2"
-  ).show new gridLayout2()
+  new Marionette.Region(el: "#dg2").show new gridLayout2()
 
-  new Marionette.Region(
-    el: "#dg3"
-  ).show new gridLayout3()
+  new Marionette.Region(el: "#dg3").show new gridLayout3()
 
-  new Marionette.Region(
-    el: "#dg4"
-  ).show new gridLayout4()
+  new Marionette.Region(el: "#dg4").show new gridLayout4()

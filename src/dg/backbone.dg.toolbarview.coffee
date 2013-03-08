@@ -43,6 +43,8 @@ Dg.ToolbarView = class extends Dg.DefaultItemView
       @ui.create.addClass("disabled")
       # TODO: Implement the create event
 
+    @vent.trigger "create:model"
+
   ###
   Manage the refresh button and the management of the
   button state.

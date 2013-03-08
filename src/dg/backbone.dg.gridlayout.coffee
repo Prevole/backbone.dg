@@ -25,6 +25,7 @@ Dg.GridLayout = class extends Marionette.Layout
     @vent.on "update", @handleUpdate
     @vent.on "refresh", @handleRefresh
     @vent.on "row:edit", @handleEdit
+    @vent.on "create:model", @handleCreate
 
     # Bind the grid refresh to the collection event
     @collection.on "fetched", @refreshGrid
@@ -71,6 +72,9 @@ Dg.GridLayout = class extends Marionette.Layout
   handleEdit: (model) ->
     # TODO: Trigger event to update the record
     alert model.get("name")
+
+  handleCreate: =>
+    @trigger "new"
 
   ###
   Override the close function from `Backbone.Marionette.Layout` to
