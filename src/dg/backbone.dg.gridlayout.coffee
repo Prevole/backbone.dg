@@ -69,9 +69,10 @@ Dg.GridLayout = class extends Marionette.Layout
   handleRefresh: =>
     @collection.refresh()
 
-  handleEdit: (model) ->
+  handleEdit: (model) =>
     # TODO: Trigger event to update the record
-    alert model.get("name")
+#    alert model.get("name")
+    @trigger "edit", model
 
   handleCreate: =>
     @trigger "new"
