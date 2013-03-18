@@ -22,7 +22,7 @@ an implementation based on other views and tags.
 
 A default collection is also provided to work with the `Dg` plugin.
 ###
-Backbone.Dg = Dg = ( (Backbone, Marionette, _, $) ->
+window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
   Dg = { version: "0.0.1" }
 
   #= backbone.dg.utils.coffee

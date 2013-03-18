@@ -25,6 +25,7 @@ Dg.GridLayout = class extends Marionette.Layout
     @vent.on "update", @handleUpdate
     @vent.on "refresh", @handleRefresh
     @vent.on "row:edit", @handleEdit
+    @vent.on "row:delete", @handleDelete
     @vent.on "create:model", @handleCreate
 
     # Bind the grid refresh to the collection event
@@ -73,6 +74,9 @@ Dg.GridLayout = class extends Marionette.Layout
     # TODO: Trigger event to update the record
 #    alert model.get("name")
     @trigger "edit", model
+
+  handleDelete: (model) =>
+    @trigger "delete", model
 
   handleCreate: =>
     @trigger "new"
