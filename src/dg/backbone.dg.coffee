@@ -8,13 +8,13 @@ and its different views to reach the features of the data table.
 
 Dependencies:
 
-- [jQuery 1.8.2](http://jquery.com)
+- [jQuery 1.9.0](http://jquery.com)
 - [JSON2 2011-10-19](http://www.JSON.org/json2.js)
-- [Underscore 1.4.2](http://underscorejs.org)
-- [Backbone 0.9.2](http://backbonejs.org)
-- [Backbone.Marionette 1.0.0-beta1](http://github.com/marionettejs/backbone.marionette)
-- [Backbone.EventBinder 0.0.0](http://github.com/marionettejs/backbone.eventbinder)
-- [Backbone.Wreqr 0.0.0](http://github.com/marionettejs/backbone.wreqr)
+- [Underscore 1.4.3](http://underscorejs.org)
+- [Backbone 0.9.10](http://backbonejs.org)
+- [Backbone.Marionette 1.0.0-rc3](http://github.com/marionettejs/backbone.marionette)
+- [Backbone.Wreqr 0.1.0](http://github.com/marionettejs/backbone.wreqr)
+- [Backbone.Babysitter 0.0.4](http://github.com/marionettejs/backbone.wreqr)
 
 By default, a complete implementation based on `<table />` HTML tag is
 provided but all the views can be overrided quickly and easily to create
