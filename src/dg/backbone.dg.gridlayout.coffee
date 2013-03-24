@@ -13,7 +13,7 @@ Dg.GridLayout = class extends Marionette.Layout
   ###
   initialize: (options) ->
     # Create the event aggregator used accross all the components
-    @vent = new Marionette.EventAggregator()
+    @vent = new Backbone.Wreqr.EventAggregator()
 
     @on "render", @renderRegions
 

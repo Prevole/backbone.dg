@@ -1082,6 +1082,8 @@ A default collection is also provided to work with the `Dg` plugin.
 
       _Class.prototype.tagName = "thead";
 
+      _Class.prototype.parentTagName = "table";
+
       _Class.prototype.events = {
         "click .sorting": "sort"
       };
@@ -1224,31 +1226,14 @@ A default collection is also provided to work with the `Dg` plugin.
         this.vent = options.vent;
         return this.collection = options.collection;
       },
-      /*
-      Override the `Backbone.Marionette.CompositeView` `render` function
-      to be able to render the `header` view before rendering the remaining
-      elements. In addition, this allows the element binding to work properly.
-        
-      @return {Dg.TableView} This
-      */
-
-      render: function() {
-        var tableHeader;
-        this.resetItemViewContainer();
-        this.setElement(this.renderModel());
+      onCompositeModelRendered: function() {
         if (this.headerView) {
           this.header = new this.headerView({
             vent: this.vent
           });
-          tableHeader = this.header.render().el;
-          this.$el.prepend(tableHeader);
+          this.$el.find(this.header.parentTagName || "table").prepend(this.header.render().el);
         }
-        this.bindUIElements();
-        this.trigger("composite:model:rendered");
-        this.trigger("render");
-        this.renderCollection();
-        this.trigger("composite:rendered");
-        return this;
+        return this.trigger("render");
       },
       /*
       As the render function do custom operations, we
@@ -1358,7 +1343,7 @@ A default collection is also provided to work with the `Dg` plugin.
 
 
       _Class.prototype.initialize = function(options) {
-        this.vent = new Marionette.EventAggregator();
+        this.vent = new Backbone.Wreqr.EventAggregator();
         this.on("render", this.renderRegions);
         /*
         TODO: Refactor this part

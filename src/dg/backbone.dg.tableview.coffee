@@ -41,32 +41,35 @@ Dg.TableView = Marionette.CompositeView.extend
     @vent = options.vent
     @collection = options.collection
 
-  ###
-  Override the `Backbone.Marionette.CompositeView` `render` function
-  to be able to render the `header` view before rendering the remaining
-  elements. In addition, this allows the element binding to work properly.
-
-  @return {Dg.TableView} This
-  ###
-  render: ->
-    @resetItemViewContainer()
-
-    @setElement @renderModel()
-
+  onCompositeModelRendered: ->
     # If necessary, the header view is rendered
     if @headerView
       @header = new @headerView(vent: @vent)
-      tableHeader =  @header.render().el
-      @$el.prepend(tableHeader)
+      @$el.find(@header.parentTagName || "table").prepend(@header.render().el)
 
-    @bindUIElements()
-    @trigger("composite:model:rendered")
-    @trigger("render")
+    @trigger "render"
 
-    @renderCollection()
-    @trigger("composite:rendered")
-
-    @
+#  ###
+#  Override the `Backbone.Marionette.CompositeView` `render` function
+#  to be able to render the `header` view before rendering the remaining
+#  elements. In addition, this allows the element binding to work properly.
+#
+#  @return {Dg.TableView} This
+#  ###
+#  render: ->
+#    @resetItemViewContainer()
+#
+#    @setElement @renderModel()
+#
+#
+#    @bindUIElements()
+#    @trigger("composite:model:rendered")
+#    @trigger("render")
+#
+#    @renderCollection()
+#    @trigger("composite:rendered")
+#
+#    @
 
   ###
   As the render function do custom operations, we

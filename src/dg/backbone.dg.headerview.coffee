@@ -13,6 +13,7 @@ on the different columns.
 ###
 Dg.HeaderView = class extends Dg.ItemView
   tagName: "thead"
+  parentTagName: "table"
 
   events:
     "click .sorting": "sort"

@@ -34,8 +34,8 @@ dataCollection = class extends Backbone.Collection
 
   sync: (method, model, options) ->
     storedSuccess = options.success
-    options.success = (collection, response, options) =>
-      storedSuccess(collection, response, options)
+    options.success = (response) =>
+      storedSuccess(response)
       @trigger "fetched"
 
     localData = _.clone(models)
@@ -64,7 +64,7 @@ dataCollection = class extends Backbone.Collection
     localData = localData.slice(@meta.from, @meta.to)
     @meta.from = @meta.from + 1
 
-    options.success(@, localData, update: false)
+    options.success(localData)
 
   refresh: ->
     @reset()
@@ -169,9 +169,7 @@ gridLayout3 = Dg.createGridLayout(
 )
 
 table = (data) ->
-  "<div>" +
-    "<div class=\"clearfix\" />" +
-  "</div>"
+  "<div class=\"clearfix\" />"
 
 tableRow = (data) ->
   "<span><strong>Era:&nbsp;</strong>#{data.era} (#{data.serie})</span><br/>" +
