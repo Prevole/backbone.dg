@@ -8,7 +8,7 @@ The empty view is based on the `<table />` tag and then
 will use a `</td colspan="n">` tag where `n` is the number
 of columns shown in the data table.
 ###
-EmptyView = class extends Dg.DefaultItemView
+Dg.EmptyView = class extends Dg.DefaultItemView
   template: templates["empty"]
 
   ui:
