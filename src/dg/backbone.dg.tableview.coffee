@@ -44,7 +44,7 @@ Dg.TableView = Marionette.CompositeView.extend
   onCompositeModelRendered: ->
     # If necessary, the header view is rendered
     if @headerView
-      @header = new @headerView(vent: @vent)
+      @header = new @headerView(@options)
       @$el.find(@header.parentTagName || "table").prepend(@header.render().el)
 
     @trigger "render"

@@ -44,7 +44,7 @@ Dg.GridLayout = class extends Marionette.Layout
         options = _.extend({vent: @vent}, regionDefinition.options || {})
 
         # Show the region after its creation
-        @[regionName].show new regionDefinition.view(options)
+        @[regionName].show new regionDefinition.view(_.extend(options, @options))
 
     # Start rendering the table region by showing a loading view (waiting for data)
     @table.show(new LoadingView())
@@ -57,7 +57,7 @@ Dg.GridLayout = class extends Marionette.Layout
   ###
   refreshGrid: =>
     # This time, the table could shou the data from the collection
-    @table.show new @regions.table.view(vent: @vent, collection: @collection)
+    @table.show new @regions.table.view(_.extend({vent: @vent, collection: @collection}, @options))
 
     # Refresh all the views attached to the grid with the collection metadata
     @vent.trigger "view:refresh", @collection.getInfo()

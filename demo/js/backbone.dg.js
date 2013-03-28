@@ -30,7 +30,7 @@ A default collection is also provided to work with the `Dg` plugin.
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   window.Backbone.Dg = window.Dg = (function(Backbone, Marionette, _, $) {
-    var Dg, EmptyView, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, isI18n, mandatoryOptions, reject, templates,
+    var Dg, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, isI18n, mandatoryOptions, reject, templates,
       _this = this;
     Dg = {
       version: "0.0.1"
@@ -970,7 +970,7 @@ A default collection is also provided to work with the `Dg` plugin.
     of columns shown in the data table.
     */
 
-    EmptyView = (function(_super) {
+    Dg.EmptyView = (function(_super) {
 
       __extends(_Class, _super);
 
