@@ -45,7 +45,16 @@ Dg.TableView = Marionette.CompositeView.extend
     # If necessary, the header view is rendered
     if @headerView
       @header = new @headerView(@options)
-      @$el.find(@header.parentTagName || "table").prepend(@header.render().el)
+
+      if @header.parentSelector is undefined or @header.parentSelector == ""
+        selector = "table"
+      else
+        selector = @header.parentSelector
+
+      if @header.appendMode is undefined or @header.appendMode != "prepend"
+        @$el.find(selector).append(@header.render().el)
+      else
+        @$el.find(selector).prepend(@header.render().el)
 
     @trigger "render"
 

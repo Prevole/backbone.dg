@@ -1082,7 +1082,9 @@ A default collection is also provided to work with the `Dg` plugin.
 
       _Class.prototype.tagName = "thead";
 
-      _Class.prototype.parentTagName = "table";
+      _Class.prototype.parentSelector = "table";
+
+      _Class.prototype.appendMode = "prepend";
 
       _Class.prototype.events = {
         "click .sorting": "sort"
@@ -1227,11 +1229,19 @@ A default collection is also provided to work with the `Dg` plugin.
         return this.collection = options.collection;
       },
       onCompositeModelRendered: function() {
+        var selector;
         if (this.headerView) {
-          this.header = new this.headerView({
-            vent: this.vent
-          });
-          this.$el.find(this.header.parentTagName || "table").prepend(this.header.render().el);
+          this.header = new this.headerView(this.options);
+          if (this.header.parentSelector === void 0 || this.header.parentSelector === "") {
+            selector = "table";
+          } else {
+            selector = this.header.parentSelector;
+          }
+          if (this.header.appendMode === void 0 || this.header.appendMode !== "prepend") {
+            this.$el.find(selector).append(this.header.render().el);
+          } else {
+            this.$el.find(selector).prepend(this.header.render().el);
+          }
         }
         return this.trigger("render");
       },
@@ -1374,7 +1384,7 @@ A default collection is also provided to work with the `Dg` plugin.
             options = _.extend({
               vent: this.vent
             }, regionDefinition.options || {});
-            this[regionName].show(new regionDefinition.view(options));
+            this[regionName].show(new regionDefinition.view(_.extend(options, this.options)));
           }
         }
         this.table.show(new LoadingView());
@@ -1387,10 +1397,10 @@ A default collection is also provided to work with the `Dg` plugin.
 
 
       _Class.prototype.refreshGrid = function() {
-        this.table.show(new this.regions.table.view({
+        this.table.show(new this.regions.table.view(_.extend({
           vent: this.vent,
           collection: this.collection
-        }));
+        }, this.options)));
         return this.vent.trigger("view:refresh", this.collection.getInfo());
       };
 

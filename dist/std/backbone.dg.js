@@ -1082,7 +1082,9 @@ A default collection is also provided to work with the `Dg` plugin.
 
       _Class.prototype.tagName = "thead";
 
-      _Class.prototype.parentTagName = "table";
+      _Class.prototype.parentSelector = "table";
+
+      _Class.prototype.appendMode = "prepend";
 
       _Class.prototype.events = {
         "click .sorting": "sort"
@@ -1227,9 +1229,19 @@ A default collection is also provided to work with the `Dg` plugin.
         return this.collection = options.collection;
       },
       onCompositeModelRendered: function() {
+        var selector;
         if (this.headerView) {
           this.header = new this.headerView(this.options);
-          this.$el.find(this.header.parentTagName || "table").prepend(this.header.render().el);
+          if (this.header.parentSelector === void 0 || this.header.parentSelector === "") {
+            selector = "table";
+          } else {
+            selector = this.header.parentSelector;
+          }
+          if (this.header.appendMode === void 0 || this.header.appendMode !== "prepend") {
+            this.$el.find(selector).append(this.header.render().el);
+          } else {
+            this.$el.find(selector).prepend(this.header.render().el);
+          }
         }
         return this.trigger("render");
       },
