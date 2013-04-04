@@ -169,15 +169,17 @@ gridLayout3 = Dg.createGridLayout(
 )
 
 table = (data) ->
-  "<div class=\"clearfix\" />"
+  '<div class="container"/>'
 
 tableRow = (data) ->
+  '<div>' +
   "<span><strong>Era:&nbsp;</strong>#{data.era} (#{data.serie})</span><br/>" +
   "<span><strong>Title:&nbsp;</strong>#{data.title}</span><br/>" +
   "<span><strong>Timeline:&nbsp;</strong>#{data.timeline}</span><br/>" +
   "<span><strong>Author:&nbsp;</strong>#{data.author}</span></br>" +
   "<span><strong>Release:&nbsp;</strong>#{data.release}</span><br/>" +
-  "<span><strong>Type:&nbsp;</strong>#{data.type}</span>"
+  "<span><strong>Type:&nbsp;</strong>#{data.type}</span>" +
+  '</div>'
 
 perpage = (data) ->
   "<div class='form-inline pull-left'>" +
@@ -192,6 +194,9 @@ perpage = (data) ->
     "</select>" +
   "</div>"
 
+headerGrid = (data) ->
+  "<button class='btn asc pull-right'>Timeline asc</button><button class='btn desc pull-right'>Timeline desc</button>"
+
 gridLayout4 = Dg.createGridLayout(
   collection: new dataCollection(data, meta: { perPage: 6 })
   gridRegions:
@@ -203,7 +208,21 @@ gridLayout4 = Dg.createGridLayout(
     table:
       view: Dg.createTableView
         template: table
-        itemViewContainer: "div"
+        itemViewContainer: ".container"
+        headerView: Dg.HeaderView.extend
+          tagName: "div"
+          parentSelector: ".container"
+          className: "clearfix"
+          template: headerGrid
+          events:
+            'click .asc': 'asc'
+            'click .desc': 'desc'
+          asc: (event) ->
+            event.preventDefault()
+            @update _.object( ['sort'], [{2: 'A'}] )
+          desc: (event) ->
+            event.preventDefault()
+            @update _.object( ['sort'], [{2: 'D'}] )
         itemView: Dg.createRowView
           model: DataModel
           template: tableRow

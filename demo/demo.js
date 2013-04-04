@@ -1,5 +1,5 @@
 (function() {
-  var DataModel, HeaderView, RowView, data, dataCollection, gridLayout, gridLayout2, gridLayout3, gridLayout4, headerView, models, perpage, rowView, table, tableRow,
+  var DataModel, HeaderView, RowView, data, dataCollection, gridLayout, gridLayout2, gridLayout3, gridLayout4, headerGrid, headerView, models, perpage, rowView, table, tableRow,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -317,15 +317,19 @@
   });
 
   table = function(data) {
-    return "<div class=\"clearfix\" />";
+    return '<div class="container"/>';
   };
 
   tableRow = function(data) {
-    return ("<span><strong>Era:&nbsp;</strong>" + data.era + " (" + data.serie + ")</span><br/>") + ("<span><strong>Title:&nbsp;</strong>" + data.title + "</span><br/>") + ("<span><strong>Timeline:&nbsp;</strong>" + data.timeline + "</span><br/>") + ("<span><strong>Author:&nbsp;</strong>" + data.author + "</span></br>") + ("<span><strong>Release:&nbsp;</strong>" + data.release + "</span><br/>") + ("<span><strong>Type:&nbsp;</strong>" + data.type + "</span>");
+    return '<div>' + ("<span><strong>Era:&nbsp;</strong>" + data.era + " (" + data.serie + ")</span><br/>") + ("<span><strong>Title:&nbsp;</strong>" + data.title + "</span><br/>") + ("<span><strong>Timeline:&nbsp;</strong>" + data.timeline + "</span><br/>") + ("<span><strong>Author:&nbsp;</strong>" + data.author + "</span></br>") + ("<span><strong>Release:&nbsp;</strong>" + data.release + "</span><br/>") + ("<span><strong>Type:&nbsp;</strong>" + data.type + "</span>") + '</div>';
   };
 
   perpage = function(data) {
     return "<div class='form-inline pull-left'>" + "<label class='checkbox'>Item per page:&nbsp;</label>" + "<select class='per-page input-mini'>" + "<option>3</option>" + "<option>6</option>" + "<option>9</option>" + "<option>30</option>" + "<option>60</option>" + "<option>90</option>" + "</select>" + "</div>";
+  };
+
+  headerGrid = function(data) {
+    return "<button class='btn asc pull-right'>Timeline asc</button><button class='btn desc pull-right'>Timeline desc</button>";
   };
 
   gridLayout4 = Dg.createGridLayout({
@@ -345,7 +349,33 @@
       table: {
         view: Dg.createTableView({
           template: table,
-          itemViewContainer: "div",
+          itemViewContainer: ".container",
+          headerView: Dg.HeaderView.extend({
+            tagName: "div",
+            parentSelector: ".container",
+            className: "clearfix",
+            template: headerGrid,
+            events: {
+              'click .asc': 'asc',
+              'click .desc': 'desc'
+            },
+            asc: function(event) {
+              event.preventDefault();
+              return this.update(_.object(['sort'], [
+                {
+                  2: 'A'
+                }
+              ]));
+            },
+            desc: function(event) {
+              event.preventDefault();
+              return this.update(_.object(['sort'], [
+                {
+                  2: 'D'
+                }
+              ]));
+            }
+          }),
           itemView: Dg.createRowView({
             model: DataModel,
             template: tableRow,
