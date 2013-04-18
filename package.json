@@ -1,5 +1,5 @@
 {
-  "name": "backbone.dg",
+  "name": "Backbone.Dg",
   "description": "Data Grid plugin for Backbone (heavy use of Backbone.Marionette)",
   "keywords": [ "table", "datagrid", "backbone", "marionette" ],
   "version": "0.0.2",
