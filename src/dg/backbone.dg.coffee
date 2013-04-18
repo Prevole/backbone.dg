@@ -23,7 +23,7 @@ an implementation based on other views and tags.
 A default collection is also provided to work with the `Dg` plugin.
 ###
 window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
-  Dg = { version: "0.0.1" }
+  Dg = { version: '0.0.2' }
 
   #= backbone.dg.utils.coffee
   #= backbone.dg.templateregistry.coffee
@@ -59,8 +59,8 @@ window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
   @return {Dg.RowView} Row view class created
   ###
   Dg.createRowView = (options) ->
-    unless mandatoryOptions(options, ["template", "model"])
-      throw new Error("template or model is missing in the options")
+    unless mandatoryOptions(options, ['template', 'model'])
+      throw new Error('template or model is missing in the options')
 
     return Dg.RowView.extend options
 
@@ -72,15 +72,15 @@ window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
   @return {Dg.HeaderView} Header view class created
   ###
   Dg.createHeaderView = (options) ->
-    unless mandatoryOptions(options, ["template"])
-      throw new Error("template is missing in the options")
+    unless mandatoryOptions(options, ['template'])
+      throw new Error('template is missing in the options')
 
     return Dg.HeaderView.extend options
 
   # TODO: Comments
   Dg.createTableView = (options) ->
-    unless mandatoryOptions(options, ["template", "itemViewContainer", "itemView"])
-      throw new Error("template, itemViewContainer or itemView is missing in the options")
+    unless mandatoryOptions(options, ['template', 'itemViewContainer', 'itemView'])
+      throw new Error('template, itemViewContainer or itemView is missing in the options')
 
     return Dg.TableView.extend options
 
@@ -132,13 +132,16 @@ window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
   You can provide your own i18n keys to match your structure.
   ###
   i18nKeys =
-    info: "datagrid.info"
+    info: 'datagrid.info'
+    nodata: 'datagrid.nodata'
+    loading: 'datagrid.loading'
+    perpage: 'datagrid.perpage'
     pager:
-      first: "datagrid.pager.first"
-      last: "datagrid.pager.last"
-      next: "datagrid.pager.next"
-      previous: "datagrid.pager.previous"
-      filler: "datagrid.pager.filler"
+      first: 'datagrid.pager.first'
+      last: 'datagrid.pager.last'
+      next: 'datagrid.pager.next'
+      previous: 'datagrid.pager.previous'
+      filler: 'datagrid.pager.filler'
 
   ###
   Defaults keys for the metadata used accross the data grid
@@ -148,17 +151,17 @@ window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
   to match your collection metadata
   ###
   infoKeys =
-    from: "from"
-    to: "to"
-    items: "items"
-    totalItems: "totalItems"
-    perPage: "perPage"
-    pages: "pages"
-    page: "page"
-    term: "term"
-    sort: "sort"
-    asc: "A"
-    desc: "D"
+    from: 'from'
+    to: 'to'
+    items: 'items'
+    totalItems: 'totalItems'
+    perPage: 'perPage'
+    pages: 'pages'
+    page: 'page'
+    term: 'term'
+    sort: 'sort'
+    asc: 'A'
+    desc: 'D'
 
   ###
   Default configuration to define the data grid regions
@@ -169,23 +172,23 @@ window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
   ###
   gridRegions =
     table:
-      selector: ".dgTable"
-      regionType: Dg.TableRegion
+      selector: '.dgTable'
+#      regionType: Dg.TableRegion
       view: Dg.TableView
     toolbar:
-      selector: ".dgToolbar"
+      selector: '.dgToolbar'
       view: Dg.ToolbarView
     quickSearch:
-      selector: ".dgQuickSearch"
+      selector: '.dgQuickSearch'
       view: Dg.QuickSearchView
     perPage:
-      selector: ".dgPerPage"
+      selector: '.dgPerPage'
       view: Dg.PerPageView
     info:
-      selector: ".dgInfo"
+      selector: '.dgInfo'
       view: Dg.InfoView
     pager:
-      selector: ".dgPager",
+      selector: '.dgPager',
       view: Dg.PagerView
 
   ###

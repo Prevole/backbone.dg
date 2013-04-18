@@ -9,29 +9,20 @@ The refresh of the collection happens in a delayed function to allow writing
 more than one caracter before triggering the refresh. This will avoid strange behavior
 and brings a better user experience.
 ###
-Dg.QuickSearchView = class extends Dg.DefaultItemView
-  template: templates["quicksearch"]
+Dg.QuickSearchView = Dg.DefaultItemView.extend
+  template: templates['quicksearch']
 
   events:
-    "keyup input": "search"
+    'keyup input': 'search'
 
   ui:
-    term: "input"
+    term: 'input'
 
-  ###
-  Intialize the view and prepare the delayed search function
-
-  @param {Object} options The options to pass to the parent constructor
-  ###
-  initialize: (options) ->
-    super options
-
-    # Create the delayed function to trigger the search query
-    @searchInternal = _.debounce(
-      (event) =>
-        @update _.object( [infoKeys.term], [@ui.term.val().trim()] )
-      , 300
-    )
+  _searchInternal: _.debounce(
+    (event) ->
+      @update _.object( [infoKeys.term], [@ui.term.val().trim()] )
+    , 300
+  )
 
   ###
   Refresh the view by setting the search term into the field.
@@ -53,4 +44,4 @@ Dg.QuickSearchView = class extends Dg.DefaultItemView
   @param {Event} event The event triggered on `keyup`
   ###
   search: (event) ->
-    @searchInternal(event)
+    @_searchInternal(event)

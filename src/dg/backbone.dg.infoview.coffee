@@ -15,8 +15,8 @@ the default message is used:
 
   - default message: `Showing ${from} to ${to} of ${total} entries`
 ###
-Dg.InfoView = class extends Dg.DefaultItemView
-  template: templates["info"]
+Dg.InfoView = Dg.DefaultItemView.extend
+  template: templates['info']
 
   ###
   Show the metadata that describes the collection currently shown

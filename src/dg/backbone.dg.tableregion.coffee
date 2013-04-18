@@ -4,7 +4,7 @@
 This class offers the possibility to add some transition effects
 when the whole data grid is shown to the user.
 ###
-Dg.TableRegion = class extends Marionette.Region
+Dg.TableRegion = Marionette.Region.extend
 ###!
     Open
     @param [Backbone.View] view The view to open

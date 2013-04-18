@@ -11,7 +11,7 @@ raise an error if not overriden while the `update` has a default implementation.
 This view expect to have an event aggregator given from the datagrid layout. If not given,
 an error is raised.
 ###
-Dg.ItemView = class extends Marionette.ItemView
+Dg.ItemView = Marionette.ItemView.extend
   ###
   Constructor to enforce the presence of the event aggregator
   used accross the datagrid.
@@ -21,10 +21,15 @@ Dg.ItemView = class extends Marionette.ItemView
 
   @param {Object} options The options that should at least contain `vent` object
   ###
-  initialize: (options) ->
-    throw new Error "No event aggregator given." unless options.vent
-    @vent = options.vent
-    @vent.on "view:refresh", @refreshView, @
+  constructor: () ->
+    Marionette.ItemView.prototype.constructor.apply @, slice(arguments)
+
+    _.extend @, _.pick(@options, _.union(@optionNames || [], ['vent']))
+
+    throw new Error 'No event aggregator given.' unless @vent
+    @vent.on 'view:refresh', @refreshView, @
+
+    @
 
   ###
   Override the default render method from `Marionette.ItemView`
@@ -37,10 +42,8 @@ Dg.ItemView = class extends Marionette.ItemView
 
   @return {Dg.ItemView} This
   ###
-  render: ->
-    super
-    @vent.trigger("item:rendered", this)
-    return @
+  onRender: ->
+    @vent.trigger('item:rendered', this)
 
   ###
   Refresh the view based on the info comming from the collection state.
@@ -50,7 +53,7 @@ Dg.ItemView = class extends Marionette.ItemView
   @param {Object} info The metadata that describe the collection current state
   ###
   refreshView: (info) ->
-    throw new Error "The method refreshView(info) must be defined."
+    throw new Error 'The method refreshView(info) must be defined.'
 
   # TODO: Add see the metadata format
   ###
@@ -68,13 +71,12 @@ Dg.ItemView = class extends Marionette.ItemView
   @param {Object} info The metadata updated by the table views
   ###
   update: (info) ->
-    @vent.trigger "update", info
+    @vent.trigger 'update', info
 
   ###
   Overrides the `close` function from `Backbone.Marionette.ItemView` to
   ensure that the event binding is correctly unbinded when the view
   is closed.
   ###
-  close: ->
-    @vent.off "view:refresh", @refreshView
-    super
+  onClose: ->
+    @vent.off 'view:refresh', @refreshView

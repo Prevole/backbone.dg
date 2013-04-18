@@ -30,10 +30,9 @@ A default collection is also provided to work with the `Dg` plugin.
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   window.Backbone.Dg = window.Dg = (function(Backbone, Marionette, _, $) {
-    var Dg, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, isI18n, mandatoryOptions, reject, templates,
-      _this = this;
+    var Dg, LoadingView, defaultTexts, defaults, gridRegions, i18nKeys, infoKeys, isI18n, mandatoryOptions, reject, slice, templates;
     Dg = {
-      version: "0.0.1"
+      version: '0.0.2'
     };
     /*
     defaults
@@ -115,6 +114,11 @@ A default collection is also provided to work with the `Dg` plugin.
       return !(window.I18n === void 0);
     };
     /*
+    Shortcut to the slice method from Array
+    */
+
+    slice = Function.prototype.call.bind(Array.prototype.slice);
+    /*
     The templates provided are used to offer a simple and default
     implementation that could be used out of the box to render
     a DataGrid.
@@ -125,31 +129,51 @@ A default collection is also provided to work with the `Dg` plugin.
 
     templates = {
       empty: function(data) {
-        return "<td class='empty'>No Data</td>";
+        var text;
+        text = "No data";
+        if (isI18n()) {
+          text = I18n.t(i18nKeys['nodata']);
+        }
+        return "<td class='empty'>" + text + "</td>";
       },
       grid: function(data) {
-        return "<div class='dgGrid'>" + "<div class='clearfix'>" + "<div class='dgPerPage' />" + "<div class='dgToolbar' />" + "<div class='dgQuickSearch' />" + "</div>" + "<div class='dgTable' />" + "<div class='clearfix'>" + "<div class='dgInfo pull-left' />" + "<div class='dgPager pull-right' />" + "</div>" + "</div>";
+        return '<div class="dgGrid">' + '<div class="clearfix">' + '<div class="dgPerPage" />' + '<div class="dgToolbar" />' + '<div class="dgQuickSearch" />' + '</div>' + '<div class="dgTable" />' + '<div class="clearfix">' + '<div class="dgInfo pull-left" />' + '<div class="dgPager pull-right" />' + '</div>' + '</div>';
       },
       gridempty: function(data) {
-        return "<div class='dgLoading'>" + "<div class='progress progress-striped active'>" + "<div class='bar' style='width:100%'>Loading data</div>" + "</div>" + "</div>";
+        var text;
+        text = 'Loading data';
+        if (isI18n()) {
+          text = I18n.t(i18nKeys['loading']);
+        }
+        return '<div class="dgLoading">' + '<div class="progress progress-striped active">' + ("<div class='bar' style='width:100%'>" + text + "</div>") + "</div>" + "</div>";
       },
       info: function(data) {
-        return "<span class='info' />";
+        return '<span class="info" />';
       },
       pager: function(data) {
-        return "<div class='pagination pagination-right' />";
+        return '<div class="pagination pagination-right" />';
       },
       perpage: function(data) {
-        return "<div class='form-inline pull-left'>" + "<label class='checkbox'>Item per page:&nbsp;</label>" + "<select class='per-page input-mini'>" + "<option>2</option>" + "<option>5</option>" + "<option>10</option>" + "<option>25</option>" + "<option>50</option>" + "<option>100</option>" + "</select>" + "</div>";
+        var text;
+        text = 'Item per page:';
+        if (isI18n()) {
+          text = I18n.t(i18nKeys['perpage']);
+        }
+        return '<div class="form-inline pull-left">' + ("<label class='checkbox'>" + text + "&nbsp;</label>") + '<select class="per-page input-mini">' + '<option>2</option>' + '<option>5</option>' + '<option>10</option>' + '<option>25</option>' + '<option>50</option>' + '<option>100</option>' + '</select>' + '</div>';
       },
       quicksearch: function(data) {
-        return "<div class='form-inline pull-right qs'>" + "<label class='checkbox'>Quick search:&nbsp;</label>" + "<input type='text' />" + "</div>";
+        var text;
+        text = 'Quick search:';
+        if (isI18n()) {
+          text = I18n.t(i18nKeys['quicksearch']);
+        }
+        return '<div class="form-inline pull-right qs">' + ("<label class='checkbox'>" + text + "&nbsp;</label>") + '<input type="text" />' + '</div>';
       },
       table: function(data) {
-        return "<table class='table table-striped table-hover table-condensed'>" + "<tbody/>" + "</table>";
+        return '<table class="table table-striped table-hover table-condensed">' + '<tbody/>' + '</table>';
       },
       toolbar: function(data) {
-        return "<div class='form-inline pull-right buttons btn-group'>" + "<button class='btn refresh'>" + "<i class='icon-refresh'/>" + "</button>" + "<button class='btn create'>" + "<i class='icon-plus'/>" + "</button>" + "</div>";
+        return '<div class="form-inline pull-right buttons btn-group">' + '<button class="btn refresh">' + '<i class="icon-refresh" />' + '</button>' + '<button class="btn create">' + '<i class="icon-plus" />' + '</button>' + '</div>';
       }
     };
     /*
@@ -179,14 +203,7 @@ A default collection is also provided to work with the `Dg` plugin.
     an error is raised.
     */
 
-    Dg.ItemView = (function(_super) {
-
-      __extends(_Class, _super);
-
-      function _Class() {
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
+    Dg.ItemView = Marionette.ItemView.extend({
       /*
       Constructor to enforce the presence of the event aggregator
       used accross the datagrid.
@@ -197,15 +214,15 @@ A default collection is also provided to work with the `Dg` plugin.
       @param {Object} options The options that should at least contain `vent` object
       */
 
-
-      _Class.prototype.initialize = function(options) {
-        if (!options.vent) {
-          throw new Error("No event aggregator given.");
+      constructor: function() {
+        Marionette.ItemView.prototype.constructor.apply(this, slice(arguments));
+        _.extend(this, _.pick(this.options, _.union(this.optionNames || [], ['vent'])));
+        if (!this.vent) {
+          throw new Error('No event aggregator given.');
         }
-        this.vent = options.vent;
-        return this.vent.on("view:refresh", this.refreshView, this);
-      };
-
+        this.vent.on('view:refresh', this.refreshView, this);
+        return this;
+      },
       /*
       Override the default render method from `Marionette.ItemView`
       to trigger the event "item:rendered" once the render method
@@ -218,13 +235,9 @@ A default collection is also provided to work with the `Dg` plugin.
       @return {Dg.ItemView} This
       */
 
-
-      _Class.prototype.render = function() {
-        _Class.__super__.render.apply(this, arguments);
-        this.vent.trigger("item:rendered", this);
-        return this;
-      };
-
+      onRender: function() {
+        return this.vent.trigger('item:rendered', this);
+      },
       /*
       Refresh the view based on the info comming from the collection state.
         
@@ -233,11 +246,9 @@ A default collection is also provided to work with the `Dg` plugin.
       @param {Object} info The metadata that describe the collection current state
       */
 
-
-      _Class.prototype.refreshView = function(info) {
-        throw new Error("The method refreshView(info) must be defined.");
-      };
-
+      refreshView: function(info) {
+        throw new Error('The method refreshView(info) must be defined.');
+      },
       /*
       Every time the metadata of the datagrid is updated, an
       event is triggered to request a refresh of the data contained
@@ -253,26 +264,19 @@ A default collection is also provided to work with the `Dg` plugin.
       @param {Object} info The metadata updated by the table views
       */
 
-
-      _Class.prototype.update = function(info) {
-        return this.vent.trigger("update", info);
-      };
-
+      update: function(info) {
+        return this.vent.trigger('update', info);
+      },
       /*
       Overrides the `close` function from `Backbone.Marionette.ItemView` to
       ensure that the event binding is correctly unbinded when the view
       is closed.
       */
 
-
-      _Class.prototype.close = function() {
-        this.vent.off("view:refresh", this.refreshView);
-        return _Class.__super__.close.apply(this, arguments);
-      };
-
-      return _Class;
-
-    })(Marionette.ItemView);
+      onClose: function() {
+        return this.vent.off('view:refresh', this.refreshView);
+      }
+    });
     /*
     ## DefaultItemView
     
@@ -285,14 +289,14 @@ A default collection is also provided to work with the `Dg` plugin.
     must not be used directly.
     */
 
-    Dg.DefaultItemView = (function(_super) {
+    Dg.DefaultItemView = Dg.ItemView.extend({
+      /*
+      Constructor
+      */
 
-      __extends(_Class, _super);
-
-      function _Class() {
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
+      constructor: function() {
+        return Dg.ItemView.prototype.constructor.apply(this, slice(arguments));
+      },
       /*
       Override the default render method from `Dg.TableItemView` to
       set the element to the result of template rendering. This will
@@ -306,27 +310,23 @@ A default collection is also provided to work with the `Dg` plugin.
       an additional `item:rendered` event is triggered.
       */
 
-
-      _Class.prototype.render = function() {
+      render: function() {
         if (this.beforeRender) {
           this.beforeRender();
         }
-        this.trigger("before:render", this);
-        this.trigger("item:before:render", this);
+        this.trigger('before:render', this);
+        this.trigger('item:before:render', this);
         this.setElement($(Marionette.Renderer.render(this.getTemplate(), this.serializeData())), true);
         this.bindUIElements();
         if (this.onRender) {
           this.onRender();
         }
-        this.trigger("render", this);
-        this.trigger("item:rendered", this);
-        this.vent.trigger("item:rendered", this);
+        this.trigger('render', this);
+        this.trigger('item:rendered', this);
+        this.vent.trigger('item:rendered', this);
         return this;
-      };
-
-      return _Class;
-
-    })(Dg.ItemView);
+      }
+    });
     /*
     ## Dg.InfoView
     
@@ -345,16 +345,8 @@ A default collection is also provided to work with the `Dg` plugin.
       - default message: `Showing ${from} to ${to} of ${total} entries`
     */
 
-    Dg.InfoView = (function(_super) {
-
-      __extends(_Class, _super);
-
-      function _Class() {
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
-      _Class.prototype.template = templates["info"];
-
+    Dg.InfoView = Dg.DefaultItemView.extend({
+      template: templates['info'],
       /*
       Show the metadata that describes the collection currently shown
       to the user such the number of entries, the first record, the last
@@ -363,8 +355,7 @@ A default collection is also provided to work with the `Dg` plugin.
       @param {Object} info The metadata to collect the data to show
       */
 
-
-      _Class.prototype.refreshView = function(info) {
+      refreshView: function(info) {
         if (isI18n()) {
           return this.$el.text(I18n.t(i18nKeys.info, {
             from: info[infoKeys.from],
@@ -374,11 +365,8 @@ A default collection is also provided to work with the `Dg` plugin.
         } else {
           return this.$el.text("Showing " + info[infoKeys.from] + " to " + info[infoKeys.to] + " of " + info[infoKeys.items] + " entries");
         }
-      };
-
-      return _Class;
-
-    })(Dg.DefaultItemView);
+      }
+    });
     /*
     ## Dg.QuickSearch
     
@@ -391,39 +379,17 @@ A default collection is also provided to work with the `Dg` plugin.
     and brings a better user experience.
     */
 
-    Dg.QuickSearchView = (function(_super) {
-
-      __extends(_Class, _super);
-
-      function _Class() {
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
-      _Class.prototype.template = templates["quicksearch"];
-
-      _Class.prototype.events = {
-        "keyup input": "search"
-      };
-
-      _Class.prototype.ui = {
-        term: "input"
-      };
-
-      /*
-      Intialize the view and prepare the delayed search function
-        
-      @param {Object} options The options to pass to the parent constructor
-      */
-
-
-      _Class.prototype.initialize = function(options) {
-        var _this = this;
-        _Class.__super__.initialize.call(this, options);
-        return this.searchInternal = _.debounce(function(event) {
-          return _this.update(_.object([infoKeys.term], [_this.ui.term.val().trim()]));
-        }, 300);
-      };
-
+    Dg.QuickSearchView = Dg.DefaultItemView.extend({
+      template: templates['quicksearch'],
+      events: {
+        'keyup input': 'search'
+      },
+      ui: {
+        term: 'input'
+      },
+      _searchInternal: _.debounce(function(event) {
+        return this.update(_.object([infoKeys.term], [this.ui.term.val().trim()]));
+      }, 300),
       /*
       Refresh the view by setting the search term into the field.
         
@@ -435,11 +401,9 @@ A default collection is also provided to work with the `Dg` plugin.
       @param {Object} info The metadata to retrieve the search term
       */
 
-
-      _Class.prototype.refreshView = function(info) {
+      refreshView: function(info) {
         return this.ui.term.val(info[infoKeys.term]);
-      };
-
+      },
       /*
       Handle the quick search field changes to process
       the search query
@@ -447,14 +411,10 @@ A default collection is also provided to work with the `Dg` plugin.
       @param {Event} event The event triggered on `keyup`
       */
 
-
-      _Class.prototype.search = function(event) {
-        return this.searchInternal(event);
-      };
-
-      return _Class;
-
-    })(Dg.DefaultItemView);
+      search: function(event) {
+        return this._searchInternal(event);
+      }
+    });
     /*
     ## Dg.PerPageView
     
@@ -462,24 +422,14 @@ A default collection is also provided to work with the `Dg` plugin.
     shown in the table. The implementation is based on a select box.
     */
 
-    Dg.PerPageView = (function(_super) {
-
-      __extends(_Class, _super);
-
-      function _Class() {
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
-      _Class.prototype.template = templates["perpage"];
-
-      _Class.prototype.events = {
-        "change .per-page": "perPage"
-      };
-
-      _Class.prototype.ui = {
-        perPage: ".per-page"
-      };
-
+    Dg.PerPageView = Dg.DefaultItemView.extend({
+      template: templates['perpage'],
+      events: {
+        'change .per-page': 'perPage'
+      },
+      ui: {
+        perPage: '.per-page'
+      },
       /*
       Refresh the view by setting the number of entries per page to the select box.
         
@@ -489,11 +439,9 @@ A default collection is also provided to work with the `Dg` plugin.
       @param {Object} info The metadata to get the number of lines per page
       */
 
-
-      _Class.prototype.refreshView = function(info) {
+      refreshView: function(info) {
         return this.ui.perPage.val(info[infoKeys.perPage]);
-      };
-
+      },
       /*
       Manage the changes occured to change the number of entries
       shown on a page.
@@ -501,14 +449,10 @@ A default collection is also provided to work with the `Dg` plugin.
       @param {Event} event The event triggered on `change`
       */
 
-
-      _Class.prototype.perPage = function(event) {
+      perPage: function(event) {
         return this.update(_.object([infoKeys.perPage], [parseInt(this.ui.perPage.val())]));
-      };
-
-      return _Class;
-
-    })(Dg.DefaultItemView);
+      }
+    });
     /*
     ## Dg.ToolbarView
     
@@ -525,16 +469,16 @@ A default collection is also provided to work with the `Dg` plugin.
         return _Class.__super__.constructor.apply(this, arguments);
       }
 
-      _Class.prototype.template = templates["toolbar"];
+      _Class.prototype.template = templates['toolbar'];
 
       _Class.prototype.events = {
-        "click .refresh": "refresh",
-        "click .create": "create"
+        'click .refresh': 'refresh',
+        'click .create': 'create'
       };
 
       _Class.prototype.ui = {
-        create: ".create",
-        refresh: ".refresh"
+        create: '.create',
+        refresh: '.refresh'
       };
 
       /*
@@ -546,8 +490,8 @@ A default collection is also provided to work with the `Dg` plugin.
 
 
       _Class.prototype.refreshView = function(info) {
-        this.ui.refresh.removeClass("disabled");
-        return this.ui.create.removeClass("disabled");
+        this.ui.refresh.removeClass('disabled');
+        return this.ui.create.removeClass('disabled');
       };
 
       /*
@@ -564,10 +508,10 @@ A default collection is also provided to work with the `Dg` plugin.
 
       _Class.prototype.create = function(event) {
         event.preventDefault();
-        if (!this.ui.create.hasClass("disabled")) {
-          this.ui.create.addClass("disabled");
+        if (!this.ui.create.hasClass('disabled')) {
+          this.ui.create.addClass('disabled');
         }
-        return this.vent.trigger("create:model");
+        return this.vent.trigger('create:model');
       };
 
       /*
@@ -583,8 +527,8 @@ A default collection is also provided to work with the `Dg` plugin.
 
       _Class.prototype.refresh = function(event) {
         event.preventDefault();
-        if (!this.ui.refresh.hasClass("disabled")) {
-          this.ui.refresh.addClass("disabled");
+        if (!this.ui.refresh.hasClass('disabled')) {
+          this.ui.refresh.addClass('disabled');
           return this.update({});
         }
       };
@@ -592,6 +536,32 @@ A default collection is also provided to work with the `Dg` plugin.
       return _Class;
 
     })(Dg.DefaultItemView);
+    /*
+    Return an object containing the i18n translations for the pager
+    or default values.
+    
+    @return {Object} Texts for the pager
+    */
+
+    defaultTexts = function() {
+      if (isI18n()) {
+        return {
+          first: I18n.t(i18nKeys.pager.first),
+          previous: I18n.t(i18nKeys.pager.previous),
+          next: I18n.t(i18nKeys.pager.next),
+          last: I18n.t(i18nKeys.pager.last),
+          filler: I18n.t(i18nKeys.pager.filler)
+        };
+      } else {
+        return {
+          first: '<<',
+          previous: '<',
+          next: '>',
+          last: '>>',
+          filler: '...'
+        };
+      }
+    };
     /*
     ## Dg.PagerView
     
@@ -610,99 +580,60 @@ A default collection is also provided to work with the `Dg` plugin.
     
     Checks are done to correct bad page numbers or out of bounds in
     regards of the collection metadata.
+    
+    ```
+    # Default options
+    options:
+      deltaPage: 2
+      css:
+        active: "active"
+        disabled: "disabled"
+        page: "page"
+      texts:
+        first: "<<"
+        previous: "<"
+        next: ">"
+        last: ">>"
+        filler: "..."
+      numbers: true
+      firstAndLast: true
+      previousAndNext: true
+    ```
+    
+    - **delatePage**: Number of pages shown before and after the active one (if available)
+    - **css**: Different style added for link `disabled`, `active` or `page`
+    - **texts**: Texts used for each link excepted the page numbers
+    - **numbers**: Enable/Disable page number links
+    - **firstAndLast**: Enable/Disable first and last links
+    - **previousAndNext**: Enable/Disable previous and next links
     */
 
-    Dg.PagerView = (function(_super) {
-      var createLink;
-
-      __extends(_Class, _super);
-
-      function _Class() {
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
-      _Class.prototype.template = templates["pager"];
-
-      _Class.prototype.events = {
-        "click a": "pagging"
-      };
-
+    Dg.PagerView = Dg.DefaultItemView.extend({
+      optionNames: ['deltaPage', 'css', 'texts', 'numbers', 'firstAndLast', 'previousAndNext'],
+      template: templates['pager'],
+      events: {
+        'click a': 'pagging'
+      },
+      deltaPage: 2,
+      numbers: true,
+      firstAndLast: true,
+      previousAndNext: true,
+      css: {
+        active: 'active',
+        disabled: 'disabled',
+        page: 'page'
+      },
+      texts: defaultTexts(),
       /*
-      Create a default configuration to start calculation on
-      first rendering such number of pages and actual page.
-        
-      @param {Object} options The options to configure the view
-        
-      ```
-      # Default options
-      options:
-        deltaPage: 2
-        css:
-          active: "active"
-          disabled: "disabled"
-          page: "page"
-        texts:
-          first: "<<"
-          previous: "<"
-          next: ">"
-          last: ">>"
-          filler: "..."
-        numbers: true
-        firstAndLast: true
-        previousAndNext: true
-      ```
-        
-      - **delatePage**: Number of pages shown before and after the active one (if available)
-      - **css**: Different style added for link `disabled`, `active` or `page`
-      - **texts**: Texts used for each link excepted the page numbers
-      - **numbers**: Enable/Disable page number links
-      - **firstAndLast**: Enable/Disable first and last links
-      - **previousAndNext**: Enable/Disable previous and next links
+      Constructor
       */
 
-
-      _Class.prototype.initialize = function(options) {
-        _Class.__super__.initialize.call(this, options);
-        this.deltaPage = options.deltaPage || 2;
-        this.css = _.defaults(options.css || {}, {
-          active: "active",
-          disabled: "disabled",
-          page: "page"
-        });
-        if (isI18n()) {
-          this.texts = _.defaults(options.texts || {}, {
-            first: I18n.t(i18nKeys.pager.first),
-            previous: I18n.t(i18nKeys.pager.previous),
-            next: I18n.t(i18nKeys.pager.next),
-            last: I18n.t(i18nKeys.pager.last),
-            filler: I18n.t(i18nKeys.pager.filler)
-          });
-        } else {
-          this.texts = _.defaults(options.texts || {}, {
-            first: "<<",
-            previous: "<",
-            next: ">",
-            last: ">>",
-            filler: "..."
-          });
-        }
-        this.numbers = true;
-        if (options.numbers !== void 0) {
-          this.numbers = options.numbers;
-        }
-        this.firstAndLast = true;
-        if (options.firstAndLast !== void 0) {
-          this.firstAndLast = options.firstAndLast;
-        }
-        this.previousAndNext = true;
-        if (options.previousAndNext !== void 0) {
-          this.previousAndNext = options.previousAndNext;
-        }
+      constructor: function(options) {
+        Dg.DefaultItemView.prototype.constructor.apply(this, slice(arguments));
         this.info = {};
         this.info[infoKeys.page] = 0;
         return this.info[infoKeys.pages] = 0;
-      };
-
+      },
       /*
       Render the pager component based on the metadata given. Calculation
       is done to know how to render the actual page, first/last, next/previous
@@ -719,12 +650,11 @@ A default collection is also provided to work with the `Dg` plugin.
       @param {Object} info The metadata to get the pagging data
       */
 
-
-      _Class.prototype.refreshView = function(info) {
+      refreshView: function(info) {
         var css, i, maxPage, minPage, page, pages, state, ul, _i;
         this.info = info;
         this.$el.empty().hide();
-        ul = $("<ul />");
+        ul = $('<ul />');
         page = this.info[infoKeys.page];
         pages = this.info[infoKeys.pages];
         if (page > 0 && pages > 1) {
@@ -736,68 +666,66 @@ A default collection is also provided to work with the `Dg` plugin.
           if (maxPage >= pages) {
             maxPage = pages;
           }
-          state = page === 1 ? this.css.disabled : "";
+          state = page === 1 ? this.css.disabled : '';
           if (this.firstAndLast) {
-            ul.append(createLink.call(this, this.texts.first, "f", state));
+            ul.append(this._createLink(this.texts.first, 'f', state));
           }
           if (this.previousAndNext) {
-            ul.append(createLink.call(this, this.texts.previous, "p", state));
+            ul.append(this._createLink(this.texts.previous, 'p', state));
           }
           if (this.numbers) {
             if (minPage > 1) {
-              ul.append(createLink.call(this, this.texts.filler, "", this.css.disabled));
+              ul.append(this._createLink(this.texts.filler, '', this.css.disabled));
             }
             for (i = _i = minPage; minPage <= maxPage ? _i <= maxPage : _i >= maxPage; i = minPage <= maxPage ? ++_i : --_i) {
-              css = i === page ? this.css.active : "";
-              ul.append(createLink.call(this, "" + i, "page", css));
+              css = i === page ? this.css.active : '';
+              ul.append(this._createLink("" + i, 'page', css));
             }
             if (maxPage < pages) {
-              ul.append(createLink.call(this, this.texts.filler, "", this.css.disabled));
+              ul.append(this._createLink(this.texts.filler, '', this.css.disabled));
             }
           }
-          state = page === pages ? this.css.disabled : "";
+          state = page === pages ? this.css.disabled : '';
           if (this.previousAndNext) {
-            ul.append(createLink.call(this, this.texts.next, "n", state));
+            ul.append(this._createLink(this.texts.next, 'n', state));
           }
           if (this.firstAndLast) {
-            ul.append(createLink.call(this, this.texts.last, "l", state));
+            ul.append(this._createLink(this.texts.last, 'l', state));
           }
           return this.$el.append(ul).show();
         }
-      };
-
+      },
       /*
       Manage the clicks done on any button of the pager
         
       @param {Event} event Pager button click event
       */
 
-
-      _Class.prototype.pagging = function(event) {
+      pagging: function(event) {
         var page, target, type;
         event.preventDefault();
         target = $(event.target);
         if (!(target.parent().hasClass(this.css.disabled) || target.parent().hasClass(this.css.active))) {
-          type = target.data("type");
+          type = target.data('type');
           switch (type) {
-            case "f":
+            case 'f':
               page = 1;
               break;
-            case "p":
+            case 'p':
               if (this.info[infoKeys.page] - 1 > 0) {
                 page = this.info[infoKeys.page] - 1;
               } else {
                 page = this.info[infoKeys.page];
               }
               break;
-            case "n":
+            case 'n':
               if ((this.info[infoKeys.page] + 1) < this.info[infoKeys.pages]) {
                 page = this.info[infoKeys.page] + 1;
               } else {
                 page = this.info[infoKeys.pages];
               }
               break;
-            case "l":
+            case 'l':
               page = this.info[infoKeys.pages];
               break;
             default:
@@ -807,8 +735,7 @@ A default collection is also provided to work with the `Dg` plugin.
             return this.update(_.object([infoKeys.page], [page]));
           }
         }
-      };
-
+      },
       /*
       Create a link for one element in the pager.
         
@@ -818,20 +745,16 @@ A default collection is also provided to work with the `Dg` plugin.
       @return {jQueryObject} Link element is wrapped into a `li` tag
       */
 
-
-      createLink = function(text, type, state) {
+      _createLink: function(text, type, state) {
         var a, li;
-        a = $("<a/>").attr("href", "#").data("type", type).addClass(this.css.page).html("" + text);
-        li = $("<li />").html(a);
+        a = $('<a/>').attr('href', '#').data('type', type).addClass(this.css.page).html("" + text);
+        li = $('<li />').html(a);
         if (state) {
           li.addClass(state);
         }
         return li;
-      };
-
-      return _Class;
-
-    })(Dg.DefaultItemView);
+      }
+    });
     /*
     ## Dg.RowView
     
@@ -848,54 +771,36 @@ A default collection is also provided to work with the `Dg` plugin.
     
     A default styling is done for the column ordering to show the `asc`, `desc` and `none`
     order.
+    
+    ```
+    # Default options
+    options:
+      css:
+        asc: "sorting-asc"
+        desc: "sorting-desc"
+        none: null
+      cellTagName: "td"
+    ```
+    
+    - **css**: Different styles applied when sorting is done. `asc` and
+              `desc` styles are required. A `none` style should be defined
+              to apply when ordering change from `desc` order to `none` order.
+    - **cellTagName**: HTML tag name that represent a cell into the data grid
     */
 
-    Dg.RowView = (function(_super) {
-
-      __extends(_Class, _super);
-
-      function _Class() {
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
-      _Class.prototype.tagName = "tr";
-
-      _Class.prototype.events = {
-        "click .edit": "edit",
-        "click .delete": "delete"
-      };
-
-      /*
-      Configurable options (default values are shown):
-        
-      @param {Object} options The options to configure the view
-        
-      ```
-      # Default options
-      options:
-        css:
-          asc: "sorting-asc"
-          desc: "sorting-desc"
-          none: null
-        cellTagName: "td"
-      ```
-        
-      - **css**: Different styles applied when sorting is done. `asc` and
-                `desc` styles are required. A `none` style should be defined
-                to apply when ordering change from `desc` order to `none` order.
-      - **cellTagName**: HTML tag name that represent a cell into the data grid
-      */
-
-
-      _Class.prototype.initialize = function(options) {
-        _Class.__super__.initialize.call(this, options);
-        this.css = _.defaults(options.css || {}, {
-          asc: "sorting-asc",
-          desc: "sorting-desc"
-        });
-        return this.cellTagName = options.cellTagName || "td";
-      };
-
+    Dg.RowView = Dg.ItemView.extend({
+      optionNames: ['css', 'cellTagName'],
+      tagName: 'tr',
+      events: {
+        'click .edit': 'edit',
+        'click .delete': 'delete'
+      },
+      css: {
+        asc: 'sorting-asc',
+        desc: 'sorting-desc',
+        none: null
+      },
+      cellTagName: 'td',
       /*
       Apply the different style to represent the ordering done
       on the collection.
@@ -903,8 +808,7 @@ A default collection is also provided to work with the `Dg` plugin.
       @param {Object} info The metadata to get the ordering data
       */
 
-
-      _Class.prototype.refreshView = function(info) {
+      refreshView: function(info) {
         var target, _i, _len, _ref, _results;
         if (info[infoKeys.sort]) {
           _ref = this.$el.find(this.cellTagName);
@@ -930,35 +834,28 @@ A default collection is also provided to work with the `Dg` plugin.
           }
           return _results;
         }
-      };
-
+      },
       /*
       Manage the `edit` action
         
       @param {Event} event The `edit` button click
       */
 
-
-      _Class.prototype.edit = function(event) {
+      edit: function(event) {
         event.preventDefault();
-        return this.vent.trigger("row:edit", this.model);
-      };
-
+        return this.vent.trigger('row:edit', this.model);
+      },
       /*
       Manage the `delete` action
         
       @param {Event} event The `delete` button click
       */
 
-
-      _Class.prototype["delete"] = function(event) {
+      "delete": function(event) {
         event.preventDefault();
-        return this.vent.trigger("row:delete", this.model);
-      };
-
-      return _Class;
-
-    })(Dg.ItemView);
+        return this.vent.trigger('row:delete', this.model);
+      }
+    });
     /*
     ## Dg.EmptyView
     
@@ -970,53 +867,27 @@ A default collection is also provided to work with the `Dg` plugin.
     of columns shown in the data table.
     */
 
-    Dg.EmptyView = (function(_super) {
-
-      __extends(_Class, _super);
-
-      function _Class() {
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
-      _Class.prototype.template = templates["empty"];
-
-      _Class.prototype.ui = {
-        empty: ".empty"
-      };
-
-      /*
-      Constructor
-        
-      @param {Object} options The options to get the number of columns
-      */
-
-
-      _Class.prototype.initialize = function(options) {
-        this.columns = options.columns;
-        return _Class.__super__.initialize.call(this, options);
-      };
-
+    Dg.EmptyView = Dg.DefaultItemView.extend({
+      optionNames: ['columns'],
+      template: templates['empty'],
+      ui: {
+        empty: '.empty'
+      },
       /*
       When the view is rendered, the number of columns is set
       */
 
-
-      _Class.prototype.onRender = function() {
-        return this.$el.attr("colspan", this.columns);
-      };
-
+      onRender: function() {
+        return this.$el.attr('colspan', this.columns);
+      },
       /*
       Nothing fancy is done for this refresh function
         
       @param {Object} info The collection metadata
       */
 
-
-      _Class.prototype.refreshView = function(info) {};
-
-      return _Class;
-
-    })(Dg.DefaultItemView);
+      refreshView: function(info) {}
+    });
     /*
     ## Dg.LoadingView
     
@@ -1025,19 +896,9 @@ A default collection is also provided to work with the `Dg` plugin.
     different than no data is available.
     */
 
-    LoadingView = (function(_super) {
-
-      __extends(_Class, _super);
-
-      function _Class() {
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
-      _Class.prototype.template = templates["gridempty"];
-
-      return _Class;
-
-    })(Backbone.Marionette.ItemView);
+    LoadingView = Backbone.Marionette.ItemView.extend({
+      template: templates['gridempty']
+    });
     /*!
         render: ->
           @beforeRender() if @beforeRender
@@ -1072,31 +933,25 @@ A default collection is also provided to work with the `Dg` plugin.
     on the different columns.
     */
 
-    Dg.HeaderView = (function(_super) {
-
-      __extends(_Class, _super);
-
-      function _Class() {
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
-      _Class.prototype.tagName = "thead";
-
-      _Class.prototype.parentSelector = "table";
-
-      _Class.prototype.appendMode = "prepend";
-
-      _Class.prototype.events = {
-        "click .sorting": "sort"
-      };
-
+    Dg.HeaderView = Dg.ItemView.extend({
+      optionNames: ['parentSelector', 'appendMode', 'columnTag', 'sortTag', 'css'],
+      tagName: 'thead',
+      parentSelector: 'table',
+      appendMode: 'prepend',
+      columnTag: 'th',
+      sortTag: 'th',
+      css: {
+        sortable: 'sorting',
+        asc: 'sorting-asc',
+        desc: 'sorting-desc'
+      },
+      events: {
+        'click .sorting': 'sort'
+      },
       /*
       ## TODO
-      - Introduced a configuration for the CSS
-      - Refactor to allow using specific tags for header container and columns
       - Refactor the styles to allow the differenciation between each column sorting in multi mode
       */
-
 
       /*
       Refresh the view accordingly to the metadata that should contain
@@ -1106,23 +961,22 @@ A default collection is also provided to work with the `Dg` plugin.
       @param {Object} info The metadata with the column sorting configuration
       */
 
-
-      _Class.prototype.refreshView = function(info) {
+      refreshView: function(info) {
         var target, _i, _len, _ref, _results;
-        _ref = this.$el.find("th");
+        _ref = this.$el.find(this.sortTag);
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           target = _ref[_i];
           target = $(target);
-          if (target.hasClass("sorting")) {
-            target.removeClass("sorting-asc sorting-desc");
+          if (target.hasClass(this.css.sortable)) {
+            target.removeClass("" + this.css.asc + " " + this.css.desc);
             if (info[infoKeys.sort]) {
               this.sortConfiguration = info[infoKeys.sort];
               if (this.sortConfiguration[target.index()]) {
                 if (this.sortConfiguration[target.index()] === infoKeys.asc) {
-                  _results.push(target.addClass("sorting-asc"));
+                  _results.push(target.addClass(this.css.asc));
                 } else {
-                  _results.push(target.addClass("sorting-desc"));
+                  _results.push(target.addClass(this.css.desc));
                 }
               } else {
                 _results.push(void 0);
@@ -1135,8 +989,7 @@ A default collection is also provided to work with the `Dg` plugin.
           }
         }
         return _results;
-      };
-
+      },
       /*
       Manage the sort action to be done when an header element is
       clicked.
@@ -1144,8 +997,7 @@ A default collection is also provided to work with the `Dg` plugin.
       @param {Event} event The click event for sorting
       */
 
-
-      _Class.prototype.sort = function(event) {
+      sort: function(event) {
         var idx;
         idx = $(event.target).index();
         if (!this.sortConfiguration) {
@@ -1166,20 +1018,15 @@ A default collection is also provided to work with the `Dg` plugin.
           this.sortConfiguration[idx] = void 0;
         }
         return this.update(_.object([infoKeys.sort], [this.sortConfiguration]));
-      };
-
+      },
       /*
       @return {int} The number of columns
       */
 
-
-      _Class.prototype.columns = function() {
-        return this.$el.find("th").length;
-      };
-
-      return _Class;
-
-    })(Dg.ItemView);
+      columns: function() {
+        return this.$el.find(this.columnTag).length;
+      }
+    });
     /*
     ## Dg.TableView
     
@@ -1192,8 +1039,8 @@ A default collection is also provided to work with the `Dg` plugin.
     */
 
     Dg.TableView = Marionette.CompositeView.extend({
-      template: templates["table"],
-      itemViewContainer: "tbody",
+      template: templates['table'],
+      itemViewContainer: 'tbody',
       emptyView: Dg.EmptyView,
       /*
       This function allows the `ItemView` of a `Model` to
@@ -1232,18 +1079,18 @@ A default collection is also provided to work with the `Dg` plugin.
         var selector;
         if (this.headerView) {
           this.header = new this.headerView(this.options);
-          if (this.header.parentSelector === void 0 || this.header.parentSelector === "") {
-            selector = "table";
+          if (this.header.parentSelector === void 0 || this.header.parentSelector === '') {
+            selector = 'table';
           } else {
             selector = this.header.parentSelector;
           }
-          if (this.header.appendMode === void 0 || this.header.appendMode !== "prepend") {
+          if (this.header.appendMode === void 0 || this.header.appendMode !== 'prepend') {
             this.$el.find(selector).append(this.header.render().el);
           } else {
             this.$el.find(selector).prepend(this.header.render().el);
           }
         }
-        return this.trigger("render");
+        return this.trigger('render');
       },
       /*
       As the render function do custom operations, we
@@ -1278,17 +1125,7 @@ A default collection is also provided to work with the `Dg` plugin.
     when the whole data grid is shown to the user.
     */
 
-    Dg.TableRegion = (function(_super) {
-
-      __extends(_Class, _super);
-
-      function _Class() {
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
-      return _Class;
-
-    })(Marionette.Region);
+    Dg.TableRegion = Marionette.Region.extend;
     /*!
         Open
         @param [Backbone.View] view The view to open
@@ -1314,73 +1151,40 @@ A default collection is also provided to work with the `Dg` plugin.
     of the datagrid (table, headers, toolbars, pagers...)
     */
 
-    Dg.GridLayout = (function(_super) {
-
-      __extends(_Class, _super);
-
-      function _Class() {
-        var _this = this;
-        this.handleCreate = function() {
-          return _Class.prototype.handleCreate.apply(_this, arguments);
-        };
-        this.handleDelete = function(model) {
-          return _Class.prototype.handleDelete.apply(_this, arguments);
-        };
-        this.handleEdit = function(model) {
-          return _Class.prototype.handleEdit.apply(_this, arguments);
-        };
-        this.handleRefresh = function() {
-          return _Class.prototype.handleRefresh.apply(_this, arguments);
-        };
-        this.handleUpdate = function(options) {
-          return _Class.prototype.handleUpdate.apply(_this, arguments);
-        };
-        this.refreshGrid = function() {
-          return _Class.prototype.refreshGrid.apply(_this, arguments);
-        };
-        this.renderRegions = function() {
-          return _Class.prototype.renderRegions.apply(_this, arguments);
-        };
-        return _Class.__super__.constructor.apply(this, arguments);
-      }
-
-      _Class.prototype.template = templates["grid"];
-
+    Dg.GridLayout = Marionette.Layout.extend({
+      template: templates['grid'],
       /*
       Constructor
       @param {Object} options Options to configure the grid
       */
 
-
-      _Class.prototype.initialize = function(options) {
+      initialize: function(options) {
         this.vent = new Backbone.Wreqr.EventAggregator();
-        this.on("render", this.renderRegions);
+        this.on('render', this.renderRegions);
         /*
         TODO: Refactor this part
           
         Listen to the different events
         */
 
-        this.vent.on("update", this.handleUpdate);
-        this.vent.on("refresh", this.handleRefresh);
-        this.vent.on("row:edit", this.handleEdit);
-        this.vent.on("row:delete", this.handleDelete);
-        this.vent.on("create:model", this.handleCreate);
-        return this.collection.on("fetched", this.refreshGrid);
-      };
-
+        this.listenTo(this.vent, 'update', this.handleUpdate);
+        this.listenTo(this.vent, 'refresh', this.handleRefresh);
+        this.listenTo(this.vent, 'row:edit', this.handleEdit);
+        this.listenTo(this.vent, 'row:delete', this.handleDelete);
+        this.listenTo(this.vent, 'create:model', this.handleCreate);
+        return this.listenTo(this.collection, 'fetched', this.refreshGrid);
+      },
       /*
       Proceed to the regions rendering. Each region is created,
       configured and rendered when necessary.
       */
 
-
-      _Class.prototype.renderRegions = function() {
+      renderRegions: function() {
         var options, regionDefinition, regionName, _ref;
         _ref = this.regions;
         for (regionName in _ref) {
           regionDefinition = _ref[regionName];
-          if (regionName !== "table") {
+          if (regionName !== 'table') {
             options = _.extend({
               vent: this.vent
             }, regionDefinition.options || {});
@@ -1389,56 +1193,43 @@ A default collection is also provided to work with the `Dg` plugin.
         }
         this.table.show(new LoadingView());
         return this.collection.fetch();
-      };
-
+      },
       /*
       Refresh the grid when new data are available through the collection
       */
 
-
-      _Class.prototype.refreshGrid = function() {
+      refreshGrid: function() {
         this.table.show(new this.regions.table.view(_.extend({
           vent: this.vent,
           collection: this.collection
         }, this.options)));
-        return this.vent.trigger("view:refresh", this.collection.getInfo());
-      };
-
-      _Class.prototype.handleUpdate = function(options) {
+        return this.vent.trigger('view:refresh', this.collection.getInfo());
+      },
+      handleUpdate: function(options) {
         this.table.show(new LoadingView());
         return this.collection.updateInfo(options);
-      };
-
-      _Class.prototype.handleRefresh = function() {
+      },
+      handleRefresh: function() {
         return this.collection.refresh();
-      };
-
-      _Class.prototype.handleEdit = function(model) {
-        return this.trigger("edit", model);
-      };
-
-      _Class.prototype.handleDelete = function(model) {
-        return this.trigger("delete", model);
-      };
-
-      _Class.prototype.handleCreate = function() {
-        return this.trigger("new");
-      };
-
+      },
+      handleEdit: function(model) {
+        return this.trigger('edit', model);
+      },
+      handleDelete: function(model) {
+        return this.trigger('delete', model);
+      },
+      handleCreate: function() {
+        return this.trigger('new');
+      },
       /*
       Override the close function from `Backbone.Marionette.Layout` to
       clean the collection bindings.
       */
 
-
-      _Class.prototype.close = function() {
-        this.collection.off("fetched", this.refreshGrid);
-        return _Class.__super__.close.apply(this, arguments);
-      };
-
-      return _Class;
-
-    })(Marionette.Layout);
+      onClose: function() {
+        return this.collection.off('fetched', this.refreshGrid);
+      }
+    });
     /*!
         @on "transition:open", =>
           @showTable()
@@ -1469,8 +1260,8 @@ A default collection is also provided to work with the `Dg` plugin.
     */
 
     Dg.createRowView = function(options) {
-      if (!mandatoryOptions(options, ["template", "model"])) {
-        throw new Error("template or model is missing in the options");
+      if (!mandatoryOptions(options, ['template', 'model'])) {
+        throw new Error('template or model is missing in the options');
       }
       return Dg.RowView.extend(options);
     };
@@ -1483,14 +1274,14 @@ A default collection is also provided to work with the `Dg` plugin.
     */
 
     Dg.createHeaderView = function(options) {
-      if (!mandatoryOptions(options, ["template"])) {
-        throw new Error("template is missing in the options");
+      if (!mandatoryOptions(options, ['template'])) {
+        throw new Error('template is missing in the options');
       }
       return Dg.HeaderView.extend(options);
     };
     Dg.createTableView = function(options) {
-      if (!mandatoryOptions(options, ["template", "itemViewContainer", "itemView"])) {
-        throw new Error("template, itemViewContainer or itemView is missing in the options");
+      if (!mandatoryOptions(options, ['template', 'itemViewContainer', 'itemView'])) {
+        throw new Error('template, itemViewContainer or itemView is missing in the options');
       }
       return Dg.TableView.extend(options);
     };
@@ -1539,13 +1330,16 @@ A default collection is also provided to work with the `Dg` plugin.
     */
 
     i18nKeys = {
-      info: "datagrid.info",
+      info: 'datagrid.info',
+      nodata: 'datagrid.nodata',
+      loading: 'datagrid.loading',
+      perpage: 'datagrid.perpage',
       pager: {
-        first: "datagrid.pager.first",
-        last: "datagrid.pager.last",
-        next: "datagrid.pager.next",
-        previous: "datagrid.pager.previous",
-        filler: "datagrid.pager.filler"
+        first: 'datagrid.pager.first',
+        last: 'datagrid.pager.last',
+        next: 'datagrid.pager.next',
+        previous: 'datagrid.pager.previous',
+        filler: 'datagrid.pager.filler'
       }
     };
     /*
@@ -1557,17 +1351,17 @@ A default collection is also provided to work with the `Dg` plugin.
     */
 
     infoKeys = {
-      from: "from",
-      to: "to",
-      items: "items",
-      totalItems: "totalItems",
-      perPage: "perPage",
-      pages: "pages",
-      page: "page",
-      term: "term",
-      sort: "sort",
-      asc: "A",
-      desc: "D"
+      from: 'from',
+      to: 'to',
+      items: 'items',
+      totalItems: 'totalItems',
+      perPage: 'perPage',
+      pages: 'pages',
+      page: 'page',
+      term: 'term',
+      sort: 'sort',
+      asc: 'A',
+      desc: 'D'
     };
     /*
     Default configuration to define the data grid regions
@@ -1579,28 +1373,27 @@ A default collection is also provided to work with the `Dg` plugin.
 
     gridRegions = {
       table: {
-        selector: ".dgTable",
-        regionType: Dg.TableRegion,
+        selector: '.dgTable',
         view: Dg.TableView
       },
       toolbar: {
-        selector: ".dgToolbar",
+        selector: '.dgToolbar',
         view: Dg.ToolbarView
       },
       quickSearch: {
-        selector: ".dgQuickSearch",
+        selector: '.dgQuickSearch',
         view: Dg.QuickSearchView
       },
       perPage: {
-        selector: ".dgPerPage",
+        selector: '.dgPerPage',
         view: Dg.PerPageView
       },
       info: {
-        selector: ".dgInfo",
+        selector: '.dgInfo',
         view: Dg.InfoView
       },
       pager: {
-        selector: ".dgPager",
+        selector: '.dgPager',
         view: Dg.PagerView
       }
     };

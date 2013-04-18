@@ -14,44 +14,38 @@ the data grid rendering done by the `Dg` plugin.
 
 A default styling is done for the column ordering to show the `asc`, `desc` and `none`
 order.
+
+```
+# Default options
+options:
+  css:
+    asc: "sorting-asc"
+    desc: "sorting-desc"
+    none: null
+  cellTagName: "td"
+```
+
+- **css**: Different styles applied when sorting is done. `asc` and
+          `desc` styles are required. A `none` style should be defined
+          to apply when ordering change from `desc` order to `none` order.
+- **cellTagName**: HTML tag name that represent a cell into the data grid
 ###
-Dg.RowView = class extends Dg.ItemView
-  tagName: "tr"
+Dg.RowView = Dg.ItemView.extend
+  optionNames: ['css', 'cellTagName']
+
+  tagName: 'tr'
 
   events:
-    "click .edit": "edit"
-    "click .delete": "delete"
+    'click .edit': 'edit'
+    'click .delete': 'delete'
 
-  ###
-  Configurable options (default values are shown):
+  # Define the defaults CSS styles if none are provided
+  css:
+    asc: 'sorting-asc'
+    desc: 'sorting-desc'
+    none: null
 
-  @param {Object} options The options to configure the view
-
-  ```
-  # Default options
-  options:
-    css:
-      asc: "sorting-asc"
-      desc: "sorting-desc"
-      none: null
-    cellTagName: "td"
-  ```
-
-  - **css**: Different styles applied when sorting is done. `asc` and
-            `desc` styles are required. A `none` style should be defined
-            to apply when ordering change from `desc` order to `none` order.
-  - **cellTagName**: HTML tag name that represent a cell into the data grid
-  ###
-  initialize: (options) ->
-    super options
-
-    # Define the defaults CSS styles if none are provided
-    @css = _.defaults(options.css || {}, {
-      asc: "sorting-asc"
-      desc: "sorting-desc"
-    })
-
-    @cellTagName = options.cellTagName || "td"
+  cellTagName: 'td'
 
   ###
   Apply the different style to represent the ordering done
@@ -86,7 +80,7 @@ Dg.RowView = class extends Dg.ItemView
   ###
   edit: (event) ->
     event.preventDefault()
-    @vent.trigger "row:edit", @model
+    @vent.trigger 'row:edit', @model
 
   ###
   Manage the `delete` action
@@ -95,4 +89,4 @@ Dg.RowView = class extends Dg.ItemView
   ###
   delete: (event) ->
     event.preventDefault()
-    @vent.trigger "row:delete", @model
+    @vent.trigger 'row:delete', @model

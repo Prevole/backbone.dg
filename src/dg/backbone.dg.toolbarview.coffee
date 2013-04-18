@@ -6,15 +6,15 @@ some buttons are required to manage the data such an add button or a
 refresh button.
 ###
 Dg.ToolbarView = class extends Dg.DefaultItemView
-  template: templates["toolbar"]
+  template: templates['toolbar']
 
   events:
-    "click .refresh": "refresh"
-    "click .create": "create"
+    'click .refresh': 'refresh'
+    'click .create': 'create'
 
   ui:
-    create: ".create"
-    refresh: ".refresh"
+    create: '.create'
+    refresh: '.refresh'
 
   ###
   When the refresh of the view occured, the buttons deactived are
@@ -23,8 +23,8 @@ Dg.ToolbarView = class extends Dg.DefaultItemView
   @param {Object} info The metadata to get information about the collection
   ###
   refreshView: (info) ->
-    @ui.refresh.removeClass("disabled")
-    @ui.create.removeClass("disabled")
+    @ui.refresh.removeClass('disabled')
+    @ui.create.removeClass('disabled')
 
   ###
   Manage the create button and the management of the button
@@ -39,11 +39,11 @@ Dg.ToolbarView = class extends Dg.DefaultItemView
   create: (event) ->
     event.preventDefault()
 
-    unless @ui.create.hasClass("disabled")
-      @ui.create.addClass("disabled")
+    unless @ui.create.hasClass('disabled')
+      @ui.create.addClass('disabled')
       # TODO: Implement the create event
 
-    @vent.trigger "create:model"
+    @vent.trigger 'create:model'
 
   ###
   Manage the refresh button and the management of the
@@ -57,6 +57,6 @@ Dg.ToolbarView = class extends Dg.DefaultItemView
   refresh: (event) ->
     event.preventDefault()
 
-    unless @ui.refresh.hasClass("disabled")
-      @ui.refresh.addClass("disabled")
+    unless @ui.refresh.hasClass('disabled')
+      @ui.refresh.addClass('disabled')
       @update {}

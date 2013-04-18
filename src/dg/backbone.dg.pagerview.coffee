@@ -1,4 +1,28 @@
 ###
+Return an object containing the i18n translations for the pager
+or default values.
+
+@return {Object} Texts for the pager
+###
+defaultTexts = ->
+  if isI18n()
+    return {
+      first: I18n.t i18nKeys.pager.first
+      previous: I18n.t i18nKeys.pager.previous
+      next: I18n.t i18nKeys.pager.next
+      last: I18n.t i18nKeys.pager.last
+      filler: I18n.t i18nKeys.pager.filler
+    }
+  else
+    return {
+      first: '<<'
+      previous: '<'
+      next: '>'
+      last: '>>'
+      filler: '...'
+    }
+
+###
 ## Dg.PagerView
 
 The `Dg.PagerView` is probably one of the most complicated view
@@ -16,88 +40,67 @@ the current page number.
 
 Checks are done to correct bad page numbers or out of bounds in
 regards of the collection metadata.
+
+```
+# Default options
+options:
+  deltaPage: 2
+  css:
+    active: "active"
+    disabled: "disabled"
+    page: "page"
+  texts:
+    first: "<<"
+    previous: "<"
+    next: ">"
+    last: ">>"
+    filler: "..."
+  numbers: true
+  firstAndLast: true
+  previousAndNext: true
+```
+
+- **delatePage**: Number of pages shown before and after the active one (if available)
+- **css**: Different style added for link `disabled`, `active` or `page`
+- **texts**: Texts used for each link excepted the page numbers
+- **numbers**: Enable/Disable page number links
+- **firstAndLast**: Enable/Disable first and last links
+- **previousAndNext**: Enable/Disable previous and next links
 ###
-Dg.PagerView = class extends Dg.DefaultItemView
-  template: templates["pager"]
+Dg.PagerView = Dg.DefaultItemView.extend
+  optionNames: ['deltaPage', 'css', 'texts', 'numbers', 'firstAndLast', 'previousAndNext']
+
+  template: templates['pager']
 
   events:
-    "click a": "pagging"
+    'click a': 'pagging'
+
+  # Define the default value for the number of links shown before
+  # and after the active link
+  deltaPage: 2
+
+  # Show the numbers by default
+  numbers: true
+
+  # Show the first and last links by default
+  firstAndLast: true
+
+  previousAndNext: true
+
+  # Define the defaults CSS styles if part or none are provided
+  css:
+    active: 'active'
+    disabled: 'disabled'
+    page: 'page'
+
+  # Define the texts if none are provided. Use I18n-js if defined
+  texts: defaultTexts()
 
   ###
-  Create a default configuration to start calculation on
-  first rendering such number of pages and actual page.
-
-  @param {Object} options The options to configure the view
-
-  ```
-  # Default options
-  options:
-    deltaPage: 2
-    css:
-      active: "active"
-      disabled: "disabled"
-      page: "page"
-    texts:
-      first: "<<"
-      previous: "<"
-      next: ">"
-      last: ">>"
-      filler: "..."
-    numbers: true
-    firstAndLast: true
-    previousAndNext: true
-  ```
-
-  - **delatePage**: Number of pages shown before and after the active one (if available)
-  - **css**: Different style added for link `disabled`, `active` or `page`
-  - **texts**: Texts used for each link excepted the page numbers
-  - **numbers**: Enable/Disable page number links
-  - **firstAndLast**: Enable/Disable first and last links
-  - **previousAndNext**: Enable/Disable previous and next links
+  Constructor
   ###
-  initialize: (options) ->
-    super options
-
-    # Define the default value for the number of links shown before
-    # and after the active link
-    @deltaPage = options.deltaPage || 2
-
-    # Define the defaults CSS styles if part or none are provided
-    @css = _.defaults(options.css || {}, {
-      active: "active"
-      disabled: "disabled"
-      page: "page"
-    })
-
-    # Define the texts if none are provided. Use I18n-js if defined
-    if isI18n()
-      @texts = _.defaults(options.texts || {}, {
-        first: I18n.t i18nKeys.pager.first
-        previous: I18n.t i18nKeys.pager.previous
-        next: I18n.t i18nKeys.pager.next
-        last: I18n.t i18nKeys.pager.last
-        filler: I18n.t i18nKeys.pager.filler
-      })
-    else
-      @texts = _.defaults(options.texts || {}, {
-        first: "<<"
-        previous: "<"
-        next: ">"
-        last: ">>"
-        filler: "..."
-      })
-
-    # Show the numbers by default
-    @numbers = true
-    @numbers = options.numbers unless options.numbers is undefined
-
-    # Show the first and last links by default
-    @firstAndLast = true
-    @firstAndLast = options.firstAndLast unless options.firstAndLast is undefined
-
-    # Show the previous and next links by default
-    @previousAndNext = true
-    @previousAndNext = options.previousAndNext unless options.previousAndNext is undefined
+  constructor: (options) ->
+    Dg.DefaultItemView.prototype.constructor.apply @, slice(arguments)
 
     # Define default values for rendering when no info available
     @info = {}
@@ -126,7 +129,7 @@ Dg.PagerView = class extends Dg.DefaultItemView
     # Reset el
     @$el.empty().hide()
 
-    ul = $("<ul />")
+    ul = $('<ul />')
 
     # Shortcuts to number of pages and current page
     page = @info[infoKeys.page]
@@ -143,27 +146,27 @@ Dg.PagerView = class extends Dg.DefaultItemView
       maxPage = pages if maxPage >= pages
 
       # Create first and previous links
-      state = if page == 1 then @css.disabled else ""
-      ul.append(createLink.call @, @texts.first, "f", state) if @firstAndLast
-      ul.append(createLink.call @, @texts.previous, "p", state) if @previousAndNext
+      state = if page == 1 then @css.disabled else ''
+      ul.append(@_createLink @texts.first, 'f', state) if @firstAndLast
+      ul.append(@_createLink @texts.previous, 'p', state) if @previousAndNext
 
       # If number must be shown
       if @numbers
         # Create filler
-        ul.append(createLink.call @, @texts.filler, "", @css.disabled) if minPage > 1
+        ul.append(@_createLink @texts.filler, '', @css.disabled) if minPage > 1
 
         # Create page links
         for i in [minPage..maxPage]
-          css = if i == page then @css.active else ""
-          ul.append(createLink.call @, "#{i}", "page", css)
+          css = if i == page then @css.active else ''
+          ul.append(@_createLink "#{i}", 'page', css)
 
         # Create filler
-        ul.append(createLink.call @, @texts.filler, "", @css.disabled) if maxPage < pages
+        ul.append(@_createLink @texts.filler, '', @css.disabled) if maxPage < pages
 
       # Create last and next links
-      state = if page == pages then @css.disabled else ""
-      ul.append(createLink.call @, @texts.next, "n", state) if @previousAndNext
-      ul.append(createLink.call @, @texts.last, "l", state) if @firstAndLast
+      state = if page == pages then @css.disabled else ''
+      ul.append(@_createLink @texts.next, 'n', state) if @previousAndNext
+      ul.append(@_createLink @texts.last, 'l', state) if @firstAndLast
 
       @$el.append(ul).show()
 
@@ -180,30 +183,30 @@ Dg.PagerView = class extends Dg.DefaultItemView
     # Check if clickable
     unless target.parent().hasClass(@css.disabled) or target.parent().hasClass(@css.active)
       # Retrieve the type of page link clicked
-      type = target.data("type")
+      type = target.data('type')
 
       # Calculate the correct page
       switch type
         # First page
-        when "f"
+        when 'f'
           page = 1
 
         # Previous page
-        when "p"
+        when 'p'
           if @info[infoKeys.page] - 1 > 0
             page = @info[infoKeys.page] - 1
           else
             page = @info[infoKeys.page]
 
         # Next page
-        when "n"
+        when 'n'
           if (@info[infoKeys.page] + 1) < @info[infoKeys.pages]
             page = @info[infoKeys.page] + 1
           else
             page = @info[infoKeys.pages]
 
         # Last page
-        when "l"
+        when 'l'
           page = @info[infoKeys.pages]
 
         # Specific page
@@ -221,8 +224,8 @@ Dg.PagerView = class extends Dg.DefaultItemView
   @param {String} state The state of the link
   @return {jQueryObject} Link element is wrapped into a `li` tag
   ###
-  createLink = (text, type, state) ->
-    a = $("<a/>").attr("href", "#").data("type", type).addClass(@css.page).html("#{text}")
-    li = $("<li />").html(a)
+  _createLink: (text, type, state) ->
+    a = $('<a/>').attr('href', '#').data('type', type).addClass(@css.page).html("#{text}")
+    li = $('<li />').html(a)
     li.addClass(state) if state
     return li

@@ -11,18 +11,26 @@ to render the headers.
 The multi-sort is possible by pressing on shift key when clicks are done
 on the different columns.
 ###
-Dg.HeaderView = class extends Dg.ItemView
-  tagName: "thead"
-  parentSelector: "table"
-  appendMode: "prepend"
+Dg.HeaderView = Dg.ItemView.extend
+  optionNames: ['parentSelector', 'appendMode', 'columnTag', 'sortTag', 'css']
+
+  tagName: 'thead'
+
+  parentSelector: 'table'
+  appendMode: 'prepend'
+  columnTag: 'th'
+  sortTag: 'th'
+
+  css:
+    sortable: 'sorting'
+    asc: 'sorting-asc'
+    desc: 'sorting-desc'
 
   events:
-    "click .sorting": "sort"
+    'click .sorting': 'sort'
 
   ###
   ## TODO
-  - Introduced a configuration for the CSS
-  - Refactor to allow using specific tags for header container and columns
   - Refactor the styles to allow the differenciation between each column sorting in multi mode
   ###
 
@@ -35,13 +43,13 @@ Dg.HeaderView = class extends Dg.ItemView
   ###
   refreshView: (info) ->
     # Update the view state for each column header
-    for target in @$el.find("th")
+    for target in @$el.find(@sortTag)
       target = $(target)
 
       # Check if the target is electible for sorting
-      if target.hasClass("sorting")
+      if target.hasClass(@css.sortable)
         # Remove previous sorting classes
-        target.removeClass("sorting-asc sorting-desc")
+        target.removeClass("#{@css.asc} #{@css.desc}")
 
         # Check if a sorting configuration is already existing
         if info[infoKeys.sort]
@@ -52,9 +60,9 @@ Dg.HeaderView = class extends Dg.ItemView
           if @sortConfiguration[target.index()]
             # Check which sorting order must be apply
             if @sortConfiguration[target.index()] == infoKeys.asc
-              target.addClass("sorting-asc")
+              target.addClass(@css.asc)
             else
-              target.addClass("sorting-desc")
+              target.addClass(@css.desc)
 
   ###
   Manage the sort action to be done when an header element is
@@ -98,4 +106,4 @@ Dg.HeaderView = class extends Dg.ItemView
   @return {int} The number of columns
   ###
   columns: ->
-    @$el.find("th").length
+    @$el.find(@columnTag).length

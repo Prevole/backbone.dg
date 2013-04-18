@@ -4,8 +4,8 @@
 This class brings all the bricks together to render each part
 of the datagrid (table, headers, toolbars, pagers...)
 ###
-Dg.GridLayout = class extends Marionette.Layout
-  template: templates["grid"]
+Dg.GridLayout = Marionette.Layout.extend
+  template: templates['grid']
 
   ###
   Constructor
@@ -15,31 +15,31 @@ Dg.GridLayout = class extends Marionette.Layout
     # Create the event aggregator used accross all the components
     @vent = new Backbone.Wreqr.EventAggregator()
 
-    @on "render", @renderRegions
+    @on 'render', @renderRegions
 
     ###
     TODO: Refactor this part
 
     Listen to the different events
     ###
-    @vent.on "update", @handleUpdate
-    @vent.on "refresh", @handleRefresh
-    @vent.on "row:edit", @handleEdit
-    @vent.on "row:delete", @handleDelete
-    @vent.on "create:model", @handleCreate
+    @listenTo @vent, 'update', @handleUpdate
+    @listenTo @vent, 'refresh', @handleRefresh
+    @listenTo @vent, 'row:edit', @handleEdit
+    @listenTo @vent, 'row:delete', @handleDelete
+    @listenTo @vent, 'create:model', @handleCreate
 
     # Bind the grid refresh to the collection event
-    @collection.on "fetched", @refreshGrid
+    @listenTo @collection, 'fetched', @refreshGrid
 
   ###
   Proceed to the regions rendering. Each region is created,
   configured and rendered when necessary.
   ###
-  renderRegions: =>
+  renderRegions: ->
     # Get each region
     for regionName, regionDefinition of @regions
       # The table region is manage differently
-      unless regionName == "table"
+      unless regionName == 'table'
         # Prepare the options by forwarding the master options to the region options
         options = _.extend({vent: @vent}, regionDefinition.options || {})
 
@@ -55,39 +55,38 @@ Dg.GridLayout = class extends Marionette.Layout
   ###
   Refresh the grid when new data are available through the collection
   ###
-  refreshGrid: =>
+  refreshGrid: ->
     # This time, the table could shou the data from the collection
     @table.show new @regions.table.view(_.extend({vent: @vent, collection: @collection}, @options))
 
     # Refresh all the views attached to the grid with the collection metadata
-    @vent.trigger "view:refresh", @collection.getInfo()
+    @vent.trigger 'view:refresh', @collection.getInfo()
 
   # TODO: Review this part of code
-  handleUpdate: (options) =>
+  handleUpdate: (options) ->
     @table.show(new LoadingView())
     @collection.updateInfo options
 
-  handleRefresh: =>
+  handleRefresh: ->
     @collection.refresh()
 
-  handleEdit: (model) =>
+  handleEdit: (model) ->
     # TODO: Trigger event to update the record
 #    alert model.get("name")
-    @trigger "edit", model
+    @trigger 'edit', model
 
-  handleDelete: (model) =>
-    @trigger "delete", model
+  handleDelete: (model) ->
+    @trigger 'delete', model
 
-  handleCreate: =>
-    @trigger "new"
+  handleCreate: ->
+    @trigger 'new'
 
   ###
   Override the close function from `Backbone.Marionette.Layout` to
   clean the collection bindings.
   ###
-  close: ->
-    @collection.off "fetched", @refreshGrid
-    super
+  onClose: ->
+    @collection.off 'fetched', @refreshGrid
 
 ###!
     @on "transition:open", =>

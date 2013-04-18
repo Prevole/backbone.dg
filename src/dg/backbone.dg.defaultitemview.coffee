@@ -9,7 +9,13 @@ create the `el` tag based on view configuration but create the `el` directly fro
 the template rendering. Therefore, setting the `className`, `tagName` or `el` directly
 must not be used directly.
 ###
-Dg.DefaultItemView = class extends Dg.ItemView
+Dg.DefaultItemView = Dg.ItemView.extend
+  ###
+  Constructor
+  ###
+  constructor: () ->
+    Dg.ItemView.prototype.constructor.apply @, slice(arguments)
+
   # ### render
   ###
   Override the default render method from `Dg.TableItemView` to
@@ -26,8 +32,8 @@ Dg.DefaultItemView = class extends Dg.ItemView
   render: ->
     @beforeRender() if @beforeRender
 
-    @trigger("before:render", @)
-    @trigger("item:before:render", @)
+    @trigger('before:render', @)
+    @trigger('item:before:render', @)
 
     # Override the `el` with the template rendered
     @setElement($(Marionette.Renderer.render(@getTemplate(), @serializeData())), true)
@@ -36,11 +42,11 @@ Dg.DefaultItemView = class extends Dg.ItemView
 
     @onRender() if @onRender
 
-    @trigger("render", this)
-    @trigger("item:rendered", this)
+    @trigger('render', this)
+    @trigger('item:rendered', this)
 
     # Trigger the additional event through the `Backbone.Marionette.EventBinder`
     # set for the `Dg` views.
-    @vent.trigger("item:rendered", this)
+    @vent.trigger('item:rendered', this)
 
     return @

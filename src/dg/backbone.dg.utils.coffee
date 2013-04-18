@@ -73,3 +73,8 @@ Check if the I18n library is available or not
 ###
 isI18n = ->
   return not (window.I18n is undefined)
+
+###
+Shortcut to the slice method from Array
+###
+slice = Function.prototype.call.bind(Array.prototype.slice)

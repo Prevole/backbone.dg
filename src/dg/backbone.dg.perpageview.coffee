@@ -4,14 +4,14 @@
 Default implementation for the region which allow changing the number of lines
 shown in the table. The implementation is based on a select box.
 ###
-Dg.PerPageView = class extends Dg.DefaultItemView
-  template: templates["perpage"]
+Dg.PerPageView = Dg.DefaultItemView.extend
+  template: templates['perpage']
 
   events:
-    "change .per-page": "perPage"
+    'change .per-page': 'perPage'
 
   ui:
-    perPage: ".per-page"
+    perPage: '.per-page'
 
   ###
   Refresh the view by setting the number of entries per page to the select box.

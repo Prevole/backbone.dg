@@ -9,8 +9,8 @@ content is wrapped into a `<tbody />` tag and the headers are
 appended before this tag.
 ###
 Dg.TableView = Marionette.CompositeView.extend
-  template: templates["table"]
-  itemViewContainer: "tbody"
+  template: templates['table']
+  itemViewContainer: 'tbody'
   emptyView: Dg.EmptyView
 
   ###
@@ -46,39 +46,17 @@ Dg.TableView = Marionette.CompositeView.extend
     if @headerView
       @header = new @headerView(@options)
 
-      if @header.parentSelector is undefined or @header.parentSelector == ""
-        selector = "table"
+      if @header.parentSelector is undefined or @header.parentSelector == ''
+        selector = 'table'
       else
         selector = @header.parentSelector
 
-      if @header.appendMode is undefined or @header.appendMode != "prepend"
+      if @header.appendMode is undefined or @header.appendMode != 'prepend'
         @$el.find(selector).append(@header.render().el)
       else
         @$el.find(selector).prepend(@header.render().el)
 
-    @trigger "render"
-
-#  ###
-#  Override the `Backbone.Marionette.CompositeView` `render` function
-#  to be able to render the `header` view before rendering the remaining
-#  elements. In addition, this allows the element binding to work properly.
-#
-#  @return {Dg.TableView} This
-#  ###
-#  render: ->
-#    @resetItemViewContainer()
-#
-#    @setElement @renderModel()
-#
-#
-#    @bindUIElements()
-#    @trigger("composite:model:rendered")
-#    @trigger("render")
-#
-#    @renderCollection()
-#    @trigger("composite:rendered")
-#
-#    @
+    @trigger 'render'
 
   ###
   As the render function do custom operations, we
