@@ -1,3 +1,9 @@
+/*
+ * backbone.dg - v0.0.2
+ * Copyright (c) 2013-04-18 Laurent Prévost (prevole) <prevole@prevole.ch>
+ * Distributed under MIT license
+ * https://github.com/prevole/backbone.dg
+ */
 
 /*
 Datagrid

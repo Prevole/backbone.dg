@@ -41,6 +41,8 @@ module.exports = (grunt) ->
     # ### Rigger tasks
     rig:
       core:
+        options:
+          banner: '<%= meta.banner %>'
         files:
           'dist/std/backbone.dg.js': ['src/dg/backbone.dg.coffee']
       demo:
