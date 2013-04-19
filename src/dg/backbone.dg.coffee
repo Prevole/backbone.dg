@@ -23,7 +23,25 @@ an implementation based on other views and tags.
 A default collection is also provided to work with the `Dg` plugin.
 ###
 window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
-  Dg = { version: '0.0.2' }
+  Dg = { version: '0.0.3' }
+
+  ###
+  Defaults i18nKeys used in the translations if `i18n-js` is used.
+
+  You can provide your own i18n keys to match your structure.
+  ###
+  i18nKeys =
+    info: 'datagrid.info'
+    nodata: 'datagrid.nodata'
+    loading: 'datagrid.loading'
+    perpage: 'datagrid.perpage'
+    quicksearch: 'datagrid.quicksearch'
+    pager:
+      first: 'datagrid.pager.first'
+      last: 'datagrid.pager.last'
+      next: 'datagrid.pager.next'
+      previous: 'datagrid.pager.previous'
+      filler: 'datagrid.pager.filler'
 
   #= backbone.dg.utils.coffee
   #= backbone.dg.templateregistry.coffee
@@ -127,23 +145,6 @@ window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
     return gridLayout
 
   ###
-  Defaults i18nKeys used in the translations if `i18n-js` is used.
-
-  You can provide your own i18n keys to match your structure.
-  ###
-  i18nKeys =
-    info: 'datagrid.info'
-    nodata: 'datagrid.nodata'
-    loading: 'datagrid.loading'
-    perpage: 'datagrid.perpage'
-    pager:
-      first: 'datagrid.pager.first'
-      last: 'datagrid.pager.last'
-      next: 'datagrid.pager.next'
-      previous: 'datagrid.pager.previous'
-      filler: 'datagrid.pager.filler'
-
-  ###
   Defaults keys for the metadata used accross the data grid
   plugin.
 
@@ -202,9 +203,9 @@ window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
   @param {Object} options The i18n keys definition
   ###
   Dg.setupDefaultI18nBindings = (options) ->
-    i18nKeys = _.defaults(
+    Dg.i18nKeys = _.defaults(
       options.i18n || {},
-      i18nKeys
+      Dg.i18nKeys
     )
 
   ###

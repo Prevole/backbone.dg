@@ -1,6 +1,6 @@
 /*
- * backbone.dg - v0.0.2
- * Copyright (c) 2013-04-18 Laurent Prévost (prevole) <prevole@prevole.ch>
+ * Backbone.Dg - v0.0.3
+ * Copyright (c) 2013-04-19 Laurent Prévost (prevole) <prevole@prevole.ch>
  * Distributed under MIT license
  * https://github.com/prevole/backbone.dg
  */
@@ -36,9 +36,29 @@ A default collection is also provided to work with the `Dg` plugin.
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   window.Backbone.Dg = window.Dg = (function(Backbone, Marionette, _, $) {
-    var Dg, LoadingView, defaultTexts, defaults, gridRegions, i18nKeys, infoKeys, isI18n, mandatoryOptions, reject, slice, templates;
+    var Dg, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, isI18n, mandatoryOptions, reject, slice, templates;
     Dg = {
-      version: '0.0.2'
+      version: '0.0.3'
+    };
+    /*
+    Defaults i18nKeys used in the translations if `i18n-js` is used.
+    
+    You can provide your own i18n keys to match your structure.
+    */
+
+    i18nKeys = {
+      info: 'datagrid.info',
+      nodata: 'datagrid.nodata',
+      loading: 'datagrid.loading',
+      perpage: 'datagrid.perpage',
+      quicksearch: 'datagrid.quicksearch',
+      pager: {
+        first: 'datagrid.pager.first',
+        last: 'datagrid.pager.last',
+        next: 'datagrid.pager.next',
+        previous: 'datagrid.pager.previous',
+        filler: 'datagrid.pager.filler'
+      }
     };
     /*
     defaults
@@ -138,7 +158,7 @@ A default collection is also provided to work with the `Dg` plugin.
         var text;
         text = "No data";
         if (isI18n()) {
-          text = I18n.t(i18nKeys['nodata']);
+          text = I18n.t(i18nKeys.nodata);
         }
         return "<td class='empty'>" + text + "</td>";
       },
@@ -149,7 +169,7 @@ A default collection is also provided to work with the `Dg` plugin.
         var text;
         text = 'Loading data';
         if (isI18n()) {
-          text = I18n.t(i18nKeys['loading']);
+          text = I18n.t(i18nKeys.loading);
         }
         return '<div class="dgLoading">' + '<div class="progress progress-striped active">' + ("<div class='bar' style='width:100%'>" + text + "</div>") + "</div>" + "</div>";
       },
@@ -163,7 +183,7 @@ A default collection is also provided to work with the `Dg` plugin.
         var text;
         text = 'Item per page:';
         if (isI18n()) {
-          text = I18n.t(i18nKeys['perpage']);
+          text = I18n.t(i18nKeys.perpage);
         }
         return '<div class="form-inline pull-left">' + ("<label class='checkbox'>" + text + "&nbsp;</label>") + '<select class="per-page input-mini">' + '<option>2</option>' + '<option>5</option>' + '<option>10</option>' + '<option>25</option>' + '<option>50</option>' + '<option>100</option>' + '</select>' + '</div>';
       },
@@ -171,7 +191,7 @@ A default collection is also provided to work with the `Dg` plugin.
         var text;
         text = 'Quick search:';
         if (isI18n()) {
-          text = I18n.t(i18nKeys['quicksearch']);
+          text = I18n.t(i18nKeys.quicksearch);
         }
         return '<div class="form-inline pull-right qs">' + ("<label class='checkbox'>" + text + "&nbsp;</label>") + '<input type="text" />' + '</div>';
       },
@@ -543,32 +563,6 @@ A default collection is also provided to work with the `Dg` plugin.
 
     })(Dg.DefaultItemView);
     /*
-    Return an object containing the i18n translations for the pager
-    or default values.
-    
-    @return {Object} Texts for the pager
-    */
-
-    defaultTexts = function() {
-      if (isI18n()) {
-        return {
-          first: I18n.t(i18nKeys.pager.first),
-          previous: I18n.t(i18nKeys.pager.previous),
-          next: I18n.t(i18nKeys.pager.next),
-          last: I18n.t(i18nKeys.pager.last),
-          filler: I18n.t(i18nKeys.pager.filler)
-        };
-      } else {
-        return {
-          first: '<<',
-          previous: '<',
-          next: '>',
-          last: '>>',
-          filler: '...'
-        };
-      }
-    };
-    /*
     ## Dg.PagerView
     
     The `Dg.PagerView` is probably one of the most complicated view
@@ -629,7 +623,25 @@ A default collection is also provided to work with the `Dg` plugin.
         disabled: 'disabled',
         page: 'page'
       },
-      texts: defaultTexts(),
+      texts: function() {
+        if (isI18n()) {
+          return {
+            first: I18n.t(i18nKeys.pager.first),
+            previous: I18n.t(i18nKeys.pager.previous),
+            next: I18n.t(i18nKeys.pager.next),
+            last: I18n.t(i18nKeys.pager.last),
+            filler: I18n.t(i18nKeys.pager.filler)
+          };
+        } else {
+          return {
+            first: '<<',
+            previous: '<',
+            next: '>',
+            last: '>>',
+            filler: '...'
+          };
+        }
+      },
       /*
       Constructor
       */
@@ -657,13 +669,14 @@ A default collection is also provided to work with the `Dg` plugin.
       */
 
       refreshView: function(info) {
-        var css, i, maxPage, minPage, page, pages, state, ul, _i;
+        var css, i, i18n, maxPage, minPage, page, pages, state, ul, _i;
         this.info = info;
         this.$el.empty().hide();
         ul = $('<ul />');
         page = this.info[infoKeys.page];
         pages = this.info[infoKeys.pages];
         if (page > 0 && pages > 1) {
+          i18n = _.result(this, 'texts');
           minPage = page - this.deltaPage;
           maxPage = page + this.deltaPage;
           if (minPage <= 0) {
@@ -674,29 +687,29 @@ A default collection is also provided to work with the `Dg` plugin.
           }
           state = page === 1 ? this.css.disabled : '';
           if (this.firstAndLast) {
-            ul.append(this._createLink(this.texts.first, 'f', state));
+            ul.append(this._createLink(i18n.first, 'f', state));
           }
           if (this.previousAndNext) {
-            ul.append(this._createLink(this.texts.previous, 'p', state));
+            ul.append(this._createLink(i18n.previous, 'p', state));
           }
           if (this.numbers) {
             if (minPage > 1) {
-              ul.append(this._createLink(this.texts.filler, '', this.css.disabled));
+              ul.append(this._createLink(i18n.filler, '', this.css.disabled));
             }
             for (i = _i = minPage; minPage <= maxPage ? _i <= maxPage : _i >= maxPage; i = minPage <= maxPage ? ++_i : --_i) {
               css = i === page ? this.css.active : '';
               ul.append(this._createLink("" + i, 'page', css));
             }
             if (maxPage < pages) {
-              ul.append(this._createLink(this.texts.filler, '', this.css.disabled));
+              ul.append(this._createLink(i18n.filler, '', this.css.disabled));
             }
           }
           state = page === pages ? this.css.disabled : '';
           if (this.previousAndNext) {
-            ul.append(this._createLink(this.texts.next, 'n', state));
+            ul.append(this._createLink(i18n.next, 'n', state));
           }
           if (this.firstAndLast) {
-            ul.append(this._createLink(this.texts.last, 'l', state));
+            ul.append(this._createLink(i18n.last, 'l', state));
           }
           return this.$el.append(ul).show();
         }
@@ -1330,25 +1343,6 @@ A default collection is also provided to work with the `Dg` plugin.
       return gridLayout;
     };
     /*
-    Defaults i18nKeys used in the translations if `i18n-js` is used.
-    
-    You can provide your own i18n keys to match your structure.
-    */
-
-    i18nKeys = {
-      info: 'datagrid.info',
-      nodata: 'datagrid.nodata',
-      loading: 'datagrid.loading',
-      perpage: 'datagrid.perpage',
-      pager: {
-        first: 'datagrid.pager.first',
-        last: 'datagrid.pager.last',
-        next: 'datagrid.pager.next',
-        previous: 'datagrid.pager.previous',
-        filler: 'datagrid.pager.filler'
-      }
-    };
-    /*
     Defaults keys for the metadata used accross the data grid
     plugin.
     
@@ -1415,7 +1409,7 @@ A default collection is also provided to work with the `Dg` plugin.
     */
 
     Dg.setupDefaultI18nBindings = function(options) {
-      return i18nKeys = _.defaults(options.i18n || {}, i18nKeys);
+      return Dg.i18nKeys = _.defaults(options.i18n || {}, Dg.i18nKeys);
     };
     /*
     Helper function to define the metadata keys to

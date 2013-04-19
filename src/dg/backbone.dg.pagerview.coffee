@@ -1,28 +1,4 @@
 ###
-Return an object containing the i18n translations for the pager
-or default values.
-
-@return {Object} Texts for the pager
-###
-defaultTexts = ->
-  if isI18n()
-    return {
-      first: I18n.t i18nKeys.pager.first
-      previous: I18n.t i18nKeys.pager.previous
-      next: I18n.t i18nKeys.pager.next
-      last: I18n.t i18nKeys.pager.last
-      filler: I18n.t i18nKeys.pager.filler
-    }
-  else
-    return {
-      first: '<<'
-      previous: '<'
-      next: '>'
-      last: '>>'
-      filler: '...'
-    }
-
-###
 ## Dg.PagerView
 
 The `Dg.PagerView` is probably one of the most complicated view
@@ -94,7 +70,23 @@ Dg.PagerView = Dg.DefaultItemView.extend
     page: 'page'
 
   # Define the texts if none are provided. Use I18n-js if defined
-  texts: defaultTexts()
+  texts: ->
+    if isI18n()
+      return {
+        first: I18n.t i18nKeys.pager.first
+        previous: I18n.t i18nKeys.pager.previous
+        next: I18n.t i18nKeys.pager.next
+        last: I18n.t i18nKeys.pager.last
+        filler: I18n.t i18nKeys.pager.filler
+      }
+    else
+      return {
+        first: '<<'
+        previous: '<'
+        next: '>'
+        last: '>>'
+        filler: '...'
+      }
 
   ###
   Constructor
@@ -137,6 +129,8 @@ Dg.PagerView = Dg.DefaultItemView.extend
 
     # Check if there is something to render
     if page > 0 and pages > 1
+      i18n = _.result(@, 'texts')
+
       # Calculate the bounds
       minPage = page - @deltaPage
       maxPage = page + @deltaPage
@@ -147,13 +141,13 @@ Dg.PagerView = Dg.DefaultItemView.extend
 
       # Create first and previous links
       state = if page == 1 then @css.disabled else ''
-      ul.append(@_createLink @texts.first, 'f', state) if @firstAndLast
-      ul.append(@_createLink @texts.previous, 'p', state) if @previousAndNext
+      ul.append(@_createLink i18n.first, 'f', state) if @firstAndLast
+      ul.append(@_createLink i18n.previous, 'p', state) if @previousAndNext
 
       # If number must be shown
       if @numbers
         # Create filler
-        ul.append(@_createLink @texts.filler, '', @css.disabled) if minPage > 1
+        ul.append(@_createLink i18n.filler, '', @css.disabled) if minPage > 1
 
         # Create page links
         for i in [minPage..maxPage]
@@ -161,12 +155,12 @@ Dg.PagerView = Dg.DefaultItemView.extend
           ul.append(@_createLink "#{i}", 'page', css)
 
         # Create filler
-        ul.append(@_createLink @texts.filler, '', @css.disabled) if maxPage < pages
+        ul.append(@_createLink i18n.filler, '', @css.disabled) if maxPage < pages
 
       # Create last and next links
       state = if page == pages then @css.disabled else ''
-      ul.append(@_createLink @texts.next, 'n', state) if @previousAndNext
-      ul.append(@_createLink @texts.last, 'l', state) if @firstAndLast
+      ul.append(@_createLink i18n.next, 'n', state) if @previousAndNext
+      ul.append(@_createLink i18n.last, 'l', state) if @firstAndLast
 
       @$el.append(ul).show()
 

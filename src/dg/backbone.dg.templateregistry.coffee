@@ -13,7 +13,7 @@ templates =
   # View used when the collection is empty
   empty: (data) ->
     text = "No data"
-    text = I18n.t i18nKeys['nodata'] if isI18n()
+    text = I18n.t(i18nKeys.nodata) if isI18n()
 
     "<td class='empty'>#{text}</td>"
 
@@ -37,7 +37,7 @@ templates =
   # View used when the data are under loading
   gridempty: (data) ->
     text = 'Loading data'
-    text = I18n.t i18nKeys['loading'] if isI18n()
+    text = I18n.t(i18nKeys.loading) if isI18n()
 
     '<div class="dgLoading">' +
       '<div class="progress progress-striped active">' +
@@ -59,7 +59,7 @@ templates =
   # Zone for the number of items per page choice
   perpage: (data) ->
     text = 'Item per page:'
-    text = I18n.t i18nKeys['perpage'] if isI18n()
+    text = I18n.t(i18nKeys.perpage) if isI18n()
 
     '<div class="form-inline pull-left">' +
       "<label class='checkbox'>#{text}&nbsp;</label>" +
@@ -77,7 +77,7 @@ templates =
   # Text search field to filter the collection
   quicksearch: (data) ->
     text = 'Quick search:'
-    text = I18n.t i18nKeys['quicksearch'] if isI18n()
+    text = I18n.t(i18nKeys.quicksearch) if isI18n()
 
     '<div class="form-inline pull-right qs">' +
       "<label class='checkbox'>#{text}&nbsp;</label>" +
