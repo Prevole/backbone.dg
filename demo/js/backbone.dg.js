@@ -1,6 +1,6 @@
 /*
- * Backbone.Dg - v0.0.3
- * Copyright (c) 2013-04-19 Laurent Prévost (prevole) <prevole@prevole.ch>
+ * Backbone.Dg - v0.0.4
+ * Copyright (c) 2013-04-26 Laurent Prévost (prevole) <prevole@prevole.ch>
  * Distributed under MIT license
  * https://github.com/prevole/backbone.dg
  */
@@ -1071,7 +1071,7 @@ A default collection is also provided to work with the `Dg` plugin.
       @param {Backbone.Model} model The model to render
       */
 
-      itemViewOptions: function(model) {
+      itemViewOptions: function() {
         return {
           vent: this.vent,
           columns: this.columns()
@@ -1090,9 +1090,9 @@ A default collection is also provided to work with the `Dg` plugin.
       ```
       */
 
-      initialize: function(options) {
-        this.vent = options.vent;
-        return this.collection = options.collection;
+      constructor: function() {
+        Marionette.CompositeView.prototype.constructor.apply(this, slice(arguments));
+        return _.extend(this, _.pick(this.options, 'vent'));
       },
       onCompositeModelRendered: function() {
         var selector;
@@ -1174,10 +1174,10 @@ A default collection is also provided to work with the `Dg` plugin.
       template: templates['grid'],
       /*
       Constructor
-      @param {Object} options Options to configure the grid
       */
 
-      initialize: function(options) {
+      constructor: function() {
+        Marionette.Layout.prototype.constructor.apply(this, slice(arguments));
         this.vent = new Backbone.Wreqr.EventAggregator();
         this.on('render', this.renderRegions);
         /*

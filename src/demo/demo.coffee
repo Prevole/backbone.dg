@@ -25,6 +25,8 @@ dataCollection = class extends Backbone.Collection
     else
       customs = options.meta
 
+    @originalModels = _.clone(models)
+
     @meta =
       _.defaults customs,
         page: 1
@@ -38,7 +40,7 @@ dataCollection = class extends Backbone.Collection
       storedSuccess(response)
       @trigger "fetched"
 
-    localData = _.clone(models)
+    localData = _.clone(@originalModels)
 
     localData = _.filter localData, (model) =>
       return model.match(@meta.term.toLowerCase())
@@ -105,7 +107,7 @@ RowView = class extends Dg.RowView
   template: rowView
 
 gridLayout = Dg.createGridLayout(
-  collection: new dataCollection(data)
+  collection: new dataCollection(models)
   gridRegions:
     table:
       view: Dg.TableView.extend
@@ -136,7 +138,7 @@ Dg.registerTemplate "grid2", (data) ->
   "</div>"
 
 gridLayout2 = Dg.createGridLayout(
-  collection: new dataCollection(data)
+  collection: new dataCollection(models)
   template: "grid2"
   gridRegions:
     perPageBottom:
@@ -158,7 +160,7 @@ gridLayout2 = Dg.createGridLayout(
 )
 
 gridLayout3 = Dg.createGridLayout(
-  collection: new dataCollection(data)
+  collection: new dataCollection(models)
   gridRegions:
     perPage: false
     toolbar: false
@@ -198,7 +200,7 @@ headerGrid = (data) ->
   "<button class='btn asc pull-right'>Timeline asc</button><button class='btn desc pull-right'>Timeline desc</button>"
 
 gridLayout4 = Dg.createGridLayout(
-  collection: new dataCollection(data, meta: { perPage: 6 })
+  collection: new dataCollection(models, meta: { perPage: 6 })
   gridRegions:
     toolbar: false
     perPage:
@@ -230,6 +232,61 @@ gridLayout4 = Dg.createGridLayout(
           className: "pull-left card"
 )
 
+
+listOfGridHeaderTemplate = (data) ->
+  "<th class='sorting'>Era</th>" +
+  "<th class='sorting'>Serie</th>" +
+  "<th class='sorting'>Title</th>" +
+  "<th class='sorting'>Timeline</th>" +
+  "<th class='sorting'>Author</th>" +
+  "<th class='sorting'>Release</th>"
+
+listOfGridRowTemplate = (data) ->
+  "<td>#{data.era}</td>" +
+  "<td>#{data.serie}</td>" +
+  "<td>#{data.title}</td>" +
+  "<td>#{data.timeline}</td>" +
+  "<td>#{data.author}</td>" +
+  "<td>#{data.release}</td>"
+
+ListOfGridHeaderView = class extends Dg.HeaderView
+  template: listOfGridHeaderTemplate
+
+ListOfGridRowView = class extends Dg.RowView
+  template: listOfGridRowTemplate
+
+gridLayout5 = Dg.createGridLayout(
+  gridRegions:
+    table:
+      view: Dg.TableView.extend
+        itemView: ListOfGridRowView
+        headerView: ListOfGridHeaderView
+).extend {
+  initialize: (options) ->
+    @collection = options.model.get('books')
+}
+
+listOfGridView = Marionette.CollectionView.extend {
+  itemView: gridLayout5
+}
+
+superCollection = new Backbone.Collection()
+
+superCollection.add new Backbone.Model({col: 1, books: new dataCollection(
+  _.reduce(_.where(data, {type: 'E-book'}), (memo, modelData) ->
+    memo.push new DataModel(modelData)
+    memo
+  , []
+  )
+)})
+superCollection.add new Backbone.Model({col: 2, books: new dataCollection(
+  _.reduce(_.where(data, {type: 'Book'}), (memo, modelData) ->
+    memo.push new DataModel(modelData)
+    memo
+  , []
+  )
+)})
+
 $(document).ready ->
   new Marionette.Region(el: "#dg1").show new gridLayout()
 
@@ -238,3 +295,5 @@ $(document).ready ->
   new Marionette.Region(el: "#dg3").show new gridLayout3()
 
   new Marionette.Region(el: "#dg4").show new gridLayout4()
+
+  new Marionette.Region(el: "#dg5").show new listOfGridView(collection: superCollection)

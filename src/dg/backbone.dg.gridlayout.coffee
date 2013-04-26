@@ -9,9 +9,10 @@ Dg.GridLayout = Marionette.Layout.extend
 
   ###
   Constructor
-  @param {Object} options Options to configure the grid
   ###
-  initialize: (options) ->
+  constructor: ->
+    Marionette.Layout.prototype.constructor.apply @, slice(arguments)
+
     # Create the event aggregator used accross all the components
     @vent = new Backbone.Wreqr.EventAggregator()
 

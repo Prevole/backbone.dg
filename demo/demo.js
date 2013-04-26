@@ -1,9 +1,117 @@
 (function() {
-  var DataModel, HeaderView, RowView, data, dataCollection, gridLayout, gridLayout2, gridLayout3, gridLayout4, headerGrid, headerView, models, perpage, rowView, table, tableRow,
+  var DataModel, HeaderView, ListOfGridHeaderView, ListOfGridRowView, RowView, data, data2, dataCollection, gridLayout, gridLayout2, gridLayout3, gridLayout4, gridLayout5, headerGrid, headerView, listOfGridHeaderTemplate, listOfGridRowTemplate, listOfGridView, models, perpage, rowView, superCollection, table, tableRow,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   data = [
+    {
+      era: "Pre Republic",
+      title: "Into the Void",
+      author: "Tim Lebbon",
+      release: 2013,
+      serie: "Dawn of the Jedi",
+      timeline: -25793,
+      type: "Book"
+    }, {
+      era: "Old Republic",
+      title: "Precipice",
+      author: "John Jackson Miller",
+      release: 2009,
+      serie: "Lost Tribe of the Sith",
+      timeline: -5000,
+      type: "E-book"
+    }, {
+      era: "Old Republic",
+      title: "Skyborn",
+      author: "John Jackson Miller",
+      release: 2009,
+      serie: "Lost Tribe of the Sith",
+      timeline: -5000,
+      type: "E-book"
+    }, {
+      era: "Old Republic",
+      title: "Paragon",
+      author: "John Jackson Miller",
+      release: 2010,
+      serie: "Lost Tribe of the Sith",
+      timeline: -4985,
+      type: "E-book"
+    }, {
+      era: "Old Republic",
+      title: "Savior",
+      author: "John Jackson Miller",
+      release: 2010,
+      serie: "Lost Tribe of the Sith",
+      timeline: -4975,
+      type: "E-book"
+    }, {
+      era: "Old Republic",
+      title: "Purgatory",
+      author: "John Jackson Miller",
+      release: 2010,
+      serie: "Lost Tribe of the Sith",
+      timeline: -3960,
+      type: "E-book"
+    }, {
+      era: "Old Republic",
+      title: "Revan",
+      author: "Drew Karpyshyn",
+      release: 2011,
+      serie: "The Old Republic",
+      timeline: -3954,
+      type: "Book"
+    }, {
+      era: "Old Republic",
+      title: "Deceived",
+      author: "Paul S. Kemp",
+      release: 2011,
+      serie: "The Old Republic",
+      timeline: -3953,
+      type: "Book"
+    }, {
+      era: "Old Republic",
+      title: "Revan",
+      author: "Drew Karpyshyn",
+      release: 2011,
+      serie: "The Old Republic",
+      timeline: -3954,
+      type: "Book"
+    }, {
+      era: "Old Republic",
+      title: "Pantheon",
+      author: "John Jackson Miller",
+      release: 2011,
+      serie: "Lost Tribe of the Sith",
+      timeline: -3000,
+      type: "E-book"
+    }, {
+      era: "Old Republic",
+      title: "Secrets",
+      author: "John Jackson Miller",
+      release: 2012,
+      serie: "Lost Tribe of the Sith",
+      timeline: -3000,
+      type: "E-book"
+    }, {
+      era: "Old Republic",
+      title: "Pandemonium",
+      author: "John Jackson Miller",
+      release: 2012,
+      serie: "Lost Tribe of the Sith",
+      timeline: -2975,
+      type: "E-book"
+    }, {
+      era: "Old Republic",
+      title: "Red Harvest",
+      author: "Joe Schreiber",
+      release: 2010,
+      serie: "-",
+      timeline: -3645,
+      type: "Book"
+    }
+  ];
+
+  data2 = [
     {
       era: "Pre Republic",
       title: "Into the Void",
@@ -157,6 +265,7 @@
       } else {
         customs = options.meta;
       }
+      this.originalModels = _.clone(models);
       return this.meta = _.defaults(customs, {
         page: 1,
         perPage: 5,
@@ -173,7 +282,7 @@
         storedSuccess(response);
         return _this.trigger("fetched");
       };
-      localData = _.clone(models);
+      localData = _.clone(this.originalModels);
       localData = _.filter(localData, function(model) {
         return model.match(_this.meta.term.toLowerCase());
       });
@@ -258,7 +367,7 @@
   })(Dg.RowView);
 
   gridLayout = Dg.createGridLayout({
-    collection: new dataCollection(data),
+    collection: new dataCollection(models),
     gridRegions: {
       table: {
         view: Dg.TableView.extend({
@@ -274,7 +383,7 @@
   });
 
   gridLayout2 = Dg.createGridLayout({
-    collection: new dataCollection(data),
+    collection: new dataCollection(models),
     template: "grid2",
     gridRegions: {
       perPageBottom: {
@@ -303,7 +412,7 @@
   });
 
   gridLayout3 = Dg.createGridLayout({
-    collection: new dataCollection(data),
+    collection: new dataCollection(models),
     gridRegions: {
       perPage: false,
       toolbar: false,
@@ -333,7 +442,7 @@
   };
 
   gridLayout4 = Dg.createGridLayout({
-    collection: new dataCollection(data, {
+    collection: new dataCollection(models, {
       meta: {
         perPage: 6
       }
@@ -387,6 +496,83 @@
     }
   });
 
+  listOfGridHeaderTemplate = function(data) {
+    return "<th class='sorting'>Era</th>" + "<th class='sorting'>Serie</th>" + "<th class='sorting'>Title</th>" + "<th class='sorting'>Timeline</th>" + "<th class='sorting'>Author</th>" + "<th class='sorting'>Release</th>";
+  };
+
+  listOfGridRowTemplate = function(data) {
+    return ("<td>" + data.era + "</td>") + ("<td>" + data.serie + "</td>") + ("<td>" + data.title + "</td>") + ("<td>" + data.timeline + "</td>") + ("<td>" + data.author + "</td>") + ("<td>" + data.release + "</td>");
+  };
+
+  ListOfGridHeaderView = (function(_super) {
+
+    __extends(_Class, _super);
+
+    function _Class() {
+      return _Class.__super__.constructor.apply(this, arguments);
+    }
+
+    _Class.prototype.template = listOfGridHeaderTemplate;
+
+    return _Class;
+
+  })(Dg.HeaderView);
+
+  ListOfGridRowView = (function(_super) {
+
+    __extends(_Class, _super);
+
+    function _Class() {
+      return _Class.__super__.constructor.apply(this, arguments);
+    }
+
+    _Class.prototype.template = listOfGridRowTemplate;
+
+    return _Class;
+
+  })(Dg.RowView);
+
+  gridLayout5 = Dg.createGridLayout({
+    gridRegions: {
+      table: {
+        view: Dg.TableView.extend({
+          itemView: ListOfGridRowView,
+          headerView: ListOfGridHeaderView
+        })
+      }
+    }
+  }).extend({
+    initialize: function(options) {
+      return this.collection = options.model.get('books');
+    }
+  });
+
+  listOfGridView = Marionette.CollectionView.extend({
+    itemView: gridLayout5
+  });
+
+  superCollection = new Backbone.Collection();
+
+  superCollection.add(new Backbone.Model({
+    col: 1,
+    books: new dataCollection(_.reduce(_.where(data, {
+      type: 'E-book'
+    }), function(memo, modelData) {
+      memo.push(new DataModel(modelData));
+      return memo;
+    }, []))
+  }));
+
+  superCollection.add(new Backbone.Model({
+    col: 2,
+    books: new dataCollection(_.reduce(_.where(data, {
+      type: 'Book'
+    }), function(memo, modelData) {
+      memo.push(new DataModel(modelData));
+      return memo;
+    }, []))
+  }));
+
   $(document).ready(function() {
     new Marionette.Region({
       el: "#dg1"
@@ -397,9 +583,14 @@
     new Marionette.Region({
       el: "#dg3"
     }).show(new gridLayout3());
-    return new Marionette.Region({
+    new Marionette.Region({
       el: "#dg4"
     }).show(new gridLayout4());
+    return new Marionette.Region({
+      el: "#dg5"
+    }).show(new listOfGridView({
+      collection: superCollection
+    }));
   });
 
 }).call(this);

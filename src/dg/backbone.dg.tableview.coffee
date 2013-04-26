@@ -22,7 +22,7 @@ Dg.TableView = Marionette.CompositeView.extend
 
   @param {Backbone.Model} model The model to render
   ###
-  itemViewOptions: (model) ->
+  itemViewOptions: ->
     return { vent: @vent, columns: @columns() }
 
   ###
@@ -37,9 +37,9 @@ Dg.TableView = Marionette.CompositeView.extend
     collection:
   ```
   ###
-  initialize: (options) ->
-    @vent = options.vent
-    @collection = options.collection
+  constructor: ->
+    Marionette.CompositeView.prototype.constructor.apply @, slice(arguments)
+    _.extend @, _.pick(@options, 'vent')
 
   onCompositeModelRendered: ->
     # If necessary, the header view is rendered
