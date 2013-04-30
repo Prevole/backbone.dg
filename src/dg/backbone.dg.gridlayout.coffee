@@ -11,10 +11,12 @@ Dg.GridLayout = Marionette.Layout.extend
   Constructor
   ###
   constructor: ->
-    Marionette.Layout.prototype.constructor.apply @, slice(arguments)
-
-    # Create the event aggregator used accross all the components
+    # Create the event aggregator used accross all the components. The event
+    # aggregator must be created before the initialize function is called in
+    # the parent constructor.
     @vent = new Backbone.Wreqr.EventAggregator()
+
+    Marionette.Layout.prototype.constructor.apply @, slice(arguments)
 
     @on 'render', @renderRegions
 

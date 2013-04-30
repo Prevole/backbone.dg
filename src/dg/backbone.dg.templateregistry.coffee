@@ -112,6 +112,17 @@ an existing one.
 @param {String} templateName The name of the template
 @param {Function,String} template The template to register
 ###
-# TODO: Correct doc
 Dg.registerTemplate = (templateName, template) ->
   templates[templateName] = template
+
+###
+## getTemplate
+
+Retrieve a template from the template registry
+
+@param {String} templateName The name of the template
+@return {Function,String} The template found, throw an error if the template name is unknown
+###
+Dg.getTemplate = (templateName) ->
+  throw new Error 'Unknown template' unless templates[templateName]
+  return templates[templateName]

@@ -1,6 +1,6 @@
 /*
- * Backbone.Dg - v0.0.4
- * Copyright (c) 2013-04-26 Laurent Prévost (prevole) <prevole@prevole.ch>
+ * Backbone.Dg - v0.0.5
+ * Copyright (c) 2013-04-30 Laurent Prévost (prevole) <prevole@prevole.ch>
  * Distributed under MIT license
  * https://github.com/prevole/backbone.dg
  */
@@ -214,6 +214,21 @@ A default collection is also provided to work with the `Dg` plugin.
 
     Dg.registerTemplate = function(templateName, template) {
       return templates[templateName] = template;
+    };
+    /*
+    ## getTemplate
+    
+    Retrieve a template from the template registry
+    
+    @param {String} templateName The name of the template
+    @return {Function,String} The template found, throw an error if the template name is unknown
+    */
+
+    Dg.getTemplate = function(templateName) {
+      if (!templates[templateName]) {
+        throw new Error('Unknown template');
+      }
+      return templates[templateName];
     };
     /*
     ## ItemView
@@ -1177,8 +1192,8 @@ A default collection is also provided to work with the `Dg` plugin.
       */
 
       constructor: function() {
-        Marionette.Layout.prototype.constructor.apply(this, slice(arguments));
         this.vent = new Backbone.Wreqr.EventAggregator();
+        Marionette.Layout.prototype.constructor.apply(this, slice(arguments));
         this.on('render', this.renderRegions);
         /*
         TODO: Refactor this part
