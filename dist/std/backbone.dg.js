@@ -1,6 +1,6 @@
 /*
- * Backbone.Dg - v0.0.5
- * Copyright (c) 2013-04-30 Laurent Prévost (prevole) <prevole@prevole.ch>
+ * Backbone.Dg - v0.0.6
+ * Copyright (c) 2013-05-01 Laurent Prévost (prevole) <prevole@prevole.ch>
  * Distributed under MIT license
  * https://github.com/prevole/backbone.dg
  */
@@ -38,7 +38,7 @@ A default collection is also provided to work with the `Dg` plugin.
   window.Backbone.Dg = window.Dg = (function(Backbone, Marionette, _, $) {
     var Dg, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, isI18n, mandatoryOptions, reject, slice, templates;
     Dg = {
-      version: '0.0.3'
+      version: '0.0.6'
     };
     /*
     Defaults i18nKeys used in the translations if `i18n-js` is used.
@@ -1206,7 +1206,8 @@ A default collection is also provided to work with the `Dg` plugin.
         this.listenTo(this.vent, 'row:edit', this.handleEdit);
         this.listenTo(this.vent, 'row:delete', this.handleDelete);
         this.listenTo(this.vent, 'create:model', this.handleCreate);
-        return this.listenTo(this.collection, 'fetched', this.refreshGrid);
+        this.listenTo(this.collection, 'fetched', this.refreshGrid);
+        return this.listenTo(this.collection, 'info:updated', this.refreshGrid);
       },
       /*
       Proceed to the regions rendering. Each region is created,
@@ -1237,6 +1238,13 @@ A default collection is also provided to work with the `Dg` plugin.
           vent: this.vent,
           collection: this.collection
         }, this.options)));
+        return this.refreshInfo();
+      },
+      /*
+      Ask for a refresh of the views arround the table
+      */
+
+      refreshInfo: function() {
         return this.vent.trigger('view:refresh', this.collection.getInfo());
       },
       handleUpdate: function(options) {

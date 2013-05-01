@@ -33,6 +33,7 @@ Dg.GridLayout = Marionette.Layout.extend
 
     # Bind the grid refresh to the collection event
     @listenTo @collection, 'fetched', @refreshGrid
+    @listenTo @collection, 'info:updated', @refreshGrid
 
   ###
   Proceed to the regions rendering. Each region is created,
@@ -61,7 +62,12 @@ Dg.GridLayout = Marionette.Layout.extend
   refreshGrid: ->
     # This time, the table could shou the data from the collection
     @table.show new @regions.table.view(_.extend({vent: @vent, collection: @collection}, @options))
+    @refreshInfo()
 
+  ###
+  Ask for a refresh of the views arround the table
+  ###
+  refreshInfo: ->
     # Refresh all the views attached to the grid with the collection metadata
     @vent.trigger 'view:refresh', @collection.getInfo()
 
