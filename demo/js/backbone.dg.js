@@ -1,6 +1,6 @@
 /*
- * Backbone.Dg - v0.0.5
- * Copyright (c) 2013-04-30 Laurent Prévost (prevole) <prevole@prevole.ch>
+ * Backbone.Dg - v0.0.6
+ * Copyright (c) 2013-05-07 Laurent Prévost (prevole) <prevole@prevole.ch>
  * Distributed under MIT license
  * https://github.com/prevole/backbone.dg
  */
@@ -38,7 +38,7 @@ A default collection is also provided to work with the `Dg` plugin.
   window.Backbone.Dg = window.Dg = (function(Backbone, Marionette, _, $) {
     var Dg, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, isI18n, mandatoryOptions, reject, slice, templates;
     Dg = {
-      version: '0.0.3'
+      version: '0.0.6'
     };
     /*
     Defaults i18nKeys used in the translations if `i18n-js` is used.
@@ -977,7 +977,8 @@ A default collection is also provided to work with the `Dg` plugin.
       css: {
         sortable: 'sorting',
         asc: 'sorting-asc',
-        desc: 'sorting-desc'
+        desc: 'sorting-desc',
+        none: 'sorting-none'
       },
       events: {
         'click .sorting': 'sort'
@@ -996,27 +997,23 @@ A default collection is also provided to work with the `Dg` plugin.
       */
 
       refreshView: function(info) {
-        var target, _i, _len, _ref, _results;
-        _ref = this.$el.find(this.sortTag);
+        var sorter, target, _i, _len, _ref, _results;
+        _ref = this.$el.find(this.css.sortable, this.sortTag);
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           target = _ref[_i];
-          target = $(target);
-          if (target.hasClass(this.css.sortable)) {
-            target.removeClass("" + this.css.asc + " " + this.css.desc);
-            if (info[infoKeys.sort]) {
-              this.sortConfiguration = info[infoKeys.sort];
-              if (this.sortConfiguration[target.index()]) {
-                if (this.sortConfiguration[target.index()] === infoKeys.asc) {
-                  _results.push(target.addClass(this.css.asc));
-                } else {
-                  _results.push(target.addClass(this.css.desc));
-                }
+          sorter = $(target);
+          sorter.removeClass("" + this.css.asc + " " + this.css.desc + " " + this.css.none);
+          if (info[infoKeys.sort]) {
+            this.sortConfiguration = info[infoKeys.sort];
+            if (this.sortConfiguration[target.index()]) {
+              if (this.sortConfiguration[target.index()] === infoKeys.asc) {
+                _results.push(target.addClass(this.css.asc));
               } else {
-                _results.push(void 0);
+                _results.push(target.addClass(this.css.desc));
               }
             } else {
-              _results.push(void 0);
+              _results.push(target.addClass(this.css.none));
             }
           } else {
             _results.push(void 0);
@@ -1033,7 +1030,7 @@ A default collection is also provided to work with the `Dg` plugin.
 
       sort: function(event) {
         var idx;
-        idx = $(event.target).index();
+        idx = $(event.target).index($("." + this.css.sortable, this.$el));
         if (!this.sortConfiguration) {
           this.sortConfiguration = {};
         }
@@ -1206,7 +1203,8 @@ A default collection is also provided to work with the `Dg` plugin.
         this.listenTo(this.vent, 'row:edit', this.handleEdit);
         this.listenTo(this.vent, 'row:delete', this.handleDelete);
         this.listenTo(this.vent, 'create:model', this.handleCreate);
-        return this.listenTo(this.collection, 'fetched', this.refreshGrid);
+        this.listenTo(this.collection, 'fetched', this.refreshGrid);
+        return this.listenTo(this.collection, 'info:updated', this.refreshGrid);
       },
       /*
       Proceed to the regions rendering. Each region is created,
@@ -1237,6 +1235,13 @@ A default collection is also provided to work with the `Dg` plugin.
           vent: this.vent,
           collection: this.collection
         }, this.options)));
+        return this.refreshInfo();
+      },
+      /*
+      Ask for a refresh of the views arround the table
+      */
+
+      refreshInfo: function() {
         return this.vent.trigger('view:refresh', this.collection.getInfo());
       },
       handleUpdate: function(options) {

@@ -25,6 +25,7 @@ Dg.HeaderView = Dg.ItemView.extend
     sortable: 'sorting'
     asc: 'sorting-asc'
     desc: 'sorting-desc'
+    none: 'sorting-none'
 
   events:
     'click .sorting': 'sort'
@@ -43,26 +44,26 @@ Dg.HeaderView = Dg.ItemView.extend
   ###
   refreshView: (info) ->
     # Update the view state for each column header
-    for target in @$el.find(@sortTag)
-      target = $(target)
+    for target in @$el.find(@css.sortable, @sortTag)
+      sorter = $(target)
 
-      # Check if the target is electible for sorting
-      if target.hasClass(@css.sortable)
-        # Remove previous sorting classes
-        target.removeClass("#{@css.asc} #{@css.desc}")
+      # Remove sorter markers
+      sorter.removeClass("#{@css.asc} #{@css.desc} #{@css.none}")
 
-        # Check if a sorting configuration is already existing
-        if info[infoKeys.sort]
-          # Store the current configuration
-          @sortConfiguration = info[infoKeys.sort]
+      # Check if a sorting configuration is already existing
+      if info[infoKeys.sort]
+        # Store the current configuration
+        @sortConfiguration = info[infoKeys.sort]
 
-          # Check if the current column header is sorted
-          if @sortConfiguration[target.index()]
-            # Check which sorting order must be apply
-            if @sortConfiguration[target.index()] == infoKeys.asc
-              target.addClass(@css.asc)
-            else
-              target.addClass(@css.desc)
+        # Check if the current column header is sorted
+        if @sortConfiguration[target.index()]
+          # Check which sorting order must be apply
+          if @sortConfiguration[target.index()] == infoKeys.asc
+            target.addClass(@css.asc)
+          else
+            target.addClass(@css.desc)
+        else
+          target.addClass(@css.none)
 
   ###
   Manage the sort action to be done when an header element is
@@ -72,7 +73,7 @@ Dg.HeaderView = Dg.ItemView.extend
   ###
   sort: (event) ->
     # Retrieve the header index
-    idx = $(event.target).index()
+    idx = $(".#{@css.sortable}", @$el).index($(event.target))
 
     # Be sure there is a sorting configuration
     @sortConfiguration = {} unless @sortConfiguration

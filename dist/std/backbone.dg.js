@@ -1,6 +1,6 @@
 /*
  * Backbone.Dg - v0.0.6
- * Copyright (c) 2013-05-01 Laurent Prévost (prevole) <prevole@prevole.ch>
+ * Copyright (c) 2013-05-07 Laurent Prévost (prevole) <prevole@prevole.ch>
  * Distributed under MIT license
  * https://github.com/prevole/backbone.dg
  */
@@ -977,7 +977,8 @@ A default collection is also provided to work with the `Dg` plugin.
       css: {
         sortable: 'sorting',
         asc: 'sorting-asc',
-        desc: 'sorting-desc'
+        desc: 'sorting-desc',
+        none: 'sorting-none'
       },
       events: {
         'click .sorting': 'sort'
@@ -996,27 +997,23 @@ A default collection is also provided to work with the `Dg` plugin.
       */
 
       refreshView: function(info) {
-        var target, _i, _len, _ref, _results;
-        _ref = this.$el.find(this.sortTag);
+        var sorter, target, _i, _len, _ref, _results;
+        _ref = this.$el.find(this.css.sortable, this.sortTag);
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           target = _ref[_i];
-          target = $(target);
-          if (target.hasClass(this.css.sortable)) {
-            target.removeClass("" + this.css.asc + " " + this.css.desc);
-            if (info[infoKeys.sort]) {
-              this.sortConfiguration = info[infoKeys.sort];
-              if (this.sortConfiguration[target.index()]) {
-                if (this.sortConfiguration[target.index()] === infoKeys.asc) {
-                  _results.push(target.addClass(this.css.asc));
-                } else {
-                  _results.push(target.addClass(this.css.desc));
-                }
+          sorter = $(target);
+          sorter.removeClass("" + this.css.asc + " " + this.css.desc + " " + this.css.none);
+          if (info[infoKeys.sort]) {
+            this.sortConfiguration = info[infoKeys.sort];
+            if (this.sortConfiguration[target.index()]) {
+              if (this.sortConfiguration[target.index()] === infoKeys.asc) {
+                _results.push(target.addClass(this.css.asc));
               } else {
-                _results.push(void 0);
+                _results.push(target.addClass(this.css.desc));
               }
             } else {
-              _results.push(void 0);
+              _results.push(target.addClass(this.css.none));
             }
           } else {
             _results.push(void 0);
@@ -1033,7 +1030,7 @@ A default collection is also provided to work with the `Dg` plugin.
 
       sort: function(event) {
         var idx;
-        idx = $(event.target).index();
+        idx = $("." + this.css.sortable, this.$el).index($(event.target));
         if (!this.sortConfiguration) {
           this.sortConfiguration = {};
         }
