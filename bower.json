@@ -21,7 +21,7 @@
 		"src",
 		"Gruntfile.coffee"
 	],
-  "dependencies": {
+  "devDependencies": {
     "backbone": "1.1.2",
     "marionette": "1.6.4",
     "jquery": "2.1.0",
