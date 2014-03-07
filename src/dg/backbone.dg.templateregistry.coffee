@@ -53,7 +53,7 @@ templates =
   # ## pager
   # Pager container to present the paging elements
   pager: (data) ->
-    '<div class="pagination pagination-right" />'
+    '<div/>'
 
   # ## perpage
   # Zone for the number of items per page choice
@@ -81,7 +81,7 @@ templates =
 
     '<div class="form-inline pull-right qs">' +
       "<label class='checkbox'>#{text}&nbsp;</label>" +
-      '<input type="text" />' +
+      '<input type="text" class="form-control" />' +
     '</div>'
 
   # ## table
@@ -96,10 +96,10 @@ templates =
   toolbar: (data) ->
     '<div class="form-inline pull-right buttons btn-group">' +
       '<button class="btn refresh">' +
-        '<i class="icon-refresh" />' +
+        '<i class="glyphicon glyphicon-refresh" />' +
       '</button>' +
       '<button class="btn create">' +
-        '<i class="icon-plus" />' +
+        '<i class="glyphicon glyphicon-plus" />' +
       '</button>' +
     '</div>'
 

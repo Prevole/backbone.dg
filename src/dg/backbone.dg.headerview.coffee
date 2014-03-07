@@ -44,7 +44,7 @@ Dg.HeaderView = Dg.ItemView.extend
   ###
   refreshView: (info) ->
     # Update the view state for each column header
-    for target in @$el.find(@css.sortable, @sortTag)
+    for target in @$el.find("#{@sortTag}.#{@css.sortable}")
       sorter = $(target)
 
       # Remove sorter markers
@@ -56,14 +56,14 @@ Dg.HeaderView = Dg.ItemView.extend
         @sortConfiguration = info[infoKeys.sort]
 
         # Check if the current column header is sorted
-        if @sortConfiguration[target.index()]
+        if @sortConfiguration[sorter.index()]
           # Check which sorting order must be apply
-          if @sortConfiguration[target.index()] == infoKeys.asc
-            target.addClass(@css.asc)
+          if @sortConfiguration[sorter.index()] == infoKeys.asc
+            sorter.addClass(@css.asc)
           else
-            target.addClass(@css.desc)
+            sorter.addClass(@css.desc)
         else
-          target.addClass(@css.none)
+          sorter.addClass(@css.none)
 
   ###
   Manage the sort action to be done when an header element is

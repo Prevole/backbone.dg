@@ -1,3 +1,5 @@
+.dgGrid .dgQuickSearch {
+  padding-right: 5px; }
 .dgGrid .pagination > ul > li > a {
   line-height: 24px;
   padding: 0 7px; }
@@ -35,4 +37,8 @@
   border: solid black 1px;
   width: 350px;
   margin: 5px;
+  padding: 10px; }
+
+.grouped {
+  border: solid black 1px;
   padding: 10px; }

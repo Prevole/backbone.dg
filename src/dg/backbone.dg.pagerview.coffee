@@ -121,7 +121,7 @@ Dg.PagerView = Dg.DefaultItemView.extend
     # Reset el
     @$el.empty().hide()
 
-    ul = $('<ul />')
+    ul = $('<ul class="pagination pagination-right" />')
 
     # Shortcuts to number of pages and current page
     page = @info[infoKeys.page]

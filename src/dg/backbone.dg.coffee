@@ -8,13 +8,11 @@ and its different views to reach the features of the data table.
 
 Dependencies:
 
-- [jQuery 1.9.0](http://jquery.com)
+- [jQuery 2.1.0](http://jquery.com)
 - [JSON2 2011-10-19](http://www.JSON.org/json2.js)
-- [Underscore 1.4.3](http://underscorejs.org)
-- [Backbone 0.9.10](http://backbonejs.org)
-- [Backbone.Marionette 1.0.0-rc3](http://github.com/marionettejs/backbone.marionette)
-- [Backbone.Wreqr 0.1.0](http://github.com/marionettejs/backbone.wreqr)
-- [Backbone.Babysitter 0.0.4](http://github.com/marionettejs/backbone.wreqr)
+- [Underscore 1.6.0](http://underscorejs.org)
+- [Backbone 1.1.2](http://backbonejs.org)
+- [Backbone.Marionette 1.6.4](http://github.com/marionettejs/backbone.marionette)
 
 By default, a complete implementation based on `<table />` HTML tag is
 provided but all the views can be overrided quickly and easily to create
@@ -23,7 +21,7 @@ an implementation based on other views and tags.
 A default collection is also provided to work with the `Dg` plugin.
 ###
 window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
-  Dg = { version: '0.0.6' }
+  Dg = { version: '0.0.7' }
 
   ###
   Defaults i18nKeys used in the translations if `i18n-js` is used.

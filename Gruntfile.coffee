@@ -19,6 +19,33 @@ module.exports = (grunt) ->
       doc: ['doc']
       test: ['spec/javascripts']
 
+    # ### Install web dependencies
+    bowercopy:
+      options:
+        clean: true
+      css:
+        options:
+          destPrefix: 'demo/css'
+        files:
+          'bootstrap.css': 'bootstrap/dist/css/bootstrap.css'
+          'bootstrap-theme.css': 'bootstrap/dist/css/bootstrap-theme.css'
+      fonts:
+        options:
+          destPrefix: 'demo'
+        files:
+          'fonts': 'bootstrap/dist/fonts'
+      js:
+        options:
+          destPrefix: 'demo/js'
+        files:
+          'backbone.js': 'backbone/backbone.js'
+          'backbone.marionette.js': 'marionette/lib/backbone.marionette.js'
+          'bootstrap.js': 'bootstrap/dist/js/bootstrap.js'
+          'jquery.js': 'jquery/dist/jquery.js'
+          'json2.js': 'json2/json2.js'
+          'underscore.js': 'underscore/underscore.js'
+
+
     # ### CoffeeLint tasks
     coffeelint:
       options:
@@ -105,6 +132,20 @@ module.exports = (grunt) ->
           helpers: 'spec/javascripts/helpers/*.js'
           specs: 'spec/javascripts/**/*.spec.js'
 
+    # ### Watch tasks
+    watch:
+      core:
+        files: 'src/dg/*'
+        tasks: ['core', 'demo']
+      demo:
+        files: 'src/demo/*'
+        tasks: 'demo'
+
+    # ### Bump configuration
+    bump:
+      options:
+        files: ['package.json', 'bower.json', 'src/dg/backbone.dg.coffee']
+
   # ### Tasks loading
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-rigger'
@@ -117,11 +158,13 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-jasmine'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-bump'
+  grunt.loadNpmTasks 'grunt-bowercopy'
+  grunt.loadNpmTasks 'grunt-contrib-watch'
 
   # ### Task definition
   grunt.registerTask 'test', "Compile and run the tests", ['clean:test', 'coffee:test', 'jasmine:core']
   grunt.registerTask 'doc', "Clean and compile the doc", ['clean:doc', 'docker:doc']
-  grunt.registerTask 'demo', "Clean, build and prepare the demo", ['clean:demo', 'coffeelint:demo', 'rig:demo', 'sass:demo', 'haml:demo', 'copy:demo']
+  grunt.registerTask 'demo', "Clean, build and prepare the demo", ['clean:demo', 'bowercopy', 'coffeelint:demo', 'rig:demo', 'sass:demo', 'haml:demo', 'copy:demo']
   grunt.registerTask 'core', "Clean, validate and build the project", ['clean:core', 'coffeelint:core', 'rig:core', 'uglify:core']
   grunt.registerTask 'all', "Run the core, test, demo and doc tasks", ['core', 'test', 'demo', 'doc']
   grunt.registerTask 'default', "Run the core, test and demo tasks", ['core', 'test', 'demo']

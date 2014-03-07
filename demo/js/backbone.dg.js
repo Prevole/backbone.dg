@@ -1,6 +1,6 @@
 /*
- * Backbone.Dg - v0.0.6
- * Copyright (c) 2013-05-07 Laurent Prévost (prevole) <prevole@prevole.ch>
+ * Backbone.Dg - v0.0.7
+ * Copyright (c) 2014-03-07 Laurent Prévost (prevole) <prevole@prevole.ch>
  * Distributed under MIT license
  * https://github.com/prevole/backbone.dg
  */
@@ -15,13 +15,11 @@ and its different views to reach the features of the data table.
 
 Dependencies:
 
-- [jQuery 1.9.0](http://jquery.com)
+- [jQuery 2.1.0](http://jquery.com)
 - [JSON2 2011-10-19](http://www.JSON.org/json2.js)
-- [Underscore 1.4.3](http://underscorejs.org)
-- [Backbone 0.9.10](http://backbonejs.org)
-- [Backbone.Marionette 1.0.0-rc3](http://github.com/marionettejs/backbone.marionette)
-- [Backbone.Wreqr 0.1.0](http://github.com/marionettejs/backbone.wreqr)
-- [Backbone.Babysitter 0.0.4](http://github.com/marionettejs/backbone.wreqr)
+- [Underscore 1.6.0](http://underscorejs.org)
+- [Backbone 1.1.2](http://backbonejs.org)
+- [Backbone.Marionette 1.6.4](http://github.com/marionettejs/backbone.marionette)
 
 By default, a complete implementation based on `<table />` HTML tag is
 provided but all the views can be overrided quickly and easily to create
@@ -38,7 +36,7 @@ A default collection is also provided to work with the `Dg` plugin.
   window.Backbone.Dg = window.Dg = (function(Backbone, Marionette, _, $) {
     var Dg, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, isI18n, mandatoryOptions, reject, slice, templates;
     Dg = {
-      version: '0.0.6'
+      version: '0.0.7'
     };
     /*
     Defaults i18nKeys used in the translations if `i18n-js` is used.
@@ -177,7 +175,7 @@ A default collection is also provided to work with the `Dg` plugin.
         return '<span class="info" />';
       },
       pager: function(data) {
-        return '<div class="pagination pagination-right" />';
+        return '<div/>';
       },
       perpage: function(data) {
         var text;
@@ -193,13 +191,13 @@ A default collection is also provided to work with the `Dg` plugin.
         if (isI18n()) {
           text = I18n.t(i18nKeys.quicksearch);
         }
-        return '<div class="form-inline pull-right qs">' + ("<label class='checkbox'>" + text + "&nbsp;</label>") + '<input type="text" />' + '</div>';
+        return '<div class="form-inline pull-right qs">' + ("<label class='checkbox'>" + text + "&nbsp;</label>") + '<input type="text" class="form-control" />' + '</div>';
       },
       table: function(data) {
         return '<table class="table table-striped table-hover table-condensed">' + '<tbody/>' + '</table>';
       },
       toolbar: function(data) {
-        return '<div class="form-inline pull-right buttons btn-group">' + '<button class="btn refresh">' + '<i class="icon-refresh" />' + '</button>' + '<button class="btn create">' + '<i class="icon-plus" />' + '</button>' + '</div>';
+        return '<div class="form-inline pull-right buttons btn-group">' + '<button class="btn refresh">' + '<i class="glyphicon glyphicon-refresh" />' + '</button>' + '<button class="btn create">' + '<i class="glyphicon glyphicon-plus" />' + '</button>' + '</div>';
       }
     };
     /*
@@ -687,7 +685,7 @@ A default collection is also provided to work with the `Dg` plugin.
         var css, i, i18n, maxPage, minPage, page, pages, state, ul, _i;
         this.info = info;
         this.$el.empty().hide();
-        ul = $('<ul />');
+        ul = $('<ul class="pagination pagination-right" />');
         page = this.info[infoKeys.page];
         pages = this.info[infoKeys.pages];
         if (page > 0 && pages > 1) {
@@ -998,7 +996,7 @@ A default collection is also provided to work with the `Dg` plugin.
 
       refreshView: function(info) {
         var sorter, target, _i, _len, _ref, _results;
-        _ref = this.$el.find(this.css.sortable, this.sortTag);
+        _ref = this.$el.find("" + this.sortTag + "." + this.css.sortable);
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           target = _ref[_i];
@@ -1006,14 +1004,14 @@ A default collection is also provided to work with the `Dg` plugin.
           sorter.removeClass("" + this.css.asc + " " + this.css.desc + " " + this.css.none);
           if (info[infoKeys.sort]) {
             this.sortConfiguration = info[infoKeys.sort];
-            if (this.sortConfiguration[target.index()]) {
-              if (this.sortConfiguration[target.index()] === infoKeys.asc) {
-                _results.push(target.addClass(this.css.asc));
+            if (this.sortConfiguration[sorter.index()]) {
+              if (this.sortConfiguration[sorter.index()] === infoKeys.asc) {
+                _results.push(sorter.addClass(this.css.asc));
               } else {
-                _results.push(target.addClass(this.css.desc));
+                _results.push(sorter.addClass(this.css.desc));
               }
             } else {
-              _results.push(target.addClass(this.css.none));
+              _results.push(sorter.addClass(this.css.none));
             }
           } else {
             _results.push(void 0);
@@ -1030,7 +1028,7 @@ A default collection is also provided to work with the `Dg` plugin.
 
       sort: function(event) {
         var idx;
-        idx = $(event.target).index($("." + this.css.sortable, this.$el));
+        idx = $("." + this.css.sortable, this.$el).index($(event.target));
         if (!this.sortConfiguration) {
           this.sortConfiguration = {};
         }
