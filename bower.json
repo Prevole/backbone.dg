@@ -1,6 +1,20 @@
 {
 	"name": "Backbone.Dg",
+	"description": "Data Grid plugin for Backbone (heavy use of Backbone.Marionette)",
 	"version": "0.1.2",
+	"authors": [
+		"Laurent Prévost (Prevole) <prevole@prevole.ch>"
+	],
+	"license": "MIT",
+	"homepage": "https://github.com/prevole/backbone.dg",
+	"private": true,
+	"main": "./dist/std/backbone.dg.js",
+	"keywords": [
+   "table",
+   "datagrid",
+   "backbone",
+   "marionette"
+ ],
 	"ignore": [
 		"demo",
 		"spec",
