@@ -113,7 +113,7 @@ module.exports = (grunt) ->
           colourScheme: 'friendly'
           lineNums: true
           ignoreHidden: true
-          exclude: 'demo,dist,doc,node_modules,spec'
+          exclude: 'demo,dist,doc,node_modules,spec,bower_components'
         dest: 'doc'
         src: ['.']
 
@@ -164,12 +164,14 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-watch'
 
   # ### Task definition
+
+  grunt.registerTask "release", "Release a new version, push it", (target)->
+    target = "patch" unless target
+    grunt.task.run "bump-only:#{target}", "build", "bump-commit"
+
   grunt.registerTask 'test', "Compile and run the tests", ['clean:test', 'coffee:test', 'jasmine:core']
   grunt.registerTask 'doc', "Clean and compile the doc", ['clean:doc', 'docker:doc']
   grunt.registerTask 'demo', "Clean, build and prepare the demo", ['clean:demo', 'bowercopy', 'coffeelint:demo', 'rig:demo', 'sass:demo', 'haml:demo', 'copy:demo']
   grunt.registerTask 'core', "Clean, validate and build the project", ['clean:core', 'coffeelint:core', 'rig:core', 'uglify:core']
   grunt.registerTask 'all', "Run the core, test, demo and doc tasks", ['core', 'test', 'demo', 'doc']
-  grunt.registerTask 'patch', "Bump the patch version", ['bump-only:patch', 'core', 'demo', 'bump-commit']
-  grunt.registerTask 'minor', "Bump the minor version", ['bump-only:minor', 'core', 'demo', 'bump-commit']
-  grunt.registerTask 'major', "Bump the major version", ['bump-only:major', 'core', 'demo', 'bump-commit']
   grunt.registerTask 'default', "Run the core, test and demo tasks", ['core', 'test', 'demo']

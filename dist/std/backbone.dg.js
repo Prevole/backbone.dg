@@ -40,7 +40,7 @@ A default collection is also provided to work with the `Dg` plugin.
     };
     /*
     Defaults i18nKeys used in the translations if `i18n-js` is used.
-    
+
     You can provide your own i18n keys to match your structure.
     */
 
@@ -60,11 +60,11 @@ A default collection is also provided to work with the `Dg` plugin.
     };
     /*
     defaults
-    
+
     In the same idea of `_.defaults(object, *defaults)`, this function
     will recurse the object structure to use defaults values at any
     depth of the object.
-    
+
     @param {Object} object The objet to get the overriden values
     @param {Object} defs Defaults to apply when no value is provided
     @return {Object} Object enriched
@@ -87,10 +87,10 @@ A default collection is also provided to work with the `Dg` plugin.
     };
     /*
     reject
-    
+
     Like `_.reject(list, iterator, [context])`, this function reject entries
     that satisfies the iterator function.
-    
+
     @param {Object} object The objet that contains entries to reject
     @param {Function} filter The function to reject unwanted entries
     @return {Object} Object that contains only elements wanted
@@ -109,7 +109,7 @@ A default collection is also provided to work with the `Dg` plugin.
     };
     /*
     Check if the options given contains the options wanted
-    
+
     @param {Object} options The options to check
     @param {Array(String)} optionNames The array of option names expected to be there
     @return {Boolean} True if the options are correct, false otherwise
@@ -130,7 +130,7 @@ A default collection is also provided to work with the `Dg` plugin.
     };
     /*
     Check if the I18n library is available or not
-    
+
     @return {Boolean} True if the lib is available
     */
 
@@ -146,7 +146,7 @@ A default collection is also provided to work with the `Dg` plugin.
     The templates provided are used to offer a simple and default
     implementation that could be used out of the box to render
     a DataGrid.
-    
+
     The templates to render a `Row` or `Headers` are not offered as
     they really depends on what you want to show your data
     */
@@ -202,10 +202,10 @@ A default collection is also provided to work with the `Dg` plugin.
     };
     /*
     ## registerTemplate
-    
+
     Utility function to add a new template entry and/or replacing
     an existing one.
-    
+
     @param {String} templateName The name of the template
     @param {Function,String} template The template to register
     */
@@ -215,9 +215,9 @@ A default collection is also provided to work with the `Dg` plugin.
     };
     /*
     ## getTemplate
-    
+
     Retrieve a template from the template registry
-    
+
     @param {String} templateName The name of the template
     @return {Function,String} The template found, throw an error if the template name is unknown
     */
@@ -230,14 +230,14 @@ A default collection is also provided to work with the `Dg` plugin.
     };
     /*
     ## ItemView
-    
+
     This is the general view used in the `DataGrid` plugin to ensure
     the rendering and the update of information arround the collection
     rendered. The view is based on the `Marionette.ItemView`.
-    
+
     The both methods `refreshView` and `update` are mandatory. The `refreshView`
     raise an error if not overriden while the `update` has a default implementation.
-    
+
     This view expect to have an event aggregator given from the datagrid layout. If not given,
     an error is raised.
     */
@@ -246,10 +246,10 @@ A default collection is also provided to work with the `Dg` plugin.
       /*
       Constructor to enforce the presence of the event aggregator
       used accross the datagrid.
-        
+
       The refreshView method is directly bind to the event `view:refresh`
       from the event aggregator.
-        
+
       @param {Object} options The options that should at least contain `vent` object
       */
 
@@ -266,11 +266,11 @@ A default collection is also provided to work with the `Dg` plugin.
       Override the default render method from `Marionette.ItemView`
       to trigger the event "item:rendered" once the render method
       finished.
-        
+
       The `render` function is called on the `Marionette.ItemView` to
       manage the technical rendering part. The addition comes from
       the event triggered after the rendering is done.
-        
+
       @return {Dg.ItemView} This
       */
 
@@ -279,9 +279,9 @@ A default collection is also provided to work with the `Dg` plugin.
       },
       /*
       Refresh the view based on the info comming from the collection state.
-        
+
       By default, this function raised an exception as she must be implemented.
-        
+
       @param {Object} info The metadata that describe the collection current state
       */
 
@@ -292,14 +292,14 @@ A default collection is also provided to work with the `Dg` plugin.
       Every time the metadata of the datagrid is updated, an
       event is triggered to request a refresh of the data contained
       in the collection.
-        
+
       As the responsability of the metadata processing is given to
       the collection itself, you can set anything you want as metadata.
-        
+
       There is a default metadata format expected that you can see. This
       default format should be configured for the default implementation
       of the different table views.
-        
+
       @param {Object} info The metadata updated by the table views
       */
 
@@ -318,10 +318,10 @@ A default collection is also provided to work with the `Dg` plugin.
     });
     /*
     ## DefaultItemView
-    
+
     Use the `Dg.DefaultItemView` is a specialized view from `Dg.ItemView`. It is designed
     to be used to generate views that are not wrapped in a `<div />` tag.
-    
+
     The specialization comes from the fact that all the view extending this one will not
     create the `el` tag based on view configuration but create the `el` directly from
     the template rendering. Therefore, setting the `className`, `tagName` or `el` directly
@@ -340,10 +340,10 @@ A default collection is also provided to work with the `Dg` plugin.
       Override the default render method from `Dg.TableItemView` to
       set the element to the result of template rendering. This will
       suppress the additional `<div />` element.
-        
+
       Take care that using this `Dg.DefaultItemView` will not allow to specify
       any selector or tag as el.
-        
+
       The code is based on the `Backbone.Marionette.ItemView` render method with
       two main differences. The element is set from the template rendering and
       an additional `item:rendered` event is triggered.
@@ -368,19 +368,19 @@ A default collection is also provided to work with the `Dg` plugin.
     });
     /*
     ## Dg.InfoView
-    
+
     Default implementation to present general information about the collection
     currently displayed.
-    
+
     The following information are shown:
-    
+
       - from: The number of the first entry shown
       - to: The number of the last entry shown
       - total: The total number of entries shown
-    
+
     A translation is done for the message shown through `I18n-js` if present. Otherwise,
     the default message is used:
-    
+
       - default message: `Showing ${from} to ${to} of ${total} entries`
     */
 
@@ -390,7 +390,7 @@ A default collection is also provided to work with the `Dg` plugin.
       Show the metadata that describes the collection currently shown
       to the user such the number of entries, the first record, the last
       record.
-        
+
       @param {Object} info The metadata to collect the data to show
       */
 
@@ -408,11 +408,11 @@ A default collection is also provided to work with the `Dg` plugin.
     });
     /*
     ## Dg.QuickSearch
-    
+
     Default implementation for the quick search accross the collection. A text field
     is used to get the search term and the filtering happens on the `keyup` event
     from the text field.
-    
+
     The refresh of the collection happens in a delayed function to allow writing
     more than one caracter before triggering the refresh. This will avoid strange behavior
     and brings a better user experience.
@@ -431,12 +431,12 @@ A default collection is also provided to work with the `Dg` plugin.
       }, 300),
       /*
       Refresh the view by setting the search term into the field.
-        
+
       This could be quite strange but it is useful when you want the
       `Dg.QuickSearchView` on top and on bottom of your datagrid. Therfore,
       the quick search fields seems to be synced together as each field
       will be updated when one of them changed.
-        
+
       @param {Object} info The metadata to retrieve the search term
       */
 
@@ -446,7 +446,7 @@ A default collection is also provided to work with the `Dg` plugin.
       /*
       Handle the quick search field changes to process
       the search query
-        
+
       @param {Event} event The event triggered on `keyup`
       */
 
@@ -456,7 +456,7 @@ A default collection is also provided to work with the `Dg` plugin.
     });
     /*
     ## Dg.PerPageView
-    
+
     Default implementation for the region which allow changing the number of lines
     shown in the table. The implementation is based on a select box.
     */
@@ -471,10 +471,10 @@ A default collection is also provided to work with the `Dg` plugin.
       },
       /*
       Refresh the view by setting the number of entries per page to the select box.
-        
+
       As the `refresh` function from `Dg.QuickSearchView`, this function is used to
       synchronize multiple views.
-        
+
       @param {Object} info The metadata to get the number of lines per page
       */
 
@@ -484,7 +484,7 @@ A default collection is also provided to work with the `Dg` plugin.
       /*
       Manage the changes occured to change the number of entries
       shown on a page.
-        
+
       @param {Event} event The event triggered on `change`
       */
 
@@ -494,7 +494,7 @@ A default collection is also provided to work with the `Dg` plugin.
     });
     /*
     ## Dg.ToolbarView
-    
+
     In general, a table is quite often used to manipulate data. Therefore,
     some buttons are required to manage the data such an add button or a
     refresh button.
@@ -523,7 +523,7 @@ A default collection is also provided to work with the `Dg` plugin.
       /*
       When the refresh of the view occured, the buttons deactived are
       restored to their initial status as active button.
-        
+
       @param {Object} info The metadata to get information about the collection
       */
 
@@ -536,11 +536,11 @@ A default collection is also provided to work with the `Dg` plugin.
       /*
       Manage the create button and the management of the button
       state.
-        
+
       When the button is cliked, an event is triggered to delegate
       the creation operation to another component that listen for
       the event.
-        
+
       @param {Event} event Create button event triggered
       */
 
@@ -556,10 +556,10 @@ A default collection is also provided to work with the `Dg` plugin.
       /*
       Manage the refresh button and the management of the
       button state.
-        
+
       Delegate the update request of the collection to
       the `Dg.ItemView`.
-        
+
       @param {Event} event Refresh button event triggered
       */
 
@@ -577,23 +577,23 @@ A default collection is also provided to work with the `Dg` plugin.
     })(Dg.DefaultItemView);
     /*
     ## Dg.PagerView
-    
+
     The `Dg.PagerView` is probably one of the most complicated view
     as the numbering paging require calculation to render correctly.
-    
+
     The pager includes numbers and page first/last, previous/next
     controlls. A delta of number of pages shown is used to render
     the number controls.
-    
+
     Last and First keywords are converted to the real number of last
     and first page corresponding to the collection.
-    
+
     Previous and Next keywords are converted to +1 and -1 based on
     the current page number.
-    
+
     Checks are done to correct bad page numbers or out of bounds in
     regards of the collection metadata.
-    
+
     ```
     # Default options
     options:
@@ -612,7 +612,7 @@ A default collection is also provided to work with the `Dg` plugin.
       firstAndLast: true
       previousAndNext: true
     ```
-    
+
     - **delatePage**: Number of pages shown before and after the active one (if available)
     - **css**: Different style added for link `disabled`, `active` or `page`
     - **texts**: Texts used for each link excepted the page numbers
@@ -669,9 +669,9 @@ A default collection is also provided to work with the `Dg` plugin.
       Render the pager component based on the metadata given. Calculation
       is done to know how to render the actual page, first/last, next/previous
       links.
-        
+
       The pagger is done through a list of element:
-        
+
       ```
       <ul>
         <li><a href="...">...</a></li>
@@ -729,7 +729,7 @@ A default collection is also provided to work with the `Dg` plugin.
       },
       /*
       Manage the clicks done on any button of the pager
-        
+
       @param {Event} event Pager button click event
       */
 
@@ -770,7 +770,7 @@ A default collection is also provided to work with the `Dg` plugin.
       },
       /*
       Create a link for one element in the pager.
-        
+
       @param {String} text The text shown to the user
       @param {String} type The type of link
       @param {String} state The state of the link
@@ -789,21 +789,21 @@ A default collection is also provided to work with the `Dg` plugin.
     });
     /*
     ## Dg.RowView
-    
+
     The implementation of the `Dg.RowView` needs to be extended for a proper use. The row view
     have no idea of the data to render and therefore it is required to extend this view for the
     specific data you have to render.
-    
+
     This class take care about the `delete` and `edit` button events when provided. This
     basic behavior is designed to go with the `Dg.ToolbarView` which provides the `create` and
     `refresh` buttons.
-    
+
     This row view is build around the `<tr />` and `<td />` tags that are the defaults for
     the data grid rendering done by the `Dg` plugin.
-    
+
     A default styling is done for the column ordering to show the `asc`, `desc` and `none`
     order.
-    
+
     ```
     # Default options
     options:
@@ -813,7 +813,7 @@ A default collection is also provided to work with the `Dg` plugin.
         none: null
       cellTagName: "td"
     ```
-    
+
     - **css**: Different styles applied when sorting is done. `asc` and
               `desc` styles are required. A `none` style should be defined
               to apply when ordering change from `desc` order to `none` order.
@@ -836,7 +836,7 @@ A default collection is also provided to work with the `Dg` plugin.
       /*
       Apply the different style to represent the ordering done
       on the collection.
-        
+
       @param {Object} info The metadata to get the ordering data
       */
 
@@ -869,7 +869,7 @@ A default collection is also provided to work with the `Dg` plugin.
       },
       /*
       Manage the `edit` action
-        
+
       @param {Event} event The `edit` button click
       */
 
@@ -879,7 +879,7 @@ A default collection is also provided to work with the `Dg` plugin.
       },
       /*
       Manage the `delete` action
-        
+
       @param {Event} event The `delete` button click
       */
 
@@ -890,10 +890,10 @@ A default collection is also provided to work with the `Dg` plugin.
     });
     /*
     ## Dg.EmptyView
-    
+
     When there is no data available in the collection, this view
     is used to show to the user this state of the collection.
-    
+
     The empty view is based on the `<table />` tag and then
     will use a `</td colspan="n">` tag where `n` is the number
     of columns shown in the data table.
@@ -914,7 +914,7 @@ A default collection is also provided to work with the `Dg` plugin.
       },
       /*
       Nothing fancy is done for this refresh function
-        
+
       @param {Object} info The collection metadata
       */
 
@@ -922,7 +922,7 @@ A default collection is also provided to work with the `Dg` plugin.
     });
     /*
     ## Dg.LoadingView
-    
+
     This view is used when the collection is fetched from a source. The
     purpose is to show to the user that something is happening that is
     different than no data is available.
@@ -934,18 +934,18 @@ A default collection is also provided to work with the `Dg` plugin.
     /*!
         render: ->
           @beforeRender() if @beforeRender
-    
+
           @trigger("before:render", @)
           @trigger("item:before:render", @)
-    
-    
+
+
           el = $(Marionette.Renderer.render(@getTemplate(), @serializeData()))
           @setElement el
-    
+
           @bindUIElements();
-    
+
           @onRender() if @onRender
-    
+
           @trigger("render", this)
           @trigger("item:rendered", this)
     !
@@ -953,14 +953,14 @@ A default collection is also provided to work with the `Dg` plugin.
 
     /*
     ## Dg.HeaderView
-    
+
     As the `Dg.RowView`, the `HeaderView` is incomplete and expects to be
     extended for your own data.
-    
+
     This view offers the mechanism to sort the column of your data collection
     when they are presented in `<table />` tag. Table headers HTML tags are used
     to render the headers.
-    
+
     The multi-sort is possible by pressing on shift key when clicks are done
     on the different columns.
     */
@@ -990,7 +990,7 @@ A default collection is also provided to work with the `Dg` plugin.
       Refresh the view accordingly to the metadata that should contain
       the column sorting information. Which column are sorted in which
       direction.
-        
+
       @param {Object} info The metadata with the column sorting configuration
       */
 
@@ -1022,7 +1022,7 @@ A default collection is also provided to work with the `Dg` plugin.
       /*
       Manage the sort action to be done when an header element is
       clicked.
-        
+
       @param {Event} event The click event for sorting
       */
 
@@ -1058,10 +1058,10 @@ A default collection is also provided to work with the `Dg` plugin.
     });
     /*
     ## Dg.TableView
-    
+
     The core view that present the data collection with
     the headers and rows.
-    
+
     The view is based on `<table />` tag element. The collection
     content is wrapped into a `<tbody />` tag and the headers are
     appended before this tag.
@@ -1074,10 +1074,10 @@ A default collection is also provided to work with the `Dg` plugin.
       /*
       This function allows the `ItemView` of a `Model` to
       get some information to render itself correctly.
-        
+
       The `EventAggregator` is provided to the `ItemView` throuhg
       this function as the columns information.
-        
+
       @param {Backbone.Model} model The model to render
       */
 
@@ -1089,9 +1089,9 @@ A default collection is also provided to work with the `Dg` plugin.
       },
       /*
       Constructor
-        
+
       @param {Object} options The options to configure the view
-        
+
       ```
       # Options expected
       options:
@@ -1124,7 +1124,7 @@ A default collection is also provided to work with the `Dg` plugin.
       /*
       As the render function do custom operations, we
       need to close the custom additions in a proper way.
-        
+
       In this callback function called before the remaining
       close operations, we close the header view to manage
       properly the event unbinding.
@@ -1149,7 +1149,7 @@ A default collection is also provided to work with the `Dg` plugin.
     });
     /*
     ## Dg.TableRegion
-    
+
     This class offers the possibility to add some transition effects
     when the whole data grid is shown to the user.
     */
@@ -1161,7 +1161,7 @@ A default collection is also provided to work with the `Dg` plugin.
         open: (view) ->
           @$el.html view.el
           @$el.show "slide", { direction: "up" }, 1000
-    
+
         Show
         @param [Backbone.View] view The view to show
         show: (view) ->
@@ -1175,7 +1175,7 @@ A default collection is also provided to work with the `Dg` plugin.
 
     /*
     ## Dg.GridLayout
-    
+
     This class brings all the bricks together to render each part
     of the datagrid (table, headers, toolbars, pagers...)
     */
@@ -1192,7 +1192,7 @@ A default collection is also provided to work with the `Dg` plugin.
         this.on('render', this.renderRegions);
         /*
         TODO: Refactor this part
-          
+
         Listen to the different events
         */
 
@@ -1270,7 +1270,7 @@ A default collection is also provided to work with the `Dg` plugin.
     /*!
         @on "transition:open", =>
           @showTable()
-    
+
       showTable: ->
         if @gridTable.currentView
           @gridTable.currentView.renderCollection()
@@ -1282,17 +1282,17 @@ A default collection is also provided to work with the `Dg` plugin.
     /*
     Helper function to easily create a new `Dg.RowView` for a
     template and model.
-    
+
     @param {Backbone.Model} model The model for which the view is done
     @param {Function,String} template The template of the view
     @param {Object} options The options to configure the view
-    
+
     ```
     Options allowed:
     options:
       tagName: "tr"
     ```
-    
+
     @return {Dg.RowView} Row view class created
     */
 
@@ -1305,7 +1305,7 @@ A default collection is also provided to work with the `Dg` plugin.
     /*
     Helper function to easily create a `Dg.HeaderView` for
     a table.
-    
+
     @param {Function,String} template The template of the view
     @return {Dg.HeaderView} Header view class created
     */
@@ -1325,7 +1325,7 @@ A default collection is also provided to work with the `Dg` plugin.
     /*
     Helper function to create a layout with options that overrides the
     default options.
-    
+
     ```
     # Usable options
     options:
@@ -1333,7 +1333,7 @@ A default collection is also provided to work with the `Dg` plugin.
       collection: ...
       template: ...
     ```
-    
+
     @param {Object} options The options to configure the layout and views
     @return {Dg.GridLayout} The layout class created
     */
@@ -1363,7 +1363,7 @@ A default collection is also provided to work with the `Dg` plugin.
     /*
     Defaults keys for the metadata used accross the data grid
     plugin.
-    
+
     For more flexibility, it is possible to change the key names
     to match your collection metadata
     */
@@ -1384,7 +1384,7 @@ A default collection is also provided to work with the `Dg` plugin.
     /*
     Default configuration to define the data grid regions
     shown in the `Dg.GridLayout`
-    
+
     This configuration could be overriden to match your
     requirements.
     */
@@ -1418,11 +1418,11 @@ A default collection is also provided to work with the `Dg` plugin.
     /*
     Helper function to define part or all the i18n keys
     you want override for all your grids.
-    
+
     The options are combined with the default ones defined
     by the plugin. Your i18n keys will override the ones
     from the plugins.
-    
+
     @param {Object} options The i18n keys definition
     */
 
@@ -1433,11 +1433,11 @@ A default collection is also provided to work with the `Dg` plugin.
     Helper function to define the metadata keys to
     match your collection metadata structure for all
     your grids.
-    
+
     The options are combined with the default ones defined
     by the plugin. Your keys will override the ones
     from the plugins.
-    
+
     @param {Object} options The metadata keys definition
     */
 
@@ -1447,11 +1447,11 @@ A default collection is also provided to work with the `Dg` plugin.
     /*
     Helper function to define the grid layout regions
     definition for all your grids.
-    
+
     The options are combined with the default ones defined
     by the plugin. Your definitions will override the ones
     from the plugins.
-    
+
     @param {Object} options The grid region definitions
     */
 
