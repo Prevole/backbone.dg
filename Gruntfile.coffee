@@ -165,13 +165,14 @@ module.exports = (grunt) ->
 
   # ### Task definition
 
-  grunt.registerTask "release", "Release a new version, push it", (target)->
-    target = "patch" unless target
-    grunt.task.run "bump-only:#{target}", "build", "bump-commit"
+  grunt.registerTask 'version', 'Bump the version', (target)->
+    target = 'patch' unless target
+    grunt.task.run "bump-only:#{target}"
 
-  grunt.registerTask 'test', "Compile and run the tests", ['clean:test', 'coffee:test', 'jasmine:core']
-  grunt.registerTask 'doc', "Clean and compile the doc", ['clean:doc', 'docker:doc']
-  grunt.registerTask 'demo', "Clean, build and prepare the demo", ['clean:demo', 'bowercopy', 'coffeelint:demo', 'rig:demo', 'sass:demo', 'haml:demo', 'copy:demo']
-  grunt.registerTask 'core', "Clean, validate and build the project", ['clean:core', 'coffeelint:core', 'rig:core', 'uglify:core']
-  grunt.registerTask 'all', "Run the core, test, demo and doc tasks", ['core', 'test', 'demo', 'doc']
-  grunt.registerTask 'default', "Run the core, test and demo tasks", ['core', 'test', 'demo']
+  grunt.registerTask 'release', 'Push the release', ['core', 'demo', 'bump-commit']
+  grunt.registerTask 'test', 'Compile and run the tests', ['clean:test', 'coffee:test', 'jasmine:core']
+  grunt.registerTask 'doc', 'Clean and compile the doc', ['clean:doc', 'docker:doc']
+  grunt.registerTask 'demo', 'Clean, build and prepare the demo', ['clean:demo', 'bowercopy', 'coffeelint:demo', 'rig:demo', 'sass:demo', 'haml:demo', 'copy:demo']
+  grunt.registerTask 'core', 'Clean, validate and build the project', ['clean:core', 'coffeelint:core', 'rig:core', 'uglify:core']
+  grunt.registerTask 'all', 'Run the core, test, demo and doc tasks', ['core', 'test', 'demo', 'doc']
+  grunt.registerTask 'default', 'Run the core, test and demo tasks', ['core', 'test', 'demo']
