@@ -1,5 +1,5 @@
 /*
- * Backbone.Dg - v0.0.7
+ * Backbone.Dg - v0.0.6
  * Copyright (c) 2014-03-07 Laurent Prévost (prevole) <prevole@prevole.ch>
  * Distributed under MIT license
  * https://github.com/prevole/backbone.dg
@@ -36,7 +36,7 @@ A default collection is also provided to work with the `Dg` plugin.
   window.Backbone.Dg = window.Dg = (function(Backbone, Marionette, _, $) {
     var Dg, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, isI18n, mandatoryOptions, reject, slice, templates;
     Dg = {
-      version: '0.0.7'
+      version: '0.0.6'
     };
     /*
     Defaults i18nKeys used in the translations if `i18n-js` is used.
