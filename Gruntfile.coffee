@@ -145,6 +145,8 @@ module.exports = (grunt) ->
     bump:
       options:
         files: ['package.json', 'bower.json', 'src/dg/backbone.dg.coffee']
+        commitFiles: ['-a'],
+        pushTo: 'origin'
 
   # ### Tasks loading
   grunt.loadNpmTasks 'grunt-contrib-clean'
@@ -167,4 +169,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'demo', "Clean, build and prepare the demo", ['clean:demo', 'bowercopy', 'coffeelint:demo', 'rig:demo', 'sass:demo', 'haml:demo', 'copy:demo']
   grunt.registerTask 'core', "Clean, validate and build the project", ['clean:core', 'coffeelint:core', 'rig:core', 'uglify:core']
   grunt.registerTask 'all', "Run the core, test, demo and doc tasks", ['core', 'test', 'demo', 'doc']
+  grunt.registerTask 'patch', "Bump the patch version", ['bump-only:patch', 'core', 'demo', 'bump-commit']
+  grunt.registerTask 'minor', "Bump the minor version", ['bump-only:minor', 'core', 'demo', 'bump-commit']
+  grunt.registerTask 'major', "Bump the major version", ['bump-only:major', 'core', 'demo', 'bump-commit']
   grunt.registerTask 'default', "Run the core, test and demo tasks", ['core', 'test', 'demo']

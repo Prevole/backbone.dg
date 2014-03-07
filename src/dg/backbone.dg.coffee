@@ -21,7 +21,7 @@ an implementation based on other views and tags.
 A default collection is also provided to work with the `Dg` plugin.
 ###
 window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
-  Dg = { version: '0.0.6' }
+  Dg = { version: '0.1.0' }
 
   ###
   Defaults i18nKeys used in the translations if `i18n-js` is used.
