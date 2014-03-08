@@ -10,11 +10,11 @@
 	"private": true,
 	"main": "./dist/std/backbone.dg.js",
 	"keywords": [
-   "table",
-   "datagrid",
-   "backbone",
-   "marionette"
- ],
+		"table",
+		"datagrid",
+		"backbone",
+		"marionette"
+	],
 	"ignore": [
 		"demo",
 		"doc",
@@ -22,15 +22,15 @@
 		"src",
 		"Gruntfile.coffee"
 	],
-  "devDependencies": {
-    "backbone": "1.1.2",
-    "marionette": "1.6.4",
-    "jquery": "2.1.0",
-    "underscore": "1.6.0",
-    "json2": "",
-    "bootstrap": "~3.1.1"
-  },
-  "resolutions": {
-    "jquery": "2.1.0"
-  }
+	"devDependencies": {
+		"backbone": "1.1.2",
+		"marionette": "1.6.4",
+		"jquery": "2.1.0",
+		"underscore": "1.6.0",
+		"json2": "",
+		"bootstrap": "~3.1.1"
+	},
+	"resolutions": {
+		"jquery": "2.1.0"
+	}
 }

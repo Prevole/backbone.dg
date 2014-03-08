@@ -2,24 +2,24 @@ module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON 'package.json'
 
-    # ### Meta data
+  # ### Meta data
     meta:
       banner:
-        '/*\n' +
-        ' * <%= pkg.name %> - v<%= pkg.version %>\n' +
-        ' * Copyright (c) <%= grunt.template.today("yyyy-mm-dd") %> <%= pkg.author %>\n' +
-        ' * Distributed under MIT license\n' +
-        ' * <%= pkg.homepage %>\n' +
-        ' */\n'
+      '/*\n' +
+      ' * <%= pkg.name %> - v<%= pkg.version %>\n' +
+      ' * Copyright (c) <%= grunt.template.today("yyyy-mm-dd") %> <%= pkg.author %>\n' +
+      ' * Distributed under MIT license\n' +
+      ' * <%= pkg.homepage %>\n' +
+      ' */\n'
 
-    # ### Clean tasks
+  # ### Clean tasks
     clean:
       core: ['dist']
       demo: ['demo/demo.*', 'demo/js/backbone.dg.js']
       doc: ['doc']
       test: ['spec/js']
 
-    # ### Install web dependencies
+  # ### Install web dependencies
     bowercopy:
       options:
         clean: true
@@ -46,7 +46,7 @@ module.exports = (grunt) ->
           'underscore.js': 'underscore/underscore.js'
 
 
-    # ### CoffeeLint tasks
+  # ### CoffeeLint tasks
     coffeelint:
       options:
         max_line_length:
@@ -54,7 +54,7 @@ module.exports = (grunt) ->
       core: ['src/dg/*.coffee']
       demo: ['src/demo/*.coffee']
 
-    # ### Coffee
+  # ### Coffee
     coffee:
       test:
         options:
@@ -62,10 +62,10 @@ module.exports = (grunt) ->
         src: ['spec/coffee/**.coffee']
         dest: 'spec/js/'
         ext: '.spec.js'
-        expand:true
+        expand: true
         flatten: true
 
-    # ### Rigger tasks
+  # ### Rigger tasks
     rig:
       core:
         options:
@@ -76,19 +76,19 @@ module.exports = (grunt) ->
         files:
           'demo/demo.js': ['src/demo/demo.coffee']
 
-    # ### Sass tasks
+  # ### Sass tasks
     sass:
       demo:
         files:
           'demo/demo.css': 'src/demo/demo.scss'
 
-    # ### Haml tasks
+  # ### Haml tasks
     haml:
       demo:
         files:
           'demo/index.html': 'src/demo/index.haml'
 
-    # ### Uglify tasks
+  # ### Uglify tasks
     uglify:
       options:
         banner: '<%= meta.banner %>'
@@ -98,14 +98,14 @@ module.exports = (grunt) ->
         files:
           'dist/std/backbone.dg.min.js': ['dist/std/backbone.dg.js']
 
-    # ### Copy tasks
+  # ### Copy tasks
     copy:
       demo:
         files: [
-          { dest: 'demo/js/', src: ['dist/std/backbone.dg.js'], flatten: true, expand: true }
+        { dest: 'demo/js/', src: ['dist/std/backbone.dg.js'], flatten: true, expand: true }
         ]
 
-    # ### Docker tasks
+  # ### Docker tasks
     docker:
       doc:
         options:
@@ -117,7 +117,7 @@ module.exports = (grunt) ->
         dest: 'doc'
         src: ['.']
 
-    # ### Jasmine tasks
+  # ### Jasmine tasks
     jasmine:
       core:
         src: [
@@ -133,7 +133,7 @@ module.exports = (grunt) ->
           helpers: 'spec/js/helpers/*.js'
           specs: 'spec/js/**/*.spec.js'
 
-    # ### Watch tasks
+  # ### Watch tasks
     watch:
       core:
         files: 'src/dg/*'
@@ -142,7 +142,7 @@ module.exports = (grunt) ->
         files: 'src/demo/*'
         tasks: 'demo'
 
-    # ### Bump configuration
+  # ### Bump configuration
     bump:
       options:
         files: ['package.json', 'bower.json', 'src/dg/backbone.dg.coffee']
@@ -179,7 +179,9 @@ module.exports = (grunt) ->
   grunt.registerTask 'release', 'Push the release', ['core', 'demo', 'doc', 'bump-commit']
   grunt.registerTask 'test', 'Compile and run the tests', ['clean:test', 'coffee:test', 'jasmine:core']
   grunt.registerTask 'doc', 'Clean and compile the doc', ['clean:doc', 'docker:doc']
-  grunt.registerTask 'demo', 'Clean, build and prepare the demo', ['clean:demo', 'bowercopy', 'coffeelint:demo', 'rig:demo', 'sass:demo', 'haml:demo', 'copy:demo']
-  grunt.registerTask 'core', 'Clean, validate and build the project', ['clean:core', 'coffeelint:core', 'rig:core', 'uglify:core']
+  grunt.registerTask 'demo', 'Clean, build and prepare the demo',
+    ['clean:demo', 'bowercopy', 'coffeelint:demo', 'rig:demo', 'sass:demo', 'haml:demo', 'copy:demo']
+  grunt.registerTask 'core', 'Clean, validate and build the project',
+    ['clean:core', 'coffeelint:core', 'rig:core', 'uglify:core']
   grunt.registerTask 'all', 'Run the core, test, demo and doc tasks', ['core', 'test', 'demo', 'doc']
   grunt.registerTask 'default', 'Run the core, test and demo tasks', ['core', 'test', 'demo']
