@@ -1,4 +1,3 @@
-
 describe("datagrid default item view", function() {
   describe("several events are sent when rendering the view", function() {
     var name, vent, view, _i, _len, _ref, _results;
@@ -83,7 +82,6 @@ describe("datagrid default item view", function() {
     });
   });
 });
-
 
 describe("datagrid helpers functions", function() {
   describe("when creating a row view without options", function() {
@@ -277,7 +275,6 @@ describe("datagrid helpers functions", function() {
     });
   });
 });
-
 
 describe("datagrid itemview", function() {
   describe("when creating an item view without [vent] option", function() {
