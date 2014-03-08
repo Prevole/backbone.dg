@@ -17,7 +17,7 @@ module.exports = (grunt) ->
       core: ['dist']
       demo: ['demo/demo.*', 'demo/js/backbone.dg.js']
       doc: ['doc']
-      test: ['spec/javascripts']
+      test: ['spec/js']
 
     # ### Install web dependencies
     bowercopy:
@@ -59,8 +59,8 @@ module.exports = (grunt) ->
       test:
         options:
           bare: true
-        src: ['spec/coffeescripts/**.coffee']
-        dest: 'spec/javascripts/'
+        src: ['spec/coffee/**.coffee']
+        dest: 'spec/js/'
         ext: '.spec.js'
         expand:true
         flatten: true
@@ -86,7 +86,7 @@ module.exports = (grunt) ->
     haml:
       demo:
         files:
-          'demo/demo.html': 'src/demo/demo.haml'
+          'demo/index.html': 'src/demo/index.haml'
 
     # ### Uglify tasks
     uglify:
@@ -124,13 +124,14 @@ module.exports = (grunt) ->
           'demo/js/json2.js'
           'demo/js/jquery.js'
           'demo/js/underscore.js'
+          'demo/js/bootstrap.js'
           'demo/js/backbone.js'
           'demo/js/backbone.marionette.js'
           'dist/std/backbone.dg.js'
         ]
         options:
-          helpers: 'spec/javascripts/helpers/*.js'
-          specs: 'spec/javascripts/**/*.spec.js'
+          helpers: 'spec/js/helpers/*.js'
+          specs: 'spec/js/**/*.spec.js'
 
     # ### Watch tasks
     watch:
@@ -145,31 +146,37 @@ module.exports = (grunt) ->
     bump:
       options:
         files: ['package.json', 'bower.json', 'src/dg/backbone.dg.coffee']
+        commitMessage: 'Version bump to %VERSION%'
         commitFiles: ['-a'],
         pushTo: 'origin'
 
-  # ### Tasks loading
+    'gh-pages':
+      src: ['doc/**', 'demo/**']
+
+  # ### Tasks loading (contrib)
   grunt.loadNpmTasks 'grunt-contrib-clean'
-  grunt.loadNpmTasks 'grunt-rigger'
-  grunt.loadNpmTasks 'grunt-contrib-sass'
-  grunt.loadNpmTasks 'grunt-haml'
-  grunt.loadNpmTasks 'grunt-contrib-uglify'
-  grunt.loadNpmTasks 'grunt-contrib-copy'
-  grunt.loadNpmTasks 'grunt-docker'
-  grunt.loadNpmTasks 'grunt-coffeelint'
   grunt.loadNpmTasks 'grunt-contrib-jasmine'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
-  grunt.loadNpmTasks 'grunt-bump'
-  grunt.loadNpmTasks 'grunt-bowercopy'
+  grunt.loadNpmTasks 'grunt-contrib-sass'
+  grunt.loadNpmTasks 'grunt-contrib-uglify'
+  grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-contrib-watch'
 
-  # ### Task definition
+  # ### Tasks loading (others)
+  grunt.loadNpmTasks 'grunt-rigger'
+  grunt.loadNpmTasks 'grunt-haml'
+  grunt.loadNpmTasks 'grunt-docker'
+  grunt.loadNpmTasks 'grunt-coffeelint'
+  grunt.loadNpmTasks 'grunt-bump'
+  grunt.loadNpmTasks 'grunt-bowercopy'
+  grunt.loadNpmTasks 'grunt-gh-pages'
 
+  # ### Task definition
   grunt.registerTask 'version', 'Bump the version', (target)->
     target = 'patch' unless target
     grunt.task.run "bump-only:#{target}"
 
-  grunt.registerTask 'release', 'Push the release', ['core', 'demo', 'bump-commit']
+  grunt.registerTask 'release', 'Push the release', ['core', 'demo', 'doc', 'bump-commit']
   grunt.registerTask 'test', 'Compile and run the tests', ['clean:test', 'coffee:test', 'jasmine:core']
   grunt.registerTask 'doc', 'Clean and compile the doc', ['clean:doc', 'docker:doc']
   grunt.registerTask 'demo', 'Clean, build and prepare the demo', ['clean:demo', 'bowercopy', 'coffeelint:demo', 'rig:demo', 'sass:demo', 'haml:demo', 'copy:demo']

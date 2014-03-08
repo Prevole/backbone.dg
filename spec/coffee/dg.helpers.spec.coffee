@@ -156,5 +156,5 @@ describe "datagrid helpers functions", ->
     it "should have the collection given", ->
       expect(grid.prototype.collection).toBe(collection)
 
-    it "should have the template give", ->
+    it "should have the template given", ->
       expect(grid.prototype.template).toBe(template)

@@ -14,7 +14,7 @@ Dg.DefaultItemView = Dg.ItemView.extend
   Constructor
   ###
   constructor: () ->
-    Dg.ItemView.prototype.constructor.apply @, slice(arguments)
+    Dg.ItemView.prototype.constructor.apply @, arguments
 
   # ### render
   ###
@@ -32,21 +32,21 @@ Dg.DefaultItemView = Dg.ItemView.extend
   render: ->
     @beforeRender() if @beforeRender
 
-    @trigger('before:render', @)
-    @trigger('item:before:render', @)
+    @trigger 'before:render', @
+    @trigger 'item:before:render', @
 
     # Override the `el` with the template rendered
     @setElement($(Marionette.Renderer.render(@getTemplate(), @serializeData())), true)
 
     @bindUIElements()
 
-    @onRender() if @onRender
+    @onRender()
 
-    @trigger('render', this)
-    @trigger('item:rendered', this)
+    @trigger 'render', @
+    @trigger 'item:rendered', @
 
     # Trigger the additional event through the `Backbone.Marionette.EventBinder`
     # set for the `Dg` views.
-    @vent.trigger('item:rendered', this)
+    @vent.trigger 'item:rendered', @
 
     return @

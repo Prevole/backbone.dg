@@ -1,6 +1,6 @@
 /*
- * Backbone.Dg - version: 0.1.25
- * Copyright (c) 2014-03-07 Laurent Prévost (Prevole) <prevole@prevole.ch>
+ * Backbone.Dg - v0.0.1
+ * Copyright (c) 2014-03-08 Laurent Prévost (Prevole) <prevole@prevole.ch>
  * Distributed under MIT license
  * https://github.com/prevole/backbone.dg
  */
@@ -36,7 +36,7 @@ A default collection is also provided to work with the `Dg` plugin.
   window.Backbone.Dg = window.Dg = (function(Backbone, Marionette, _, $) {
     var Dg, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, isI18n, mandatoryOptions, reject, slice, templates;
     Dg = {
-      version: '0.1.25'
+      version: '0.0.1'
     };
     /*
     Defaults i18nKeys used in the translations if `i18n-js` is used.
@@ -254,7 +254,7 @@ A default collection is also provided to work with the `Dg` plugin.
       */
 
       constructor: function() {
-        Marionette.ItemView.prototype.constructor.apply(this, slice(arguments));
+        Marionette.ItemView.prototype.constructor.apply(this, arguments);
         _.extend(this, _.pick(this.options, _.union(this.optionNames || [], ['vent'])));
         if (!this.vent) {
           throw new Error('No event aggregator given.');
@@ -313,7 +313,7 @@ A default collection is also provided to work with the `Dg` plugin.
       */
 
       onClose: function() {
-        return this.vent.off('view:refresh', this.refreshView);
+        return this.vent.off('view:refresh', this.refreshView, this);
       }
     });
     /*
@@ -334,7 +334,7 @@ A default collection is also provided to work with the `Dg` plugin.
       */
 
       constructor: function() {
-        return Dg.ItemView.prototype.constructor.apply(this, slice(arguments));
+        return Dg.ItemView.prototype.constructor.apply(this, arguments);
       },
       /*
       Override the default render method from `Dg.TableItemView` to
@@ -357,9 +357,7 @@ A default collection is also provided to work with the `Dg` plugin.
         this.trigger('item:before:render', this);
         this.setElement($(Marionette.Renderer.render(this.getTemplate(), this.serializeData())), true);
         this.bindUIElements();
-        if (this.onRender) {
-          this.onRender();
-        }
+        this.onRender();
         this.trigger('render', this);
         this.trigger('item:rendered', this);
         this.vent.trigger('item:rendered', this);

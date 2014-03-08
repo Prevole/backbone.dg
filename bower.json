@@ -1,7 +1,7 @@
 {
 	"name": "Backbone.Dg",
 	"description": "Data Grid plugin for Backbone (heavy use of Backbone.Marionette)",
-	"version": "0.1.2",
+	"version": "0.0.1",
 	"authors": [
 		"Laurent Prévost (Prevole) <prevole@prevole.ch>"
 	],
@@ -17,6 +17,7 @@
  ],
 	"ignore": [
 		"demo",
+		"doc",
 		"spec",
 		"src",
 		"Gruntfile.coffee"

@@ -22,7 +22,7 @@ Dg.ItemView = Marionette.ItemView.extend
   @param {Object} options The options that should at least contain `vent` object
   ###
   constructor: () ->
-    Marionette.ItemView.prototype.constructor.apply @, slice(arguments)
+    Marionette.ItemView.prototype.constructor.apply @, arguments
 
     _.extend @, _.pick(@options, _.union(@optionNames || [], ['vent']))
 
@@ -43,7 +43,7 @@ Dg.ItemView = Marionette.ItemView.extend
   @return {Dg.ItemView} This
   ###
   onRender: ->
-    @vent.trigger('item:rendered', this)
+    @vent.trigger 'item:rendered', @
 
   ###
   Refresh the view based on the info comming from the collection state.
@@ -79,4 +79,4 @@ Dg.ItemView = Marionette.ItemView.extend
   is closed.
   ###
   onClose: ->
-    @vent.off 'view:refresh', @refreshView
+    @vent.off 'view:refresh', @refreshView, @
