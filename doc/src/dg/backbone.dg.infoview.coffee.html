@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>backbone.dg.infoview.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/dg/backbone.dg.infoview.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h2">
+        <a href="#dg.infoview">Dg.InfoView</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="dg.infoview">
+  <h2>
+    <a href="#dg.infoview" name="dg.infoview" class="pilcrow">&#182;</a>
+    Dg.InfoView
+  </h2>
+</div>
+
+  </div>
+  <div class="body"><p>Default implementation to present general information about the collection
+currently displayed.</p>
+
+<p>The following information are shown:</p>
+
+<ul>
+<li>from: The number of the first entry shown</li>
+<li>to: The number of the last entry shown</li>
+<li>total: The total number of entries shown</li>
+</ul>
+
+<p>A translation is done for the message shown through <code>I18n-js</code> if present. Otherwise,
+the default message is used:</p>
+
+<ul>
+<li>default message: <code>Showing ${from} to ${to} of ${total} entries</code></li>
+</ul>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-18" id="line-18">18</a>  <span class="nv">Dg.InfoView = </span><span class="nx">Dg</span><span class="p">.</span><span class="nx">DefaultItemView</span><span class="p">.</span><span class="nx">extend</span>
+<a class="line-num" href="#line-19" id="line-19">19</a>    <span class="nv">template: </span><span class="nx">templates</span><span class="p">[</span><span class="s">&#39;info&#39;</span><span class="p">]</span>
+<a class="line-num" href="#line-20" id="line-20">20</a>  
+<a class="line-num" href="#line-21" id="line-21">21</a>  
+<a class="line-num" href="#line-22" id="line-22">22</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Show the metadata that describes the collection currently shown
+to the user such the number of entries, the first record, the last
+record.</p>
+  </div>
+  <div class="body">
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">info</span>
+      <span class="dox_type">Object</span>
+      <span>The metadata to collect the data to show</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-28" id="line-28">28</a>  
+<a class="line-num" href="#line-29" id="line-29">29</a>    <span class="nv">refreshView: </span><span class="nf">(info) -&gt;</span>
+<a class="line-num" href="#line-30" id="line-30">30</a>  
+<a class="line-num" href="#line-31" id="line-31">31</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>Check if the I18n library is used</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-30" id="line-30">30</a>  
+<a class="line-num" href="#line-31" id="line-31">31</a>      <span class="k">if</span> <span class="nx">isI18n</span><span class="p">()</span>
+<a class="line-num" href="#line-32" id="line-32">32</a>        <span class="nx">@$el</span><span class="p">.</span><span class="nx">text</span> <span class="nx">I18n</span><span class="p">.</span><span class="nx">t</span><span class="p">(</span><span class="nx">i18nKeys</span><span class="p">.</span><span class="nx">info</span><span class="p">,</span> <span class="p">{</span><span class="nv">from: </span><span class="nx">info</span><span class="p">[</span><span class="nx">infoKeys</span><span class="p">.</span><span class="nx">from</span><span class="p">],</span> <span class="nv">to: </span><span class="nx">info</span><span class="p">[</span><span class="nx">infoKeys</span><span class="p">.</span><span class="nx">to</span><span class="p">],</span> <span class="nv">total: </span><span class="nx">info</span><span class="p">[</span><span class="nx">infoKeys</span><span class="p">.</span><span class="nx">items</span><span class="p">]})</span>
+<a class="line-num" href="#line-33" id="line-33">33</a>      <span class="k">else</span>
+<a class="line-num" href="#line-34" id="line-34">34</a>        <span class="nx">@$el</span><span class="p">.</span><span class="nx">text</span> <span class="s">&quot;Showing </span><span class="si">#{</span><span class="nx">info</span><span class="p">[</span><span class="nx">infoKeys</span><span class="p">.</span><span class="nx">from</span><span class="p">]</span><span class="si">}</span><span class="s"> to </span><span class="si">#{</span><span class="nx">info</span><span class="p">[</span><span class="nx">infoKeys</span><span class="p">.</span><span class="nx">to</span><span class="p">]</span><span class="si">}</span><span class="s"> of </span><span class="si">#{</span><span class="nx">info</span><span class="p">[</span><span class="nx">infoKeys</span><span class="p">.</span><span class="nx">items</span><span class="p">]</span><span class="si">}</span><span class="s"> entries&quot;</span>
+<a class="line-num" href="#line-35" id="line-35">35</a>  </pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

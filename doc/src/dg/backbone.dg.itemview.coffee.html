@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>backbone.dg.itemview.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/dg/backbone.dg.itemview.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h2">
+        <a href="#itemview">ItemView</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="itemview">
+  <h2>
+    <a href="#itemview" name="itemview" class="pilcrow">&#182;</a>
+    ItemView
+  </h2>
+</div>
+
+  </div>
+  <div class="body"><p>This is the general view used in the <code>DataGrid</code> plugin to ensure
+the rendering and the update of information arround the collection
+rendered. The view is based on the <code>Marionette.ItemView</code>.</p>
+
+<p>The both methods <code>refreshView</code> and <code>update</code> are mandatory. The <code>refreshView</code>
+raise an error if not overriden while the <code>update</code> has a default implementation.</p>
+
+<p>This view expect to have an event aggregator given from the datagrid layout. If not given,
+an error is raised.</p>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-14" id="line-14">14</a>  <span class="nv">Dg.ItemView = </span><span class="nx">Marionette</span><span class="p">.</span><span class="nx">ItemView</span><span class="p">.</span><span class="nx">extend</span>
+<a class="line-num" href="#line-15" id="line-15">15</a>  
+<a class="line-num" href="#line-16" id="line-16">16</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-2" id="section-2">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Constructor to enforce the presence of the event aggregator
+used accross the datagrid.</p>
+  </div>
+  <div class="body"><p>The refreshView method is directly bind to the event <code>view:refresh</code>
+from the event aggregator.</p>
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">options</span>
+      <span class="dox_type">Object</span>
+      <span>The options that should at least contain <code>vent</code> object</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-24" id="line-24">24</a>  
+<a class="line-num" href="#line-25" id="line-25">25</a>    <span class="nv">constructor: </span><span class="p">()</span> <span class="nf">-&gt;</span>
+<a class="line-num" href="#line-26" id="line-26">26</a>      <span class="nx">Marionette</span><span class="p">.</span><span class="nx">ItemView</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">slice</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)</span>
+<a class="line-num" href="#line-27" id="line-27">27</a>  
+<a class="line-num" href="#line-28" id="line-28">28</a>      <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">pick</span><span class="p">(</span><span class="nx">@options</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">union</span><span class="p">(</span><span class="nx">@optionNames</span> <span class="o">||</span> <span class="p">[],</span> <span class="p">[</span><span class="s">&#39;vent&#39;</span><span class="p">]))</span>
+<a class="line-num" href="#line-29" id="line-29">29</a>  
+<a class="line-num" href="#line-30" id="line-30">30</a>      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;No event aggregator given.&#39;</span> <span class="k">unless</span> <span class="nx">@vent</span>
+<a class="line-num" href="#line-31" id="line-31">31</a>      <span class="nx">@vent</span><span class="p">.</span><span class="nx">on</span> <span class="s">&#39;view:refresh&#39;</span><span class="p">,</span> <span class="nx">@refreshView</span><span class="p">,</span> <span class="nx">@</span>
+<a class="line-num" href="#line-32" id="line-32">32</a>  
+<a class="line-num" href="#line-33" id="line-33">33</a>      <span class="nx">@</span>
+<a class="line-num" href="#line-34" id="line-34">34</a>  
+<a class="line-num" href="#line-35" id="line-35">35</a>  
+<a class="line-num" href="#line-36" id="line-36">36</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Override the default render method from <code>Marionette.ItemView</code>
+to trigger the event "item:rendered" once the render method
+finished.</p>
+  </div>
+  <div class="body"><p>The <code>render</code> function is called on the <code>Marionette.ItemView</code> to
+manage the technical rendering part. The addition comes from
+the event triggered after the rendering is done.</p>
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Returns</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name"></span>
+      <span class="dox_type">Dg.ItemView</span>
+      <span>This</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-45" id="line-45">45</a>  
+<a class="line-num" href="#line-46" id="line-46">46</a>    <span class="nv">onRender: </span><span class="nf">-&gt;</span>
+<a class="line-num" href="#line-47" id="line-47">47</a>      <span class="nx">@vent</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s">&#39;item:rendered&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">)</span>
+<a class="line-num" href="#line-48" id="line-48">48</a>  
+<a class="line-num" href="#line-49" id="line-49">49</a>  
+<a class="line-num" href="#line-50" id="line-50">50</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Refresh the view based on the info comming from the collection state.</p>
+  </div>
+  <div class="body"><p>By default, this function raised an exception as she must be implemented.</p>
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">info</span>
+      <span class="dox_type">Object</span>
+      <span>The metadata that describe the collection current state</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-55" id="line-55">55</a>  
+<a class="line-num" href="#line-56" id="line-56">56</a>    <span class="nv">refreshView: </span><span class="nf">(info) -&gt;</span>
+<a class="line-num" href="#line-57" id="line-57">57</a>      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&#39;The method refreshView(info) must be defined.&#39;</span>
+<a class="line-num" href="#line-58" id="line-58">58</a>  
+<a class="line-num" href="#line-59" id="line-59">59</a>  
+<a class="line-num" href="#line-60" id="line-60">60</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<p>TODO: Add see the metadata format</p>
+
+<div class="dox">
+  <div class="summary"><p>Every time the metadata of the datagrid is updated, an
+event is triggered to request a refresh of the data contained
+in the collection.</p>
+  </div>
+  <div class="body"><p>As the responsability of the metadata processing is given to
+the collection itself, you can set anything you want as metadata.</p>
+
+<p>There is a default metadata format expected that you can see. This
+default format should be configured for the default implementation
+of the different table views.</p>
+  </div>
+  <div class="details">
+    <div class="dox_tag_title">Params</div>
+    <div class="dox_tag_detail">
+      <span class="dox_tag_name">info</span>
+      <span class="dox_type">Object</span>
+      <span>The metadata updated by the table views</span>
+    </div>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-73" id="line-73">73</a>  
+<a class="line-num" href="#line-74" id="line-74">74</a>    <span class="nv">update: </span><span class="nf">(info) -&gt;</span>
+<a class="line-num" href="#line-75" id="line-75">75</a>      <span class="nx">@vent</span><span class="p">.</span><span class="nx">trigger</span> <span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="nx">info</span>
+<a class="line-num" href="#line-76" id="line-76">76</a>  
+<a class="line-num" href="#line-77" id="line-77">77</a>  
+<a class="line-num" href="#line-78" id="line-78">78</a>  </pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-6" id="section-6">&#182;</a>
+</div>
+<div class="dox">
+  <div class="summary"><p>Overrides the <code>close</code> function from <code>Backbone.Marionette.ItemView</code> to
+ensure that the event binding is correctly unbinded when the view
+is closed.</p>
+  </div>
+  <div class="body">
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-81" id="line-81">81</a>  
+<a class="line-num" href="#line-82" id="line-82">82</a>    <span class="nv">onClose: </span><span class="nf">-&gt;</span>
+<a class="line-num" href="#line-83" id="line-83">83</a>      <span class="nx">@vent</span><span class="p">.</span><span class="nx">off</span> <span class="s">&#39;view:refresh&#39;</span><span class="p">,</span> <span class="nx">@refreshView</span>
+<a class="line-num" href="#line-84" id="line-84">84</a>  </pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

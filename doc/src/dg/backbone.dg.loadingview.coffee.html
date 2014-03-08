@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>backbone.dg.loadingview.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../", thisFile = "src/dg/backbone.dg.loadingview.coffee", defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h2">
+        <a href="#dg.loadingview">Dg.LoadingView</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs"><div class="dox">
+  <div class="summary">
+<div class="pilwrap" id="dg.loadingview">
+  <h2>
+    <a href="#dg.loadingview" name="dg.loadingview" class="pilcrow">&#182;</a>
+    Dg.LoadingView
+  </h2>
+</div>
+
+  </div>
+  <div class="body"><p>This view is used when the collection is fetched from a source. The
+purpose is to show to the user that something is happening that is
+different than no data is available.</p>
+  </div>
+</div>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-8" id="line-8">8</a>  <span class="nv">LoadingView = </span><span class="nx">Backbone</span><span class="p">.</span><span class="nx">Marionette</span><span class="p">.</span><span class="nx">ItemView</span><span class="p">.</span><span class="nx">extend</span>
+<a class="line-num" href="#line-9" id="line-9">9</a>    <span class="nv">template: </span><span class="nx">templates</span><span class="p">[</span><span class="s">&#39;gridempty&#39;</span><span class="p">]</span>
+<a class="line-num" href="#line-10" id="line-10">10</a>  
+<a class="line-num" href="#line-11" id="line-11">11</a>  <span class="cm">###!</span>
+<a class="line-num" href="#line-12" id="line-12">12</a>  <span class="cm">    render: -&gt;</span>
+<a class="line-num" href="#line-13" id="line-13">13</a>  <span class="cm">      @beforeRender() if @beforeRender</span>
+<a class="line-num" href="#line-14" id="line-14">14</a>  
+<a class="line-num" href="#line-15" id="line-15">15</a>  <span class="cm">      @trigger(&quot;before:render&quot;, @)</span>
+<a class="line-num" href="#line-16" id="line-16">16</a>  <span class="cm">      @trigger(&quot;item:before:render&quot;, @)</span>
+<a class="line-num" href="#line-17" id="line-17">17</a>  
+<a class="line-num" href="#line-18" id="line-18">18</a>  
+<a class="line-num" href="#line-19" id="line-19">19</a>  <span class="cm">      el = $(Marionette.Renderer.render(@getTemplate(), @serializeData()))</span>
+<a class="line-num" href="#line-20" id="line-20">20</a>  <span class="cm">      @setElement el</span>
+<a class="line-num" href="#line-21" id="line-21">21</a>  
+<a class="line-num" href="#line-22" id="line-22">22</a>  <span class="cm">      @bindUIElements();</span>
+<a class="line-num" href="#line-23" id="line-23">23</a>  
+<a class="line-num" href="#line-24" id="line-24">24</a>  <span class="cm">      @onRender() if @onRender</span>
+<a class="line-num" href="#line-25" id="line-25">25</a>  
+<a class="line-num" href="#line-26" id="line-26">26</a>  <span class="cm">      @trigger(&quot;render&quot;, this)</span>
+<a class="line-num" href="#line-27" id="line-27">27</a>  <span class="cm">      @trigger(&quot;item:rendered&quot;, this)</span>
+<a class="line-num" href="#line-28" id="line-28">28</a>  <span class="cm">!###</span>
+<a class="line-num" href="#line-29" id="line-29">29</a>  </pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>
