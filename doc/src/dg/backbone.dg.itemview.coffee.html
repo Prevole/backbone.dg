@@ -79,7 +79,7 @@ from the event aggregator.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-24" id="line-24">24</a>  
 <a class="line-num" href="#line-25" id="line-25">25</a>    <span class="nv">constructor: </span><span class="p">()</span> <span class="nf">-&gt;</span>
-<a class="line-num" href="#line-26" id="line-26">26</a>      <span class="nx">Marionette</span><span class="p">.</span><span class="nx">ItemView</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">slice</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)</span>
+<a class="line-num" href="#line-26" id="line-26">26</a>      <span class="nx">Marionette</span><span class="p">.</span><span class="nx">ItemView</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">arguments</span>
 <a class="line-num" href="#line-27" id="line-27">27</a>  
 <a class="line-num" href="#line-28" id="line-28">28</a>      <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">pick</span><span class="p">(</span><span class="nx">@options</span><span class="p">,</span> <span class="nx">_</span><span class="p">.</span><span class="nx">union</span><span class="p">(</span><span class="nx">@optionNames</span> <span class="o">||</span> <span class="p">[],</span> <span class="p">[</span><span class="s">&#39;vent&#39;</span><span class="p">]))</span>
 <a class="line-num" href="#line-29" id="line-29">29</a>  
@@ -118,7 +118,7 @@ the event triggered after the rendering is done.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-45" id="line-45">45</a>  
 <a class="line-num" href="#line-46" id="line-46">46</a>    <span class="nv">onRender: </span><span class="nf">-&gt;</span>
-<a class="line-num" href="#line-47" id="line-47">47</a>      <span class="nx">@vent</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s">&#39;item:rendered&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">)</span>
+<a class="line-num" href="#line-47" id="line-47">47</a>      <span class="nx">@vent</span><span class="p">.</span><span class="nx">trigger</span> <span class="s">&#39;item:rendered&#39;</span><span class="p">,</span> <span class="nx">@</span>
 <a class="line-num" href="#line-48" id="line-48">48</a>  
 <a class="line-num" href="#line-49" id="line-49">49</a>  
 <a class="line-num" href="#line-50" id="line-50">50</a>  </pre></div>
@@ -205,7 +205,7 @@ is closed.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-81" id="line-81">81</a>  
 <a class="line-num" href="#line-82" id="line-82">82</a>    <span class="nv">onClose: </span><span class="nf">-&gt;</span>
-<a class="line-num" href="#line-83" id="line-83">83</a>      <span class="nx">@vent</span><span class="p">.</span><span class="nx">off</span> <span class="s">&#39;view:refresh&#39;</span><span class="p">,</span> <span class="nx">@refreshView</span>
+<a class="line-num" href="#line-83" id="line-83">83</a>      <span class="nx">@vent</span><span class="p">.</span><span class="nx">off</span> <span class="s">&#39;view:refresh&#39;</span><span class="p">,</span> <span class="nx">@refreshView</span><span class="p">,</span> <span class="nx">@</span>
 <a class="line-num" href="#line-84" id="line-84">84</a>  </pre></div>
         </td>
       </tr>

@@ -70,7 +70,7 @@ must not be used directly.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-16" id="line-16">16</a>  
 <a class="line-num" href="#line-17" id="line-17">17</a>    <span class="nv">constructor: </span><span class="p">()</span> <span class="nf">-&gt;</span>
-<a class="line-num" href="#line-18" id="line-18">18</a>      <span class="nx">Dg</span><span class="p">.</span><span class="nx">ItemView</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">slice</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)</span>
+<a class="line-num" href="#line-18" id="line-18">18</a>      <span class="nx">Dg</span><span class="p">.</span><span class="nx">ItemView</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">apply</span> <span class="nx">@</span><span class="p">,</span> <span class="nx">arguments</span>
 <a class="line-num" href="#line-19" id="line-19">19</a>  
 <a class="line-num" href="#line-20" id="line-20">20</a>  
 <a class="line-num" href="#line-21" id="line-21">21</a>  </pre></div>
@@ -104,8 +104,8 @@ an additional <code>item:rendered</code> event is triggered.</p>
 <a class="line-num" href="#line-33" id="line-33">33</a>    <span class="nv">render: </span><span class="nf">-&gt;</span>
 <a class="line-num" href="#line-34" id="line-34">34</a>      <span class="nx">@beforeRender</span><span class="p">()</span> <span class="k">if</span> <span class="nx">@beforeRender</span>
 <a class="line-num" href="#line-35" id="line-35">35</a>  
-<a class="line-num" href="#line-36" id="line-36">36</a>      <span class="nx">@trigger</span><span class="p">(</span><span class="s">&#39;before:render&#39;</span><span class="p">,</span> <span class="nx">@</span><span class="p">)</span>
-<a class="line-num" href="#line-37" id="line-37">37</a>      <span class="nx">@trigger</span><span class="p">(</span><span class="s">&#39;item:before:render&#39;</span><span class="p">,</span> <span class="nx">@</span><span class="p">)</span>
+<a class="line-num" href="#line-36" id="line-36">36</a>      <span class="nx">@trigger</span> <span class="s">&#39;before:render&#39;</span><span class="p">,</span> <span class="nx">@</span>
+<a class="line-num" href="#line-37" id="line-37">37</a>      <span class="nx">@trigger</span> <span class="s">&#39;item:before:render&#39;</span><span class="p">,</span> <span class="nx">@</span>
 <a class="line-num" href="#line-38" id="line-38">38</a>  
 <a class="line-num" href="#line-39" id="line-39">39</a>  
 <a class="line-num" href="#line-40" id="line-40">40</a>  </pre></div>
@@ -123,10 +123,10 @@ an additional <code>item:rendered</code> event is triggered.</p>
 <a class="line-num" href="#line-41" id="line-41">41</a>  
 <a class="line-num" href="#line-42" id="line-42">42</a>      <span class="nx">@bindUIElements</span><span class="p">()</span>
 <a class="line-num" href="#line-43" id="line-43">43</a>  
-<a class="line-num" href="#line-44" id="line-44">44</a>      <span class="nx">@onRender</span><span class="p">()</span> <span class="k">if</span> <span class="nx">@onRender</span>
+<a class="line-num" href="#line-44" id="line-44">44</a>      <span class="nx">@onRender</span><span class="p">()</span>
 <a class="line-num" href="#line-45" id="line-45">45</a>  
-<a class="line-num" href="#line-46" id="line-46">46</a>      <span class="nx">@trigger</span><span class="p">(</span><span class="s">&#39;render&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">)</span>
-<a class="line-num" href="#line-47" id="line-47">47</a>      <span class="nx">@trigger</span><span class="p">(</span><span class="s">&#39;item:rendered&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">)</span>
+<a class="line-num" href="#line-46" id="line-46">46</a>      <span class="nx">@trigger</span> <span class="s">&#39;render&#39;</span><span class="p">,</span> <span class="nx">@</span>
+<a class="line-num" href="#line-47" id="line-47">47</a>      <span class="nx">@trigger</span> <span class="s">&#39;item:rendered&#39;</span><span class="p">,</span> <span class="nx">@</span>
 <a class="line-num" href="#line-48" id="line-48">48</a>  
 <a class="line-num" href="#line-49" id="line-49">49</a>  
 <a class="line-num" href="#line-50" id="line-50">50</a>  </pre></div>
@@ -141,7 +141,7 @@ an additional <code>item:rendered</code> event is triggered.</p>
 set for the <code>Dg</code> views.</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-50" id="line-50">50</a>  
-<a class="line-num" href="#line-51" id="line-51">51</a>      <span class="nx">@vent</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s">&#39;item:rendered&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">)</span>
+<a class="line-num" href="#line-51" id="line-51">51</a>      <span class="nx">@vent</span><span class="p">.</span><span class="nx">trigger</span> <span class="s">&#39;item:rendered&#39;</span><span class="p">,</span> <span class="nx">@</span>
 <a class="line-num" href="#line-52" id="line-52">52</a>  
 <a class="line-num" href="#line-53" id="line-53">53</a>      <span class="k">return</span> <span class="nx">@</span>
 <a class="line-num" href="#line-54" id="line-54">54</a>  </pre></div>
