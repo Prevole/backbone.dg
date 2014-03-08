@@ -5,12 +5,12 @@ module.exports = (grunt) ->
   # ### Meta data
     meta:
       banner:
-      '/*\n' +
-      ' * <%= pkg.name %> - v<%= pkg.version %>\n' +
-      ' * Copyright (c) <%= grunt.template.today("yyyy-mm-dd") %> <%= pkg.author %>\n' +
-      ' * Distributed under MIT license\n' +
-      ' * <%= pkg.homepage %>\n' +
-      ' */\n'
+        '/*\n' +
+        ' * <%= pkg.name %> - v<%= pkg.version %>\n' +
+        ' * Copyright (c) <%= grunt.template.today("yyyy-mm-dd") %> <%= pkg.author %>\n' +
+        ' * Distributed under MIT license\n' +
+        ' * <%= pkg.homepage %>\n' +
+        ' */\n'
 
   # ### Clean tasks
     clean:
@@ -102,7 +102,7 @@ module.exports = (grunt) ->
     copy:
       demo:
         files: [
-        { dest: 'demo/js/', src: ['dist/std/backbone.dg.js'], flatten: true, expand: true }
+          { dest: 'demo/js/', src: ['dist/std/backbone.dg.js'], flatten: true, expand: true }
         ]
 
   # ### Docker tasks
@@ -179,9 +179,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'release', 'Push the release', ['core', 'demo', 'doc', 'bump-commit']
   grunt.registerTask 'test', 'Compile and run the tests', ['clean:test', 'coffee:test', 'jasmine:core']
   grunt.registerTask 'doc', 'Clean and compile the doc', ['clean:doc', 'docker:doc']
-  grunt.registerTask 'demo', 'Clean, build and prepare the demo',
-    ['clean:demo', 'bowercopy', 'coffeelint:demo', 'rig:demo', 'sass:demo', 'haml:demo', 'copy:demo']
-  grunt.registerTask 'core', 'Clean, validate and build the project',
-    ['clean:core', 'coffeelint:core', 'rig:core', 'uglify:core']
+  grunt.registerTask 'demo', 'Clean, build and prepare the demo', ['clean:demo', 'bowercopy', 'coffeelint:demo', 'rig:demo', 'sass:demo', 'haml:demo', 'copy:demo']
+  grunt.registerTask 'core', 'Clean, validate and build the project', ['clean:core', 'coffeelint:core', 'rig:core', 'uglify:core']
   grunt.registerTask 'all', 'Run the core, test, demo and doc tasks', ['core', 'test', 'demo', 'doc']
   grunt.registerTask 'default', 'Run the core, test and demo tasks', ['core', 'test', 'demo']
