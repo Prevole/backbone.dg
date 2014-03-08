@@ -220,7 +220,6 @@
   ];
 
   DataModel = (function(_super) {
-
     __extends(_Class, _super);
 
     function _Class() {
@@ -249,7 +248,6 @@
   }, []);
 
   dataCollection = (function(_super) {
-
     __extends(_Class, _super);
 
     function _Class() {
@@ -275,34 +273,39 @@
     };
 
     _Class.prototype.sync = function(method, model, options) {
-      var localData, storedSuccess,
-        _this = this;
+      var localData, storedSuccess;
       storedSuccess = options.success;
-      options.success = function(response) {
-        storedSuccess(response);
-        return _this.trigger("fetched");
-      };
+      options.success = (function(_this) {
+        return function(response) {
+          storedSuccess(response);
+          return _this.trigger("fetched");
+        };
+      })(this);
       localData = _.clone(this.originalModels);
-      localData = _.filter(localData, function(model) {
-        return model.match(_this.meta.term.toLowerCase());
-      });
+      localData = _.filter(localData, (function(_this) {
+        return function(model) {
+          return model.match(_this.meta.term.toLowerCase());
+        };
+      })(this));
       this.meta.items = localData.length;
-      localData = localData.sort(function(a, b) {
-        var comp, direction, idx, left, right, _ref;
-        _ref = _this.meta.sort;
-        for (idx in _ref) {
-          direction = _ref[idx];
-          if (direction) {
-            left = a.getFromIndex(idx).toString().toLowerCase();
-            right = b.getFromIndex(idx).toString().toLowerCase();
-            comp = left.localeCompare(right);
-            if (comp !== 0) {
-              return comp * (direction === 'A' ? 1 : -1);
+      localData = localData.sort((function(_this) {
+        return function(a, b) {
+          var comp, direction, idx, left, right, _ref;
+          _ref = _this.meta.sort;
+          for (idx in _ref) {
+            direction = _ref[idx];
+            if (direction) {
+              left = a.getFromIndex(idx).toString().toLowerCase();
+              right = b.getFromIndex(idx).toString().toLowerCase();
+              comp = left.localeCompare(right);
+              if (comp !== 0) {
+                return comp * (direction === 'A' ? 1 : -1);
+              }
             }
           }
-        }
-        return 0;
-      });
+          return 0;
+        };
+      })(this));
       this.meta.pages = Math.ceil(localData.length / this.meta.perPage);
       this.meta.totalItems = localData.length;
       this.meta.from = (this.meta.page - 1) * this.meta.perPage;
@@ -339,7 +342,6 @@
   };
 
   HeaderView = (function(_super) {
-
     __extends(_Class, _super);
 
     function _Class() {
@@ -353,7 +355,6 @@
   })(Dg.HeaderView);
 
   RowView = (function(_super) {
-
     __extends(_Class, _super);
 
     function _Class() {
@@ -505,7 +506,6 @@
   };
 
   ListOfGridHeaderView = (function(_super) {
-
     __extends(_Class, _super);
 
     function _Class() {
@@ -519,7 +519,6 @@
   })(Dg.HeaderView);
 
   ListOfGridRowView = (function(_super) {
-
     __extends(_Class, _super);
 
     function _Class() {
