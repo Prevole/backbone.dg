@@ -1,6 +1,6 @@
 /*
  * Backbone.Dg - v0.0.1
- * Copyright (c) 2014-03-08 Laurent Prévost (Prevole) <prevole@prevole.ch>
+ * Copyright (c) 2014-03-28 Laurent Prévost (Prevole) <prevole@prevole.ch>
  * Distributed under MIT license
  * https://github.com/prevole/backbone.dg
  */
@@ -33,7 +33,7 @@ A default collection is also provided to work with the `Dg` plugin.
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   window.Backbone.Dg = window.Dg = (function(Backbone, Marionette, _, $) {
-    var Dg, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, isI18n, mandatoryOptions, reject, slice, templates;
+    var Dg, LoadingView, defaults, gridRegions, i18nKeys, infoKeys, isI18n, mandatoryOptions, reject, slice;
     Dg = {
       version: '0.1.0'
     };
@@ -48,14 +48,7 @@ A default collection is also provided to work with the `Dg` plugin.
       nodata: 'datagrid.nodata',
       loading: 'datagrid.loading',
       perpage: 'datagrid.perpage',
-      quicksearch: 'datagrid.quicksearch',
-      pager: {
-        first: 'datagrid.pager.first',
-        last: 'datagrid.pager.last',
-        next: 'datagrid.pager.next',
-        previous: 'datagrid.pager.previous',
-        filler: 'datagrid.pager.filler'
-      }
+      quicksearch: 'datagrid.quicksearch'
     };
 
     /*
@@ -143,92 +136,6 @@ A default collection is also provided to work with the `Dg` plugin.
     slice = Function.prototype.call.bind(Array.prototype.slice);
 
     /*
-    The templates provided are used to offer a simple and default
-    implementation that could be used out of the box to render
-    a DataGrid.
-    
-    The templates to render a `Row` or `Headers` are not offered as
-    they really depends on what you want to show your data
-     */
-    templates = {
-      empty: function(data) {
-        var text;
-        text = "No data";
-        if (isI18n()) {
-          text = I18n.t(i18nKeys.nodata);
-        }
-        return "<td class='empty'>" + text + "</td>";
-      },
-      grid: function(data) {
-        return '<div class="dgGrid">' + '<div class="clearfix">' + '<div class="dgPerPage" />' + '<div class="dgToolbar" />' + '<div class="dgQuickSearch" />' + '</div>' + '<div class="dgTable" />' + '<div class="clearfix">' + '<div class="dgInfo pull-left" />' + '<div class="dgPager pull-right" />' + '</div>' + '</div>';
-      },
-      gridempty: function(data) {
-        var text;
-        text = 'Loading data';
-        if (isI18n()) {
-          text = I18n.t(i18nKeys.loading);
-        }
-        return '<div class="dgLoading">' + '<div class="progress progress-striped active">' + ("<div class='bar' style='width:100%'>" + text + "</div>") + "</div>" + "</div>";
-      },
-      info: function(data) {
-        return '<span class="info" />';
-      },
-      pager: function(data) {
-        return '<div/>';
-      },
-      perpage: function(data) {
-        var text;
-        text = 'Item per page:';
-        if (isI18n()) {
-          text = I18n.t(i18nKeys.perpage);
-        }
-        return '<div class="form-inline pull-left">' + ("<label class='checkbox'>" + text + "&nbsp;</label>") + '<select class="per-page input-mini">' + '<option>2</option>' + '<option>5</option>' + '<option>10</option>' + '<option>25</option>' + '<option>50</option>' + '<option>100</option>' + '</select>' + '</div>';
-      },
-      quicksearch: function(data) {
-        var text;
-        text = 'Quick search:';
-        if (isI18n()) {
-          text = I18n.t(i18nKeys.quicksearch);
-        }
-        return '<div class="form-inline pull-right qs">' + ("<label class='checkbox'>" + text + "&nbsp;</label>") + '<input type="text" class="form-control" />' + '</div>';
-      },
-      table: function(data) {
-        return '<table class="table table-striped table-hover table-condensed">' + '<tbody/>' + '</table>';
-      },
-      toolbar: function(data) {
-        return '<div class="form-inline pull-right buttons btn-group">' + '<button class="btn refresh">' + '<i class="glyphicon glyphicon-refresh" />' + '</button>' + '<button class="btn create">' + '<i class="glyphicon glyphicon-plus" />' + '</button>' + '</div>';
-      }
-    };
-
-    /*
-     *# registerTemplate
-    
-    Utility function to add a new template entry and/or replacing
-    an existing one.
-    
-    @param {String} templateName The name of the template
-    @param {Function,String} template The template to register
-     */
-    Dg.registerTemplate = function(templateName, template) {
-      return templates[templateName] = template;
-    };
-
-    /*
-     *# getTemplate
-    
-    Retrieve a template from the template registry
-    
-    @param {String} templateName The name of the template
-    @return {Function,String} The template found, throw an error if the template name is unknown
-     */
-    Dg.getTemplate = function(templateName) {
-      if (!templates[templateName]) {
-        throw new Error('Unknown template');
-      }
-      return templates[templateName];
-    };
-
-    /*
      *# ItemView
     
     This is the general view used in the `DataGrid` plugin to ensure
@@ -260,6 +167,9 @@ A default collection is also provided to work with the `Dg` plugin.
         }
         this.vent.on('view:refresh', this.refreshView, this);
         return this;
+      },
+      getTemplate: function() {
+        return Dg.getTemplate(this.template);
       },
 
       /*
@@ -349,18 +259,31 @@ A default collection is also provided to work with the `Dg` plugin.
       an additional `item:rendered` event is triggered.
        */
       render: function() {
+        var data;
+        this.isClosed = false;
         if (this.beforeRender) {
           this.beforeRender();
         }
         this.trigger('before:render', this);
         this.trigger('item:before:render', this);
-        this.setElement($(Marionette.Renderer.render(this.getTemplate(), this.serializeData())), true);
+        data = this.serializeData();
+        data = this.mixinTemplateHelpers(data);
+        this.setElement($(this.renderTemplate(data)), true);
         this.bindUIElements();
         this.onRender();
         this.trigger('render', this);
         this.trigger('item:rendered', this);
         this.vent.trigger('item:rendered', this);
         return this;
+      },
+
+      /*
+      Render data a take care to get the template and do something with it
+        
+      @param Object data to render
+       */
+      renderTemplate: function(data) {
+        return Marionette.Renderer.render(this.getTemplate(), data);
       }
     });
 
@@ -382,7 +305,7 @@ A default collection is also provided to work with the `Dg` plugin.
       - default message: `Showing ${from} to ${to} of ${total} entries`
      */
     Dg.InfoView = Dg.DefaultItemView.extend({
-      template: templates['info'],
+      template: 'info',
 
       /*
       Show the metadata that describes the collection currently shown
@@ -405,61 +328,13 @@ A default collection is also provided to work with the `Dg` plugin.
     });
 
     /*
-     *# Dg.QuickSearch
-    
-    Default implementation for the quick search accross the collection. A text field
-    is used to get the search term and the filtering happens on the `keyup` event
-    from the text field.
-    
-    The refresh of the collection happens in a delayed function to allow writing
-    more than one caracter before triggering the refresh. This will avoid strange behavior
-    and brings a better user experience.
-     */
-    Dg.QuickSearchView = Dg.DefaultItemView.extend({
-      template: templates['quicksearch'],
-      events: {
-        'keyup input': 'search'
-      },
-      ui: {
-        term: 'input'
-      },
-      _searchInternal: _.debounce(function(event) {
-        return this.update(_.object([infoKeys.term], [this.ui.term.val().trim()]));
-      }, 300),
-
-      /*
-      Refresh the view by setting the search term into the field.
-        
-      This could be quite strange but it is useful when you want the
-      `Dg.QuickSearchView` on top and on bottom of your datagrid. Therfore,
-      the quick search fields seems to be synced together as each field
-      will be updated when one of them changed.
-        
-      @param {Object} info The metadata to retrieve the search term
-       */
-      refreshView: function(info) {
-        return this.ui.term.val(info[infoKeys.term]);
-      },
-
-      /*
-      Handle the quick search field changes to process
-      the search query
-        
-      @param {Event} event The event triggered on `keyup`
-       */
-      search: function(event) {
-        return this._searchInternal(event);
-      }
-    });
-
-    /*
      *# Dg.PerPageView
     
     Default implementation for the region which allow changing the number of lines
     shown in the table. The implementation is based on a select box.
      */
     Dg.PerPageView = Dg.DefaultItemView.extend({
-      template: templates['perpage'],
+      template: 'perpage',
       events: {
         'change .per-page': 'perPage'
       },
@@ -504,17 +379,23 @@ A default collection is also provided to work with the `Dg` plugin.
         return _Class.__super__.constructor.apply(this, arguments);
       }
 
-      _Class.prototype.template = templates['toolbar'];
-
-      _Class.prototype.events = {
-        'click .refresh': 'refresh',
-        'click .create': 'create'
-      };
+      _Class.prototype.template = 'toolbar';
 
       _Class.prototype.ui = {
-        create: '.create',
-        refresh: '.refresh'
+        search: '[data-control=search]',
+        refresh: '[data-control=refresh]',
+        create: '[data-control=add]'
       };
+
+      _Class.prototype.events = {
+        'keyup @ui.search': 'search',
+        'click @ui.refresh': 'refresh',
+        'click @ui.create': 'create'
+      };
+
+      _Class.prototype._searchInternal = _.debounce(function(event) {
+        return this.update(_.object([infoKeys.term], [this.ui.search.val().trim()]));
+      }, 300);
 
 
       /*
@@ -525,8 +406,21 @@ A default collection is also provided to work with the `Dg` plugin.
        */
 
       _Class.prototype.refreshView = function(info) {
+        this.ui.search.val(info[infoKeys.term]);
         this.ui.refresh.removeClass('disabled');
         return this.ui.create.removeClass('disabled');
+      };
+
+
+      /*
+      Handle the quick search field changes to process
+      the search query
+        
+      @param {Event} event The event triggered on `keyup`
+       */
+
+      _Class.prototype.search = function(event) {
+        return this._searchInternal(event);
       };
 
 
@@ -598,65 +492,40 @@ A default collection is also provided to work with the `Dg` plugin.
       css:
         active: "active"
         disabled: "disabled"
-        page: "page"
-      texts:
-        first: "<<"
-        previous: "<"
-        next: ">"
-        last: ">>"
-        filler: "..."
       numbers: true
-      firstAndLast: true
-      previousAndNext: true
     ```
     
     - **delatePage**: Number of pages shown before and after the active one (if available)
     - **css**: Different style added for link `disabled`, `active` or `page`
-    - **texts**: Texts used for each link excepted the page numbers
-    - **numbers**: Enable/Disable page number links
-    - **firstAndLast**: Enable/Disable first and last links
-    - **previousAndNext**: Enable/Disable previous and next links
      */
     Dg.PagerView = Dg.DefaultItemView.extend({
-      optionNames: ['deltaPage', 'css', 'texts', 'numbers', 'firstAndLast', 'previousAndNext'],
-      template: templates['pager'],
+      optionNames: ['deltaPage', 'css'],
+      template: 'pager',
+      ui: {
+        first: '[data-page-type=first]',
+        prev: '[data-page-type=prev]',
+        page: '[data-page-type=page]',
+        next: '[data-page-type=next]',
+        last: '[data-page-type=last]'
+      },
       events: {
-        'click a': 'pagging'
+        'click @ui.first': 'firstPage',
+        'click @ui.prev': 'previousPage',
+        'click @ui.page': 'toPage',
+        'click @ui.next': 'nextPage',
+        'click @ui.last': 'lastPage'
       },
       deltaPage: 2,
-      numbers: true,
-      firstAndLast: true,
-      previousAndNext: true,
       css: {
         active: 'active',
-        disabled: 'disabled',
-        page: 'page'
-      },
-      texts: function() {
-        if (isI18n()) {
-          return {
-            first: I18n.t(i18nKeys.pager.first),
-            previous: I18n.t(i18nKeys.pager.previous),
-            next: I18n.t(i18nKeys.pager.next),
-            last: I18n.t(i18nKeys.pager.last),
-            filler: I18n.t(i18nKeys.pager.filler)
-          };
-        } else {
-          return {
-            first: '<<',
-            previous: '<',
-            next: '>',
-            last: '>>',
-            filler: '...'
-          };
-        }
+        disabled: 'disabled'
       },
 
       /*
       Constructor
        */
       constructor: function(options) {
-        Dg.DefaultItemView.prototype.constructor.apply(this, slice(arguments));
+        Dg.DefaultItemView.prototype.constructor.apply(this, arguments);
         this.info = {};
         this.info[infoKeys.page] = 0;
         return this.info[infoKeys.pages] = 0;
@@ -667,25 +536,16 @@ A default collection is also provided to work with the `Dg` plugin.
       is done to know how to render the actual page, first/last, next/previous
       links.
         
-      The pagger is done through a list of element:
-        
-      ```
-      <ul>
-        <li><a href="...">...</a></li>
-        ...
-      </ul>
-      ```
       @param {Object} info The metadata to get the pagging data
        */
       refreshView: function(info) {
-        var css, i, i18n, maxPage, minPage, page, pages, state, ul, _i;
+        var css, i, maxPage, minPage, page, pagerTemplate, pages, state, _i;
         this.info = info;
-        this.$el.empty().hide();
-        ul = $('<ul class="pagination pagination-right" />');
+        this.$el.empty();
+        pagerTemplate = this._getPageElements();
         page = this.info[infoKeys.page];
         pages = this.info[infoKeys.pages];
         if (page > 0 && pages > 1) {
-          i18n = _.result(this, 'texts');
           minPage = page - this.deltaPage;
           maxPage = page + this.deltaPage;
           if (minPage <= 0) {
@@ -695,92 +555,172 @@ A default collection is also provided to work with the `Dg` plugin.
             maxPage = pages;
           }
           state = page === 1 ? this.css.disabled : '';
-          if (this.firstAndLast) {
-            ul.append(this._createLink(i18n.first, 'f', state));
+          if (pagerTemplate.first !== void 0) {
+            this.$el.append(this._createLink(pagerTemplate.first, state));
           }
-          if (this.previousAndNext) {
-            ul.append(this._createLink(i18n.previous, 'p', state));
+          if (pagerTemplate.prev !== void 0) {
+            this.$el.append(this._createLink(pagerTemplate.prev, state));
           }
-          if (this.numbers) {
-            if (minPage > 1) {
-              ul.append(this._createLink(i18n.filler, '', this.css.disabled));
+          if (pagerTemplate.page !== void 0) {
+            if (pagerTemplate.before !== void 0 && minPage > 1) {
+              this.$el.append(this._createLink(pagerTemplate.before, this.css.disabled));
             }
             for (i = _i = minPage; minPage <= maxPage ? _i <= maxPage : _i >= maxPage; i = minPage <= maxPage ? ++_i : --_i) {
               css = i === page ? this.css.active : '';
-              ul.append(this._createLink("" + i, 'page', css));
+              this.$el.append(this._createPageLink(pagerTemplate.page, i, css));
             }
-            if (maxPage < pages) {
-              ul.append(this._createLink(i18n.filler, '', this.css.disabled));
+            if (pagerTemplate.after !== void 0 && maxPage < pages) {
+              this.$el.append(this._createLink(pagerTemplate.after, this.css.disabled));
             }
           }
           state = page === pages ? this.css.disabled : '';
-          if (this.previousAndNext) {
-            ul.append(this._createLink(i18n.next, 'n', state));
+          if (pagerTemplate.next !== void 0) {
+            this.$el.append(this._createLink(pagerTemplate.next, state));
           }
-          if (this.firstAndLast) {
-            ul.append(this._createLink(i18n.last, 'l', state));
+          if (pagerTemplate.last !== void 0) {
+            this.$el.append(this._createLink(pagerTemplate.last, state));
           }
-          return this.$el.append(ul).show();
+          return this.bindUIElements();
         }
       },
 
       /*
-      Manage the clicks done on any button of the pager
+      Override the default behavior of rendering a template
         
-      @param {Event} event Pager button click event
+      @param [Object] data The data to render (not used)
        */
-      pagging: function(event) {
-        var page, target, type;
-        event.preventDefault();
-        target = $(event.target);
-        if (!(target.parent().hasClass(this.css.disabled) || target.parent().hasClass(this.css.active))) {
-          type = target.data('type');
-          switch (type) {
-            case 'f':
-              page = 1;
-              break;
-            case 'p':
-              if (this.info[infoKeys.page] - 1 > 0) {
-                page = this.info[infoKeys.page] - 1;
-              } else {
-                page = this.info[infoKeys.page];
-              }
-              break;
-            case 'n':
-              if ((this.info[infoKeys.page] + 1) < this.info[infoKeys.pages]) {
-                page = this.info[infoKeys.page] + 1;
-              } else {
-                page = this.info[infoKeys.pages];
-              }
-              break;
-            case 'l':
-              page = this.info[infoKeys.pages];
-              break;
-            default:
-              page = parseInt($(event.target).text());
-          }
-          if (page !== this.info[infoKeys.page]) {
-            return this.update(_.object([infoKeys.page], [page]));
-          }
+      renderTemplate: function(data) {
+        return this._getPageElements().container.clone();
+      },
+
+      /*
+      Action to go to the first page
+        
+      @param {Event} event The event for the page change
+       */
+      firstPage: function(event) {
+        return this._changePage(1);
+      },
+
+      /*
+      Action to go to the previous page
+        
+      @param {Event} event The event for the page change
+       */
+      previousPage: function(event) {
+        var page;
+        page = this.info[infoKeys.page] - 1 > 0 ? this.info[infoKeys.page] - 1 : this.info[infoKeys.page];
+        return this._changePage(page);
+      },
+
+      /*
+      Action to go to a specific page
+        
+      @param {Event} event The event for the page change
+       */
+      toPage: function(event) {
+        return this._changePage(parseInt($(event.target).text()));
+      },
+
+      /*
+      Action to go to the next page
+        
+      @param {Event} event The event for the page change
+       */
+      nextPage: function(event) {
+        var page;
+        page = (this.info[infoKeys.page] + 1) < this.info[infoKeys.pages] ? this.info[infoKeys.page] + 1 : this.info[infoKeys.pages];
+        return this._changePage(page);
+      },
+
+      /*
+      Action to go to the last page
+        
+      @param {Event} event The event for the page change
+       */
+      lastPage: function(event) {
+        return this._changePage(this.info[infoKeys.pages]);
+      },
+
+      /*
+      Do the effective action to change the page
+        
+      @param {int} toPage The page where to go
+       */
+      _changePage: function(toPage) {
+        if (toPage !== this.info[infoKeys.page]) {
+          return this.update(_.object([infoKeys.page], [toPage]));
         }
+      },
+
+      /*
+      Retrieve the pager elements to use as template for each
+      elements of the pager.
+        
+      The first time the function is called, the template structure
+      is created from the template of this class and cached for the
+      future calls.
+        
+      @return {Hash} The pager elements templates
+       */
+      _getPageElements: function() {
+        var container, find, pager;
+        if (this.pagerTemplate === void 0) {
+          pager = $(this.getTemplate()(null));
+          find = function(selector) {
+            return pager.filter(selector).add(pager.find(selector));
+          };
+          if (pager.length > 1) {
+            container = $('<div />');
+          } else {
+            container = pager.clone().empty();
+          }
+          this.pagerTemplate = {
+            first: find('[data-page-type="first"]').clone(),
+            prev: find('[data-page-type="prev"]').clone(),
+            before: find('[data-page-type="more-before"]').clone(),
+            page: find('[data-page-type="page"]').clone(),
+            after: find('[data-page-type="more-after"]').clone(),
+            next: find('[data-page-type="next"]').clone(),
+            last: find('[data-page-type="last"]').clone(),
+            container: container
+          };
+        }
+        return this.pagerTemplate;
       },
 
       /*
       Create a link for one element in the pager.
         
-      @param {String} text The text shown to the user
+      @param {jQueryObject} element The element that is used as a template to create the page link
       @param {String} type The type of link
       @param {String} state The state of the link
-      @return {jQueryObject} Link element is wrapped into a `li` tag
+      @return {jQueryObject} Page link element
        */
-      _createLink: function(text, type, state) {
-        var a, li;
-        a = $('<a/>').attr('href', '#').data('type', type).addClass(this.css.page).html("" + text);
-        li = $('<li />').html(a);
-        if (state) {
-          li.addClass(state);
+      _createLink: function(element, state) {
+        return element.clone().addClass(state);
+      },
+
+      /*
+      Create a link for one element in the pager.
+        
+      @param {jQueryObject} element The element that is used as a template to create the page link
+      @param {String} state The state of the link
+      @return {jQueryObject} Page link element
+       */
+      _createPageLink: function(element, pageNumber, state) {
+        var pageElement, pageElementContent, pageType;
+        pageElement = element.clone();
+        if (pageElement.attr("data-page-content") === void 0) {
+          pageElementContent = pageElement.find("*[data-page-content]");
+        } else {
+          pageElementContent = pageElement;
         }
-        return li;
+        pageType = pageElementContent.attr("data-page-content");
+        if (pageType === "arabic") {
+          pageElementContent.text("" + pageNumber);
+        }
+        return pageElement.addClass(state).attr('data-page', "" + pageNumber);
       }
     });
 
@@ -897,7 +837,7 @@ A default collection is also provided to work with the `Dg` plugin.
      */
     Dg.EmptyView = Dg.DefaultItemView.extend({
       optionNames: ['columns'],
-      template: templates['empty'],
+      template: 'empty',
       ui: {
         empty: '.empty'
       },
@@ -925,7 +865,10 @@ A default collection is also provided to work with the `Dg` plugin.
     different than no data is available.
      */
     LoadingView = Backbone.Marionette.ItemView.extend({
-      template: templates['gridempty']
+      template: 'gridempty',
+      getTemplate: function() {
+        return Dg.getTemplate(this.template);
+      }
     });
 
     /*!
@@ -991,7 +934,8 @@ A default collection is also provided to work with the `Dg` plugin.
       @param {Object} info The metadata with the column sorting configuration
        */
       refreshView: function(info) {
-        var sorter, target, _i, _len, _ref, _results;
+        var idx, sorter, target, _i, _len, _ref, _results;
+        idx = 0;
         _ref = this.$el.find("" + this.sortTag + "." + this.css.sortable);
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -1000,18 +944,17 @@ A default collection is also provided to work with the `Dg` plugin.
           sorter.removeClass("" + this.css.asc + " " + this.css.desc + " " + this.css.none);
           if (info[infoKeys.sort]) {
             this.sortConfiguration = info[infoKeys.sort];
-            if (this.sortConfiguration[sorter.index()]) {
-              if (this.sortConfiguration[sorter.index()] === infoKeys.asc) {
-                _results.push(sorter.addClass(this.css.asc));
+            if (this.sortConfiguration[idx]) {
+              if (this.sortConfiguration[idx] === infoKeys.asc) {
+                sorter.addClass(this.css.asc);
               } else {
-                _results.push(sorter.addClass(this.css.desc));
+                sorter.addClass(this.css.desc);
               }
             } else {
-              _results.push(sorter.addClass(this.css.none));
+              sorter.addClass(this.css.none);
             }
-          } else {
-            _results.push(void 0);
           }
+          _results.push(idx++);
         }
         return _results;
       },
@@ -1028,7 +971,7 @@ A default collection is also provided to work with the `Dg` plugin.
         if (!this.sortConfiguration) {
           this.sortConfiguration = {};
         }
-        if (!event.shiftKey) {
+        if (!event.altKey) {
           if (this.sortConfiguration[idx]) {
             this.sortConfiguration = _.pick(this.sortConfiguration, idx);
           } else {
@@ -1064,7 +1007,7 @@ A default collection is also provided to work with the `Dg` plugin.
     appended before this tag.
      */
     Dg.TableView = Marionette.CompositeView.extend({
-      template: templates['table'],
+      template: 'table',
       itemViewContainer: 'tbody',
       emptyView: Dg.EmptyView,
 
@@ -1099,6 +1042,9 @@ A default collection is also provided to work with the `Dg` plugin.
       constructor: function() {
         Marionette.CompositeView.prototype.constructor.apply(this, slice(arguments));
         return _.extend(this, _.pick(this.options, 'vent'));
+      },
+      getTemplate: function() {
+        return Dg.getTemplate(this.template);
       },
       onCompositeModelRendered: function() {
         var selector;
@@ -1177,7 +1123,7 @@ A default collection is also provided to work with the `Dg` plugin.
     of the datagrid (table, headers, toolbars, pagers...)
      */
     Dg.GridLayout = Marionette.Layout.extend({
-      template: templates['grid'],
+      template: 'grid',
 
       /*
       Constructor
@@ -1199,6 +1145,9 @@ A default collection is also provided to work with the `Dg` plugin.
         this.listenTo(this.vent, 'create:model', this.handleCreate);
         this.listenTo(this.collection, 'fetched', this.refreshGrid);
         return this.listenTo(this.collection, 'info:updated', this.refreshGrid);
+      },
+      getTemplate: function() {
+        return Dg.getTemplate(this.template);
       },
 
       /*
@@ -1352,7 +1301,7 @@ A default collection is also provided to work with the `Dg` plugin.
         });
       }
       if (!(options.template === void 0)) {
-        gridLayout.prototype.template = templates[options.template];
+        gridLayout.prototype.template = options.template;
       }
       return gridLayout;
     };
@@ -1393,10 +1342,6 @@ A default collection is also provided to work with the `Dg` plugin.
       toolbar: {
         selector: '.dgToolbar',
         view: Dg.ToolbarView
-      },
-      quickSearch: {
-        selector: '.dgQuickSearch',
-        view: Dg.QuickSearchView
       },
       perPage: {
         selector: '.dgPerPage',
@@ -1453,6 +1398,10 @@ A default collection is also provided to work with the `Dg` plugin.
      */
     Dg.setupDefaultGridLayout = function(options) {
       return gridRegions = defaults(options.gridRegions || {}, gridRegions);
+    };
+    Dg.getTemplate = function(name) {
+      console.log("Get template root " + name);
+      throw new Error("There is no template engine available");
     };
     return Dg;
   })(Backbone, Backbone.Marionette, _, $ || window.jQuery || window.Zepto || window.ender);

@@ -31,6 +31,10 @@ Dg.ItemView = Marionette.ItemView.extend
 
     @
 
+
+  getTemplate: ->
+    Dg.getTemplate @template
+
   ###
   Override the default render method from `Marionette.ItemView`
   to trigger the event "item:rendered" once the render method

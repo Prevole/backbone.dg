@@ -14,19 +14,23 @@ module.exports = (grunt) ->
 
     # ### Install web dependencies
     bowercopy:
-      options:
-        clean: true
       css:
         options:
           destPrefix: 'demo/css'
         files:
           'bootstrap.css': 'bootstrap/dist/css/bootstrap.css'
           'bootstrap-theme.css': 'bootstrap/dist/css/bootstrap-theme.css'
+          'semantic.css': 'semantic-ui/build/packaged/css/semantic.css'
       fonts:
         options:
           destPrefix: 'demo'
         files:
-          'fonts': 'bootstrap/dist/fonts'
+          'fonts': ['bootstrap/dist/fonts', 'semantic-ui/build/packaged/fonts']
+      images:
+        options:
+          destPrefix: 'demo'
+        files:
+          'images': 'semantic-ui/build/packaged/images'
       js:
         options:
           destPrefix: 'demo/js'
@@ -37,6 +41,12 @@ module.exports = (grunt) ->
           'jquery.js': 'jquery/dist/jquery.js'
           'json2.js': 'json2/json2.js'
           'underscore.js': 'underscore/underscore.js'
+          'semantic.js': 'semantic-ui/build/packaged/javascript/semantic.js'
+      test:
+        options:
+          destPrefix: 'spec/lib'
+        files:
+          'jasmine-jquery.js': 'jasmine-jquery/lib/jasmine-jquery.js'
 
     # ### Bump configuration
     bump:
@@ -69,32 +79,34 @@ module.exports = (grunt) ->
       options:
         max_line_length:
           value: 120
-      core: ['src/dg/*.coffee']
-      demo: ['src/demo/*.coffee']
+      core: ['src/dg/**.coffee']
+      demo: ['src/demo/**.coffee']
 
     # ### Copy tasks
     copy:
       demo:
         files: [
           { dest: 'demo/js', src: 'dist/std/backbone.dg.js', expand: true, flatten: true }
+          { dest: 'demo/js', src: 'dist/std/backbone.dg.bootstrap.js', expand: true, flatten: true }
+          { dest: 'demo/js', src: 'dist/std/backbone.dg.semantic.js', expand: true, flatten: true }
           { dest: 'demo/images', src: 'src/demo/images/**', expand: true, flatten: true, filter: 'isFile' }
         ]
-#        files: [
-#          { dest: 'demo/js/', src: ['dist/std/backbone.dg.js'], flatten: true, expand: true }
-#          { dest: 'demo/', src: ['demo/images/**'], expand: true }
-#        ]
 
     # ### Docker tasks
     docker:
-      doc:
+      options:
+        extra: ['fileSearch', 'goToLine']
+        colourScheme: 'friendly'
+        lineNums: true
+        ignoreHidden: true
+      core:
+        dest: 'doc/dg'
+        src: ['README.md', 'src/dg']
+      demo:
+        dest: 'doc/demo'
+        src: ['src/demo']
         options:
-          extra: ['fileSearch', 'goToLine']
-          colourScheme: 'friendly'
-          lineNums: true
-          ignoreHidden: true
-          exclude: 'demo,dist,doc,node_modules,spec,bower_components'
-        dest: 'doc'
-        src: ['.']
+          exclude: '*.styl,src/demo/demo-data.coffee'
 
     # ### GitHub Pages tasks
     'gh-pages':
@@ -104,23 +116,27 @@ module.exports = (grunt) ->
     haml:
       demo:
         files:
+          'demo/bootstrap/index.html': 'src/demo/bootstrap/index.haml'
+          'demo/semantic/index.html': 'src/demo/semantic/index.haml'
           'demo/index.html': 'src/demo/index.haml'
 
     # ### Jasmine tasks
     jasmine:
-      core:
-        src: [
-          'demo/js/json2.js'
-          'demo/js/jquery.js'
-          'demo/js/underscore.js'
-          'demo/js/bootstrap.js'
-          'demo/js/backbone.js'
-          'demo/js/backbone.marionette.js'
-          'dist/std/backbone.dg.js'
-        ]
+      test:
         options:
           helpers: 'spec/js/helpers/*.js'
           specs: 'spec/js/**/*.spec.js'
+          vendor: [
+            'demo/js/json2.js'
+            'demo/js/jquery.js'
+            'demo/js/underscore.js'
+            'demo/js/bootstrap.js'
+            'demo/js/backbone.js'
+            'demo/js/backbone.marionette.js'
+            'dist/std/backbone.dg.js'
+            'dist/std/backbone.dg.bootstrap.js'
+            'spec/lib/jasmine-jquery.js'
+          ]
 
     # ### Rigger tasks
     rig:
@@ -129,14 +145,20 @@ module.exports = (grunt) ->
             banner: '<%= meta.banner %>'
         files:
           'dist/std/backbone.dg.js': ['src/dg/backbone.dg.coffee']
+          'dist/std/backbone.dg.bootstrap.js': ['src/dg/ui/backbone.dg.bootstrap.coffee']
+          'dist/std/backbone.dg.semantic.js': ['src/dg/ui/backbone.dg.semantic.coffee']
       demo:
         files:
-          'demo/demo.js': ['src/demo/demo.coffee']
+          'demo/bootstrap/demo.js': ['src/demo/bootstrap/demo.coffee']
+          'demo/semantic/demo.js': ['src/demo/semantic/demo.coffee']
 
     # ### Stylus task
     stylus:
       demo:
-        files: 'demo/demo.css': 'src/demo/demo.styl'
+        files:
+          'demo/bootstrap/demo.css': 'src/demo/bootstrap/demo.styl'
+          'demo/semantic/demo.css': 'src/demo/semantic/demo.styl'
+          'demo/base.css': 'src/demo/base.styl'
 
     # ### Uglify tasks
     uglify:
@@ -147,6 +169,8 @@ module.exports = (grunt) ->
       core:
         files:
           'dist/std/backbone.dg.min.js': ['dist/std/backbone.dg.js']
+          'dist/std/backbone.dg.bootstrap.min.js': ['dist/std/backbone.dg.bootstrap.js']
+          'dist/std/backbone.dg.semantic.min.js': ['dist/std/backbone.dg.semantic.js']
 
     # ### Watch tasks
     watch:
@@ -181,9 +205,10 @@ module.exports = (grunt) ->
     grunt.task.run "bump-only:#{target}"
 
   grunt.registerTask 'release', 'Push the release', ['core', 'demo', 'doc', 'bump-commit']
-  grunt.registerTask 'test', 'Compile and run the tests', ['clean:test', 'coffee:test', 'jasmine:core']
-  grunt.registerTask 'doc', 'Clean and compile the doc', ['clean:doc', 'docker:doc']
-  grunt.registerTask 'demo', 'Clean, build and prepare the demo', ['clean:demo', 'bowercopy', 'coffeelint:demo', 'rig:demo', 'stylus:demo', 'haml:demo', 'copy:demo']
-  grunt.registerTask 'core', 'Clean, validate and build the project', ['clean:core', 'coffeelint:core', 'rig:core', 'uglify:core']
+  grunt.registerTask 'test', 'Compile and run the tests', ['clean:test', 'bowercopy:test', 'coffee:test', 'jasmine:test']
+  grunt.registerTask 'doc', 'Clean and compile the doc', ['clean:doc', 'docker:core', 'docker:demo']
+  grunt.registerTask 'demo-bower-copy', 'Copy the bower components to the right place', ['bowercopy:css', 'bowercopy:fonts', 'bowercopy:js', 'bowercopy:images']
+  grunt.registerTask 'demo', 'Clean, build and prepare the demo', ['clean:demo', 'demo-bower-copy', 'coffeelint:demo', 'rig:demo', 'stylus:demo', 'haml:demo', 'copy:demo', 'docker:core']
+  grunt.registerTask 'core', 'Clean, validate and build the project', ['clean:core', 'coffeelint:core', 'rig:core', 'uglify:core', 'docker:core']
   grunt.registerTask 'all', 'Run the core, test, demo and doc tasks', ['core', 'test', 'demo', 'doc']
   grunt.registerTask 'default', 'Run the core, test and demo tasks', ['core', 'test', 'demo']

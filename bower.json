@@ -1,36 +1,38 @@
 {
-	"name": "Backbone.Dg",
-	"description": "Data Grid plugin for Backbone (heavy use of Backbone.Marionette)",
-	"version": "0.0.1",
-	"authors": [
-		"Laurent Prévost (Prevole) <prevole@prevole.ch>"
-	],
-	"license": "MIT",
-	"homepage": "https://github.com/prevole/backbone.dg",
-	"private": true,
-	"main": "./dist/std/backbone.dg.js",
-	"keywords": [
-		"table",
-		"datagrid",
-		"backbone",
-		"marionette"
-	],
-	"ignore": [
-		"demo",
-		"doc",
-		"spec",
-		"src",
-		"Gruntfile.coffee"
-	],
-	"devDependencies": {
-		"backbone": "1.1.2",
-		"marionette": "1.6.4",
-		"jquery": "2.1.0",
-		"underscore": "1.6.0",
-		"json2": "",
-		"bootstrap": "~3.1.1"
-	},
-	"resolutions": {
-		"jquery": "2.1.0"
-	}
+  "name": "Backbone.Dg",
+  "description": "Data Grid plugin for Backbone (heavy use of Backbone.Marionette)",
+  "version": "0.0.1",
+  "authors": [
+    "Laurent Prévost (Prevole) <prevole@prevole.ch>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/prevole/backbone.dg",
+  "private": true,
+  "main": "./dist/std/backbone.dg.js",
+  "keywords": [
+    "table",
+    "datagrid",
+    "backbone",
+    "marionette"
+  ],
+  "ignore": [
+    "demo",
+    "doc",
+    "spec",
+    "src",
+    "Gruntfile.coffee"
+  ],
+  "devDependencies": {
+    "backbone": "1.1.2",
+    "marionette": "1.6.4",
+    "jquery": "2.1.0",
+    "underscore": "1.6.0",
+    "json2": "",
+    "bootstrap": "~3.1.1",
+    "semantic-ui": "~0.14.0",
+    "jasmine-jquery": "~2.0.3"
+  },
+  "resolutions": {
+    "jquery": "2.1.0"
+  }
 }

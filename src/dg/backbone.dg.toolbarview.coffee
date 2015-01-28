@@ -6,15 +6,23 @@ some buttons are required to manage the data such an add button or a
 refresh button.
 ###
 Dg.ToolbarView = class extends Dg.DefaultItemView
-  template: templates['toolbar']
-
-  events:
-    'click .refresh': 'refresh'
-    'click .create': 'create'
+  template: 'toolbar'
 
   ui:
-    create: '.create'
-    refresh: '.refresh'
+    search: '[data-control=search]'
+    refresh: '[data-control=refresh]'
+    create: '[data-control=add]'
+
+  events:
+    'keyup @ui.search': 'search'
+    'click @ui.refresh': 'refresh'
+    'click @ui.create': 'create'
+
+  _searchInternal: _.debounce(
+    (event) ->
+      @update _.object( [infoKeys.term], [@ui.search.val().trim()] )
+    , 300
+  )
 
   ###
   When the refresh of the view occured, the buttons deactived are
@@ -23,8 +31,18 @@ Dg.ToolbarView = class extends Dg.DefaultItemView
   @param {Object} info The metadata to get information about the collection
   ###
   refreshView: (info) ->
+    @ui.search.val info[infoKeys.term]
     @ui.refresh.removeClass('disabled')
     @ui.create.removeClass('disabled')
+
+  ###
+  Handle the quick search field changes to process
+  the search query
+
+  @param {Event} event The event triggered on `keyup`
+  ###
+  search: (event) ->
+    @_searchInternal(event)
 
   ###
   Manage the create button and the management of the button

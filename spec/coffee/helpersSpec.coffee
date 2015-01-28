@@ -97,9 +97,6 @@ describe "datagrid helpers functions", ->
     it "should have default toolbar region", ->
       expect(grid.prototype.regions.toolbar).toBeDefined()
 
-    it "should have default quickSearch region", ->
-      expect(grid.prototype.regions.quickSearch).toBeDefined()
-
     it "should have default perPage region", ->
       expect(grid.prototype.regions.perPage).toBeDefined()
 
@@ -156,5 +153,5 @@ describe "datagrid helpers functions", ->
     it "should have the collection given", ->
       expect(grid.prototype.collection).toBe(collection)
 
-    it "should have the template given", ->
-      expect(grid.prototype.template).toBe(template)
+#    it "should have the template given", ->
+#      expect(grid.prototype.template).toBe(template)

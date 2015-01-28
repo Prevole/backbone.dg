@@ -11,7 +11,7 @@ of columns shown in the data table.
 Dg.EmptyView = Dg.DefaultItemView.extend
   optionNames: ['columns']
 
-  template: templates['empty']
+  template: 'empty'
 
   ui:
     empty: '.empty'

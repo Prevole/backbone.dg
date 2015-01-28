@@ -19,6 +19,9 @@ describe "datagrid default item view", ->
       spyOn view, 'serializeData'
       spyOn view, 'bindUIElements'
       spyOn view, 'onRender'
+
+      spyOn(view, 'renderTemplate').and.callThrough()
+
 #      spyOn view, 'beforeRender'
 
       view.render()
@@ -43,6 +46,9 @@ describe "datagrid default item view", ->
 
     it "should send event [item:rendered] to all components", ->
       expect(vent.trigger).toHaveBeenCalledWith 'item:rendered', view
+
+    it "should call the renderTemplate function", ->
+      expect(view.renderTemplate).toHaveBeenCalled()
 
     for name in ['getTemplate', 'serializeData', 'bindUIElements', 'onRender']
       it "should call function #{name}", ->

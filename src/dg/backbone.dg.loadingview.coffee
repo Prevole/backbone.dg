@@ -6,7 +6,11 @@ purpose is to show to the user that something is happening that is
 different than no data is available.
 ###
 LoadingView = Backbone.Marionette.ItemView.extend
-  template: templates['gridempty']
+  template: 'gridempty'
+
+
+  getTemplate: ->
+    Dg.getTemplate @template
 
 ###!
     render: ->

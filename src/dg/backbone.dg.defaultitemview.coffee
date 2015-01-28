@@ -30,13 +30,18 @@ Dg.DefaultItemView = Dg.ItemView.extend
   an additional `item:rendered` event is triggered.
   ###
   render: ->
+    @isClosed = false
+
     @beforeRender() if @beforeRender
 
     @trigger 'before:render', @
     @trigger 'item:before:render', @
 
+    data = @serializeData()
+    data = @mixinTemplateHelpers data
+
     # Override the `el` with the template rendered
-    @setElement($(Marionette.Renderer.render(@getTemplate(), @serializeData())), true)
+    @setElement($(@renderTemplate(data)), true)
 
     @bindUIElements()
 
@@ -50,3 +55,11 @@ Dg.DefaultItemView = Dg.ItemView.extend
     @vent.trigger 'item:rendered', @
 
     return @
+
+  ###
+  Render data a take care to get the template and do something with it
+
+  @param Object data to render
+  ###
+  renderTemplate: (data) ->
+    Marionette.Renderer.render(@getTemplate(), data)

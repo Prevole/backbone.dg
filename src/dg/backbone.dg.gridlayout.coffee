@@ -5,7 +5,7 @@ This class brings all the bricks together to render each part
 of the datagrid (table, headers, toolbars, pagers...)
 ###
 Dg.GridLayout = Marionette.Layout.extend
-  template: templates['grid']
+  template: 'grid'
 
   ###
   Constructor
@@ -34,6 +34,9 @@ Dg.GridLayout = Marionette.Layout.extend
     # Bind the grid refresh to the collection event
     @listenTo @collection, 'fetched', @refreshGrid
     @listenTo @collection, 'info:updated', @refreshGrid
+
+  getTemplate: ->
+    Dg.getTemplate @template
 
   ###
   Proceed to the regions rendering. Each region is created,

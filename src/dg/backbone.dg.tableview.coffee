@@ -9,7 +9,7 @@ content is wrapped into a `<tbody />` tag and the headers are
 appended before this tag.
 ###
 Dg.TableView = Marionette.CompositeView.extend
-  template: templates['table']
+  template: 'table'
   itemViewContainer: 'tbody'
   emptyView: Dg.EmptyView
 
@@ -40,6 +40,10 @@ Dg.TableView = Marionette.CompositeView.extend
   constructor: ->
     Marionette.CompositeView.prototype.constructor.apply @, slice(arguments)
     _.extend @, _.pick(@options, 'vent')
+
+
+  getTemplate: ->
+    Dg.getTemplate @template
 
   onCompositeModelRendered: ->
     # If necessary, the header view is rendered

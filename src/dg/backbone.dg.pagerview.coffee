@@ -24,75 +24,47 @@ options:
   css:
     active: "active"
     disabled: "disabled"
-    page: "page"
-  texts:
-    first: "<<"
-    previous: "<"
-    next: ">"
-    last: ">>"
-    filler: "..."
   numbers: true
-  firstAndLast: true
-  previousAndNext: true
 ```
 
 - **delatePage**: Number of pages shown before and after the active one (if available)
 - **css**: Different style added for link `disabled`, `active` or `page`
-- **texts**: Texts used for each link excepted the page numbers
-- **numbers**: Enable/Disable page number links
-- **firstAndLast**: Enable/Disable first and last links
-- **previousAndNext**: Enable/Disable previous and next links
 ###
 Dg.PagerView = Dg.DefaultItemView.extend
-  optionNames: ['deltaPage', 'css', 'texts', 'numbers', 'firstAndLast', 'previousAndNext']
+  optionNames: ['deltaPage', 'css']
 
-  template: templates['pager']
+  template: 'pager'
 
+  # The bindings to handle the right behavior from the events
+  ui:
+    first: '[data-page-type=first]'
+    prev: '[data-page-type=prev]'
+    page: '[data-page-type=page]'
+    next: '[data-page-type=next]'
+    last: '[data-page-type=last]'
+
+  # Events binded to the right elements
   events:
-    'click a': 'pagging'
+    'click @ui.first': 'firstPage'
+    'click @ui.prev': 'previousPage'
+    'click @ui.page': 'toPage'
+    'click @ui.next': 'nextPage'
+    'click @ui.last': 'lastPage'
 
   # Define the default value for the number of links shown before
   # and after the active link
   deltaPage: 2
 
-  # Show the numbers by default
-  numbers: true
-
-  # Show the first and last links by default
-  firstAndLast: true
-
-  previousAndNext: true
-
   # Define the defaults CSS styles if part or none are provided
   css:
     active: 'active'
     disabled: 'disabled'
-    page: 'page'
-
-  # Define the texts if none are provided. Use I18n-js if defined
-  texts: ->
-    if isI18n()
-      return {
-        first: I18n.t i18nKeys.pager.first
-        previous: I18n.t i18nKeys.pager.previous
-        next: I18n.t i18nKeys.pager.next
-        last: I18n.t i18nKeys.pager.last
-        filler: I18n.t i18nKeys.pager.filler
-      }
-    else
-      return {
-        first: '<<'
-        previous: '<'
-        next: '>'
-        last: '>>'
-        filler: '...'
-      }
 
   ###
   Constructor
   ###
   constructor: (options) ->
-    Dg.DefaultItemView.prototype.constructor.apply @, slice(arguments)
+    Dg.DefaultItemView.prototype.constructor.apply @, arguments
 
     # Define default values for rendering when no info available
     @info = {}
@@ -104,14 +76,6 @@ Dg.PagerView = Dg.DefaultItemView.extend
   is done to know how to render the actual page, first/last, next/previous
   links.
 
-  The pagger is done through a list of element:
-
-  ```
-  <ul>
-    <li><a href="...">...</a></li>
-    ...
-  </ul>
-  ```
   @param {Object} info The metadata to get the pagging data
   ###
   refreshView: (info) ->
@@ -119,9 +83,9 @@ Dg.PagerView = Dg.DefaultItemView.extend
     @info = info
 
     # Reset el
-    @$el.empty().hide()
+    @$el.empty()
 
-    ul = $('<ul class="pagination pagination-right" />')
+    pagerTemplate = @_getPageElements()
 
     # Shortcuts to number of pages and current page
     page = @info[infoKeys.page]
@@ -129,8 +93,6 @@ Dg.PagerView = Dg.DefaultItemView.extend
 
     # Check if there is something to render
     if page > 0 and pages > 1
-      i18n = _.result(@, 'texts')
-
       # Calculate the bounds
       minPage = page - @deltaPage
       maxPage = page + @deltaPage
@@ -141,85 +103,160 @@ Dg.PagerView = Dg.DefaultItemView.extend
 
       # Create first and previous links
       state = if page == 1 then @css.disabled else ''
-      ul.append(@_createLink i18n.first, 'f', state) if @firstAndLast
-      ul.append(@_createLink i18n.previous, 'p', state) if @previousAndNext
+      @$el.append(@_createLink pagerTemplate.first, state) if pagerTemplate.first != undefined
+      @$el.append(@_createLink pagerTemplate.prev, state) if pagerTemplate.prev != undefined
 
-      # If number must be shown
-      if @numbers
+      # Create page links
+      if pagerTemplate.page != undefined
         # Create filler
-        ul.append(@_createLink i18n.filler, '', @css.disabled) if minPage > 1
+        if pagerTemplate.before != undefined and minPage > 1
+          @$el.append(@_createLink pagerTemplate.before, @css.disabled)
 
-        # Create page links
         for i in [minPage..maxPage]
           css = if i == page then @css.active else ''
-          ul.append(@_createLink "#{i}", 'page', css)
+          @$el.append(@_createPageLink pagerTemplate.page, i, css)
 
         # Create filler
-        ul.append(@_createLink i18n.filler, '', @css.disabled) if maxPage < pages
+        if pagerTemplate.after != undefined and maxPage < pages
+          @$el.append(@_createLink pagerTemplate.after, @css.disabled)
 
       # Create last and next links
       state = if page == pages then @css.disabled else ''
-      ul.append(@_createLink i18n.next, 'n', state) if @previousAndNext
-      ul.append(@_createLink i18n.last, 'l', state) if @firstAndLast
+      @$el.append(@_createLink pagerTemplate.next, state) if pagerTemplate.next != undefined
+      @$el.append(@_createLink pagerTemplate.last, state) if pagerTemplate.last != undefined
 
-      @$el.append(ul).show()
+      # Rebind the UI elements
+      @bindUIElements()
 
   ###
-  Manage the clicks done on any button of the pager
+  Override the default behavior of rendering a template
 
-  @param {Event} event Pager button click event
+  @param [Object] data The data to render (not used)
   ###
-  pagging: (event) ->
-    event.preventDefault()
+  renderTemplate: (data) ->
+    @_getPageElements().container.clone()
 
-    target = $(event.target)
+  ###
+  Action to go to the first page
 
-    # Check if clickable
-    unless target.parent().hasClass(@css.disabled) or target.parent().hasClass(@css.active)
-      # Retrieve the type of page link clicked
-      type = target.data('type')
+  @param {Event} event The event for the page change
+  ###
+  firstPage: (event) ->
+    @_changePage 1
 
-      # Calculate the correct page
-      switch type
-        # First page
-        when 'f'
-          page = 1
+  ###
+  Action to go to the previous page
 
-        # Previous page
-        when 'p'
-          if @info[infoKeys.page] - 1 > 0
-            page = @info[infoKeys.page] - 1
-          else
-            page = @info[infoKeys.page]
+  @param {Event} event The event for the page change
+  ###
+  previousPage: (event) ->
+    page = if @info[infoKeys.page] - 1 > 0 then @info[infoKeys.page] - 1 else @info[infoKeys.page]
+    @_changePage page
 
-        # Next page
-        when 'n'
-          if (@info[infoKeys.page] + 1) < @info[infoKeys.pages]
-            page = @info[infoKeys.page] + 1
-          else
-            page = @info[infoKeys.pages]
+  ###
+  Action to go to a specific page
 
-        # Last page
-        when 'l'
-          page = @info[infoKeys.pages]
+  @param {Event} event The event for the page change
+  ###
+  toPage: (event) ->
+    @_changePage parseInt($(event.target).text())
 
-        # Specific page
-        else
-          page = parseInt($(event.target).text())
+  ###
+  Action to go to the next page
 
-      # Update the collection only if required
-      @update _.object( [infoKeys.page], [page] ) if page != @info[infoKeys.page]
+  @param {Event} event The event for the page change
+  ###
+  nextPage: (event) ->
+    page =
+      if (@info[infoKeys.page] + 1) < @info[infoKeys.pages] then @info[infoKeys.page] + 1 else @info[infoKeys.pages]
+    @_changePage page
+
+  ###
+  Action to go to the last page
+
+  @param {Event} event The event for the page change
+  ###
+  lastPage: (event) ->
+    @_changePage @info[infoKeys.pages]
+
+  ###
+  Do the effective action to change the page
+
+  @param {int} toPage The page where to go
+  ###
+  _changePage: (toPage) ->
+    # Update the collection only if required
+    @update _.object( [infoKeys.page], [toPage] ) if toPage != @info[infoKeys.page]
+
+
+  ###
+  Retrieve the pager elements to use as template for each
+  elements of the pager.
+
+  The first time the function is called, the template structure
+  is created from the template of this class and cached for the
+  future calls.
+
+  @return {Hash} The pager elements templates
+  ###
+  _getPageElements: ->
+    if @pagerTemplate == undefined
+      pager = $(@getTemplate()(null))
+
+      # Find function that take care to lookup the root and the subelements
+      find = (selector) ->
+        pager.filter(selector).add(pager.find(selector))
+
+      if pager.length > 1
+        container = $('<div />')
+      else
+        container = pager.clone().empty()
+
+      @pagerTemplate = {
+        first: find('[data-page-type="first"]').clone()
+        prev: find('[data-page-type="prev"]').clone()
+        before: find('[data-page-type="more-before"]').clone()
+        page: find('[data-page-type="page"]').clone()
+        after: find('[data-page-type="more-after"]').clone()
+        next: find('[data-page-type="next"]').clone()
+        last: find('[data-page-type="last"]').clone()
+        container: container
+      }
+
+    @pagerTemplate
 
   ###
   Create a link for one element in the pager.
 
-  @param {String} text The text shown to the user
+  @param {jQueryObject} element The element that is used as a template to create the page link
   @param {String} type The type of link
   @param {String} state The state of the link
-  @return {jQueryObject} Link element is wrapped into a `li` tag
+  @return {jQueryObject} Page link element
   ###
-  _createLink: (text, type, state) ->
-    a = $('<a/>').attr('href', '#').data('type', type).addClass(@css.page).html("#{text}")
-    li = $('<li />').html(a)
-    li.addClass(state) if state
-    return li
+  _createLink: (element, state) ->
+    element.clone().addClass(state)
+
+  ###
+  Create a link for one element in the pager.
+
+  @param {jQueryObject} element The element that is used as a template to create the page link
+  @param {String} state The state of the link
+  @return {jQueryObject} Page link element
+  ###
+  _createPageLink: (element, pageNumber, state) ->
+    pageElement = element.clone()
+
+    # Check if the page element is also the page content
+    if pageElement.attr("data-page-content") is undefined
+      pageElementContent = pageElement.find("*[data-page-content]")
+    else
+      pageElementContent = pageElement
+
+    # Retrieve the type of page representation
+    pageType = pageElementContent.attr("data-page-content")
+
+    # Use simple arabic page representation
+    pageElementContent.text("#{pageNumber}") if pageType == "arabic"
+
+    # Return the page element in the correct state
+    pageElement.addClass(state).attr('data-page', "#{pageNumber}")

@@ -34,19 +34,11 @@ window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
     loading: 'datagrid.loading'
     perpage: 'datagrid.perpage'
     quicksearch: 'datagrid.quicksearch'
-    pager:
-      first: 'datagrid.pager.first'
-      last: 'datagrid.pager.last'
-      next: 'datagrid.pager.next'
-      previous: 'datagrid.pager.previous'
-      filler: 'datagrid.pager.filler'
 
   #= backbone.dg.utils.coffee
-  #= backbone.dg.templateregistry.coffee
   #= backbone.dg.itemview.coffee
   #= backbone.dg.defaultitemview.coffee
   #= backbone.dg.infoview.coffee
-  #= backbone.dg.quicksearchview.coffee
   #= backbone.dg.perpageview.coffee
   #= backbone.dg.toolbarview.coffee
   #= backbone.dg.pagerview.coffee
@@ -138,7 +130,7 @@ window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
 
     # Check if the template is given or use the default one
     if not (options.template is undefined)
-      gridLayout.prototype.template = templates[options.template]
+      gridLayout.prototype.template = options.template
 
     return gridLayout
 
@@ -177,9 +169,6 @@ window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
     toolbar:
       selector: '.dgToolbar'
       view: Dg.ToolbarView
-    quickSearch:
-      selector: '.dgQuickSearch'
-      view: Dg.QuickSearchView
     perPage:
       selector: '.dgPerPage'
       view: Dg.PerPageView
@@ -239,5 +228,14 @@ window.Backbone.Dg = window.Dg = ( (Backbone, Marionette, _, $) ->
       gridRegions
     )
 
+  Dg.getTemplate = (name) ->
+    console.log "Get template root #{name}"
+    throw new Error "There is no template engine available"
+
   return Dg
-)(Backbone, Backbone.Marionette, _, $ || window.jQuery || window.Zepto || window.ender)
+)(
+  Backbone,
+  Backbone.Marionette,
+  _,
+  $ || window.jQuery || window.Zepto || window.ender
+)
